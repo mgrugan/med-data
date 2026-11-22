@@ -62,10 +62,10 @@ BUDGETS = {
     # The configuration used for the committed results.
     "full": Budget(
         name="full", outer_folds=5, inner_folds=5, inner_folds_nn=3, cv_repeats=3,
-        trials={"gamma_glm": 18, "xgboost": 25, "xgboost_aft": 15, "catboost": 12, "ft_transformer": 6},
+        trials={"gamma_glm": 18, "xgboost": 25, "xgboost_aft": 15, "catboost": 12, "ft_transformer": 4},
         permutations={"median_baseline": 0, "condition_median": 200, "gamma_glm": 200,
                       "xgboost": 40, "xgboost_aft": 20, "catboost": 20, "ft_transformer": 5},
-        bootstrap=1000, learning_curve_seeds=3, loocv_n=1000,
+        bootstrap=1000, learning_curve_seeds=3, loocv_n=1000, ft_max_epochs=30,
     ),
     # Fast end-to-end smoke test (used by the test suite / CI).
     "quick": Budget(

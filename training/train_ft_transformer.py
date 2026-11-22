@@ -108,15 +108,17 @@ class FTTransformerLOS(LOSModel):
     def suggest(self, trial):
         return {
             "feature_subset": trial.suggest_categorical("feature_subset", list(FEATURE_SUBSETS_A)),
-            "d_token": trial.suggest_categorical("d_token", [16, 32, 64]),
-            "n_blocks": trial.suggest_int("n_blocks", 1, 3),
+            # Search space sized to the CPU budget (see training/config.py). With ~8 feature tokens,
+            # wider/deeper models were 4-6x slower without any validation gain in pilot runs.
+            "d_token": trial.suggest_categorical("d_token", [16, 32]),
+            "n_blocks": trial.suggest_int("n_blocks", 1, 2),
             "n_heads": 4,
             "attn_dropout": trial.suggest_float("attn_dropout", 0.0, 0.4),
             "ffn_dropout": trial.suggest_float("ffn_dropout", 0.0, 0.4),
             "residual_dropout": trial.suggest_float("residual_dropout", 0.0, 0.2),
             "lr": trial.suggest_float("lr", 1e-4, 3e-3, log=True),
             "weight_decay": trial.suggest_float("weight_decay", 1e-6, 1e-2, log=True),
-            "batch_size": trial.suggest_categorical("batch_size", [256, 512]),
+            "batch_size": 512,
             "loss": trial.suggest_categorical("loss", ["l1", "mse"]),
         }
 
