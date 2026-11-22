@@ -12,7 +12,7 @@ cells = [
     nbf.v4.new_markdown_cell("""# RecoveryAI: research walkthrough
 
 **Primary question.** To what extent can patient characteristics available near hospital admission predict length of
-stay in a *synthetic* healthcare dataset, and how reliably can modern ML models quantify uncertainty in those predictions?
+stay in real, de-identified hospital data (UCI Diabetes 130-US Hospitals), and how reliably can modern ML models quantify uncertainty in those predictions?
 
 **Secondary question.** Do advanced nonlinear models provide statistically meaningful improvement over simple
 statistical and naive baselines?
@@ -27,9 +27,9 @@ sys.path.insert(0, str(ROOT))
 R = json.loads((ROOT / "validation/results/validation_report.json").read_text())
 pd.set_option("display.precision", 3)
 print(R["research_questions"]["primary"])"""),
-    nbf.v4.new_markdown_cell("## 1. Data: the synthetic LOS distribution\nLength_of_Stay = Discharge Date − Date of Admission. Group means are nearly identical, which is a first warning sign."),
+    nbf.v4.new_markdown_cell("## 1. Data: the LOS distribution\nLength_of_Stay is `time_in_hospital` (1–14 days). One stay per patient (the first); deaths and hospice transfers removed."),
     nbf.v4.new_code_cell("""d = R["data"]
-print({k: d[k] for k in ["rows_raw", "exact_duplicates_removed", "n_dev", "n_test", "los_mean", "los_median", "los_sd", "los_skew"]})
+print({k: d[k] for k in ["rows_raw", "repeat_encounters_removed", "death_or_hospice_removed", "n_dev", "n_test", "los_mean", "los_median", "los_sd", "los_skew"]})
 pd.DataFrame({k: pd.Series(v) for k, v in d["group_means"].items()}).T"""),
     nbf.v4.new_markdown_cell("![LOS](../validation/figures/los_distribution.png)"),
     nbf.v4.new_markdown_cell("## 2. Nested cross-validation (headline generalisation estimate)"),
@@ -68,9 +68,11 @@ g = R["quality_gate"]; print(g["headline"])
 pd.DataFrame([{"check": c["label"], "failed": c["failed"]} for c in g["checks"]])"""),
     nbf.v4.new_markdown_cell("""## Conclusion
 
-Read the quality gate above together with the positive control. When the framework recovers an injected effect but finds
-nothing in the real target, the defensible conclusion is that **this synthetic dataset contains no usable admission-time
-signal for length of stay**. A good pipeline should report that rather than hide it."""),
+Read the quality gate together with the shuffled-target control, the set A vs set B comparison and the positive control.
+On real data, admission-time variables carry a real but modest signal: models beat the median baseline and the shuffled
+target, but explain only a small share of the variance. Most of the apparent accuracy of richer feature sets comes from
+information gathered during the stay, which would leak the answer at admission time. The earlier synthetic dataset, kept
+in `validation/results/synthetic_reference/`, contained no signal at all."""),
 ]
 nb = nbf.v4.new_notebook(cells=cells, metadata={"kernelspec": {"name": "python3", "display_name": "Python 3", "language": "python"}})
 

@@ -63,7 +63,7 @@ def main():
     k = r["selection"]["display_model"]
     c = T["calibration"][k]["quantile_bins"]
     axes[0].plot([b["mean_predicted"] for b in c], [b["mean_observed"] for b in c], "o-", color=BLUE)
-    lo, hi = 1, 30
+    lo, hi = 1, 14
     axes[0].plot([lo, hi], [lo, hi], "--", color=GREY); axes[0].set_xlim(lo, hi); axes[0].set_ylim(lo, hi)
     _style(axes[0], f"Calibration ({NAMES[k]})", "Mean predicted LOS", "Mean observed LOS")
     lc = r["learning_curves"]["catboost"]["points"]
