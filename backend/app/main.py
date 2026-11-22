@@ -81,6 +81,14 @@ def _t(s: str) -> time:
     return time(h % 24, m % 60)
 
 
+@app.get("/", include_in_schema=False)
+def root():
+    """The API has no UI; point visitors to the web app and the interactive docs."""
+    return {"service": "RecoveryAI API", "status": "ok",
+            "message": "This is the backend API. Open the recoveryai-web service URL for the app.",
+            "docs": "/docs", "health": "/api/health", "disclaimer": DISCLAIMER}
+
+
 @app.get("/api/health")
 def health():
     p = get_predictor()
