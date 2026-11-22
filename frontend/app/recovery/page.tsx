@@ -92,7 +92,7 @@ export default function RecoveryPage() {
         <p className="text-sm text-subtle">Recovery plan</p>
         <h1 className="mt-2 text-3xl font-semibold sm:text-4xl">From discharge orders to a daily schedule</h1>
         <p className="mt-3 text-muted">
-          Provide the instructions your doctor gave you. RecoveryAI only organises what is written. It never adds
+          Provide the instructions your doctor gave you. Pip only organises what is written. It never adds
           medications, doses, durations or activities, and anything missing stays <em>Not specified</em>.
         </p>
       </section>
@@ -116,7 +116,7 @@ export default function RecoveryPage() {
             </TabsContent>
             <TabsContent value="upload" className="space-y-4">
               <button onClick={() => fileRef.current?.click()}
-                className="flex w-full flex-col items-center justify-center gap-2 rounded-2xl border border-dashed border-line py-12 text-sm text-muted hover:bg-soft">
+                className="glass glass-soft flex w-full flex-col items-center justify-center gap-2 rounded-2xl py-12 text-sm text-muted">
                 <Upload className="h-5 w-5" /> Choose a .txt, .pdf or .docx file
               </button>
               <input ref={fileRef} type="file" accept=".txt,.md,.pdf,.docx" className="hidden"
@@ -207,10 +207,10 @@ export default function RecoveryPage() {
 
           {sched && day && (
             <div className="space-y-5">
-              <div className="flex gap-1.5 overflow-x-auto pb-1">
+              <div className="flex gap-1.5 overflow-x-auto p-1.5">
                 {sched.days.map((d, i) => (
                   <button key={d.date} onClick={() => setDayIdx(i)}
-                    className={cn("shrink-0 rounded-xl border px-3 py-2 text-center text-xs", i === dayIdx ? "border-fg bg-fg text-bg" : "border-line text-muted hover:bg-soft")}>
+                    className={cn("shrink-0 rounded-xl px-3 py-2 text-center text-xs", i === dayIdx ? "glass glass-soft text-fg" : "border border-line text-muted hover:bg-soft")}>
                     <div className="font-medium">Day {d.day}</div>
                     <div className="num opacity-80">{new Date(d.date + "T00:00").toLocaleDateString(undefined, { month: "short", day: "numeric" })}</div>
                   </button>

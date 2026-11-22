@@ -1,59 +1,23 @@
 @import "tailwindcss";
 
 :root {
-  color-scheme: light;
-  --bg: #fcfcfb;
-  --card: #ffffff;
-  --fg: #0b0b0b;
-  --muted: #52514e;
-  --subtle: #8a8984;
-  --line: #e7e6e2;
-  --soft: #f3f3f0;
-  --accent: #2a78d6;
-  --accent-soft: #e3eefb;
-  --accent-2: #eb6834;
-  --warn-bg: #fdf6e7;
-  --warn-line: #ecd29a;
-  --warn-fg: #6b4a00;
-  --good: #0f7a3d;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
-    color-scheme: dark;
-    --bg: #121211;
-    --card: #1a1a19;
-    --fg: #f0efec;
-    --muted: #c3c2b7;
-    --subtle: #8f8e87;
-    --line: #2d2d2a;
-    --soft: #222220;
-    --accent: #3987e5;
-    --accent-soft: #1b2b40;
-    --accent-2: #d95926;
-    --warn-bg: #2a2212;
-    --warn-line: #5f4a1f;
-    --warn-fg: #f1d49c;
-    --good: #4cc27c;
-  }
-}
-
-:root[data-theme="dark"] {
+  /* One dark "glass over chrome" theme: cards are translucent so the arcs show through. */
   color-scheme: dark;
-  --bg: #121211;
-  --card: #1a1a19;
-  --fg: #f0efec;
-  --muted: #c3c2b7;
-  --subtle: #8f8e87;
-  --line: #2d2d2a;
-  --soft: #222220;
-  --accent: #3987e5;
-  --accent-soft: #1b2b40;
-  --accent-2: #d95926;
-  --warn-bg: #2a2212;
-  --warn-line: #5f4a1f;
-  --warn-fg: #f1d49c;
-  --good: #4cc27c;
+  --bg: #040405;
+  --card: rgba(16, 16, 19, 0.62);
+  --fg: #f3f3f1;
+  --muted: #c6c6c1;
+  --subtle: #92928d;
+  --line: rgba(255, 255, 255, 0.11);
+  --soft: rgba(255, 255, 255, 0.06);
+  --accent: #35e0bb;
+  --accent-soft: rgba(53, 224, 187, 0.16);
+  --accent-2: #ff7a45;
+  --warn-bg: rgba(60, 45, 10, 0.7);
+  --warn-line: #7a5f22;
+  --warn-fg: #f6d99c;
+  --good: #4fd18b;
+  --glow: conic-gradient(from var(--glass-angle), #00ffc6, #6aa7ff, #c77dff, #ff5ea8, #ffc46b, #00ffc6);
 }
 
 @theme inline {
@@ -73,12 +37,14 @@
   --color-good: var(--good);
   --font-sans: var(--font-manrope), ui-sans-serif, system-ui, sans-serif;
   --font-display: var(--font-sora), ui-sans-serif, system-ui, sans-serif;
+  --font-bold: var(--font-montserrat), ui-sans-serif, system-ui, sans-serif;
 }
 
-html, body {
+html {
   background: var(--bg);
   color: var(--fg);
 }
+body { background: transparent; color: var(--fg); }
 
 body {
   font-family: var(--font-sans);
@@ -91,7 +57,93 @@ h1, h2, h3, h4 {
   letter-spacing: -0.01em;
 }
 
+/* Bold text is set in Montserrat. */
+h1, h2, h3, h4, h5, h6, strong, b, th,
+.font-semibold, .font-bold, .font-extrabold, .font-black {
+  font-family: var(--font-bold);
+}
+
 .num { font-variant-numeric: tabular-nums; }
+
+/* ---------------------------------------------------------------- liquid glass */
+@property --glass-angle { syntax: "<angle>"; inherits: false; initial-value: 0deg; }
+@keyframes glass-spin { to { --glass-angle: 360deg; } }
+
+/* A translucent, refractive-looking pill with a moving gradient light around its edge.
+   Declared as utilities so variants work (e.g. data-[state=active]:glass). */
+@utility glass {
+  position: relative;
+  isolation: isolate;
+  color: var(--fg);
+  background:
+    radial-gradient(120% 140% at 30% -20%, rgba(255, 255, 255, 0.28), rgba(255, 255, 255, 0) 55%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.03));
+  -webkit-backdrop-filter: blur(16px) saturate(170%);
+  backdrop-filter: blur(16px) saturate(170%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.45),
+    inset 0 -1px 1px rgba(255, 255, 255, 0.08),
+    inset 0 0 12px rgba(255, 255, 255, 0.05),
+    0 10px 30px rgba(0, 0, 0, 0.45);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+  &::before, &::after {
+    content: "";
+    position: absolute;
+    border-radius: inherit;
+    background: var(--glow);
+    animation: glass-spin 6s linear infinite;
+    pointer-events: none;
+  }
+  /* the light ring on the edge */
+  &::before {
+    inset: 0;
+    padding: 1.25px;
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    mask-composite: exclude;
+    opacity: var(--glass-ring, 0.9);
+  }
+  /* the soft light surrounding it */
+  &::after {
+    inset: var(--glass-spread, -5px);
+    z-index: -1;
+    filter: blur(var(--glass-blur, 14px));
+    opacity: var(--glass-glow, 0.35);
+    transition: opacity 0.2s ease;
+  }
+  &:hover {
+    background:
+      radial-gradient(120% 140% at 30% -20%, rgba(255, 255, 255, 0.34), rgba(255, 255, 255, 0) 55%),
+      linear-gradient(180deg, rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0.05));
+    --glass-glow: var(--glass-glow-hover, 0.6);
+  }
+  &:active { transform: scale(0.98); }
+}
+/* quieter version for controls that sit in groups */
+@utility glass-soft { --glass-ring: 0.55; --glass-glow: 0.18; --glass-glow-hover: 0.32; --glass-spread: -3px; --glass-blur: 10px; }
+/* big call to action */
+@utility glass-strong { --glass-glow: 0.6; --glass-glow-hover: 0.85; --glass-spread: -8px; --glass-blur: 18px; }
+
+/* glass panels (cards) */
+.panel {
+  background: var(--card);
+  -webkit-backdrop-filter: blur(22px) saturate(140%);
+  backdrop-filter: blur(22px) saturate(140%);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06), 0 20px 50px rgba(0, 0, 0, 0.35);
+}
+
+/* the ring that spins behind Pip while it calculates */
+@keyframes spin-ring { to { transform: rotate(360deg); } }
+.spin-ring {
+  border-radius: 9999px;
+  background: conic-gradient(from 0deg, rgba(0, 255, 198, 0) 0deg, rgba(0, 255, 198, 0.95) 80deg, #6aa7ff 150deg, #ff5ea8 220deg, rgba(255, 94, 168, 0) 300deg);
+  -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 10px), #000 calc(100% - 9px));
+  mask: radial-gradient(farthest-side, transparent calc(100% - 10px), #000 calc(100% - 9px));
+  filter: drop-shadow(0 0 18px rgba(0, 255, 198, 0.55));
+  animation: spin-ring 1.6s linear infinite;
+}
+.spin-ring-slow { animation-duration: 5s; animation-direction: reverse; opacity: 0.35; }
 
 ::selection { background: var(--accent-soft); }
 

@@ -1,4 +1,4 @@
-"""RecoveryAI API (FastAPI).
+"""Length-of-stay research prototype API (FastAPI).
 
 Educational / research prototype trained on real, de-identified hospital data. Nothing returned by this API
 is a clinical discharge decision.
@@ -25,11 +25,11 @@ from .ml.predictor import days_between, get_predictor, get_report
 from .recovery.extractor import CATEGORIES, extract
 from .recovery.schedule import build_schedule
 
-DISCLAIMER = ("RecoveryAI is an educational research prototype trained on historical, de-identified hospital data "
+DISCLAIMER = ("This is an educational research prototype trained on historical, de-identified hospital data "
               "(UCI Diabetes 130-US Hospitals, 1999-2008). Its outputs are not "
               "medical advice and must never be used as a clinical discharge decision.")
 
-app = FastAPI(title="RecoveryAI API", version="1.0.0", description=DISCLAIMER)
+app = FastAPI(title="Length-of-stay API", version="1.0.0", description=DISCLAIMER)
 origins = [o.strip() for o in os.environ.get("FRONTEND_ORIGINS", "*").split(",") if o.strip()]
 app.add_middleware(CORSMiddleware, allow_origins=origins, allow_methods=["*"], allow_headers=["*"])
 app.add_middleware(GZipMiddleware, minimum_size=1000)
@@ -173,5 +173,5 @@ if STATIC_DIR.exists():
 else:
     @app.get("/", include_in_schema=False)
     def root():
-        return {"service": "RecoveryAI API", "status": "ok", "docs": "/docs", "health": "/api/health",
+        return {"service": "Length-of-stay API", "status": "ok", "docs": "/docs", "health": "/api/health",
                 "disclaimer": DISCLAIMER}

@@ -41,7 +41,7 @@ function Tooltip({ tip }: { tip: Tip }) {
   if (!tip) return null;
   return (
     <div
-      className="pointer-events-none absolute z-10 rounded-lg border border-line bg-card px-3 py-2 text-xs shadow-md"
+      className="pointer-events-none absolute z-10 rounded-lg border border-line bg-[#111114]/95 px-3 py-2 text-xs shadow-md"
       style={{ left: tip.x + 12, top: tip.y - 8, maxWidth: 260 }}
     >
       {tip.lines.map((l, i) => (

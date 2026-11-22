@@ -119,12 +119,12 @@ export default function MethodPage() {
           </li>
         ))}
       </ol>
-      <div className="mt-16 rounded-2xl border border-line bg-soft p-6 text-sm leading-relaxed text-muted">
+      <div className="mt-16 panel rounded-2xl border border-line p-6 text-sm leading-relaxed text-muted">
         <p className="font-display font-semibold text-fg">Limitations</p>
         <p className="mt-2">
           The data are real but narrow: US hospitals, 1999–2008, adults with diabetes, stays capped at 14 days, and age known only in
           10-year bands. Many important drivers of length of stay, such as vital signs, severity scores and social circumstances, are not in the data, so
-          admission-time predictions remain uncertain. Associations are not causes. Nothing in RecoveryAI is a clinical discharge decision.
+          admission-time predictions remain uncertain. Associations are not causes. Nothing here is a clinical discharge decision.
         </p>
       </div>
     </div>
