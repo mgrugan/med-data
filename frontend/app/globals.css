@@ -1,0 +1,100 @@
+@import "tailwindcss";
+
+:root {
+  color-scheme: light;
+  --bg: #fcfcfb;
+  --card: #ffffff;
+  --fg: #0b0b0b;
+  --muted: #52514e;
+  --subtle: #8a8984;
+  --line: #e7e6e2;
+  --soft: #f3f3f0;
+  --accent: #2a78d6;
+  --accent-soft: #e3eefb;
+  --accent-2: #eb6834;
+  --warn-bg: #fdf6e7;
+  --warn-line: #ecd29a;
+  --warn-fg: #6b4a00;
+  --good: #0f7a3d;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --bg: #121211;
+    --card: #1a1a19;
+    --fg: #f0efec;
+    --muted: #c3c2b7;
+    --subtle: #8f8e87;
+    --line: #2d2d2a;
+    --soft: #222220;
+    --accent: #3987e5;
+    --accent-soft: #1b2b40;
+    --accent-2: #d95926;
+    --warn-bg: #2a2212;
+    --warn-line: #5f4a1f;
+    --warn-fg: #f1d49c;
+    --good: #4cc27c;
+  }
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #121211;
+  --card: #1a1a19;
+  --fg: #f0efec;
+  --muted: #c3c2b7;
+  --subtle: #8f8e87;
+  --line: #2d2d2a;
+  --soft: #222220;
+  --accent: #3987e5;
+  --accent-soft: #1b2b40;
+  --accent-2: #d95926;
+  --warn-bg: #2a2212;
+  --warn-line: #5f4a1f;
+  --warn-fg: #f1d49c;
+  --good: #4cc27c;
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-card: var(--card);
+  --color-fg: var(--fg);
+  --color-muted: var(--muted);
+  --color-subtle: var(--subtle);
+  --color-line: var(--line);
+  --color-soft: var(--soft);
+  --color-accent: var(--accent);
+  --color-accent-soft: var(--accent-soft);
+  --color-accent-2: var(--accent-2);
+  --color-warn-bg: var(--warn-bg);
+  --color-warn-line: var(--warn-line);
+  --color-warn-fg: var(--warn-fg);
+  --color-good: var(--good);
+  --font-sans: var(--font-manrope), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-sora), ui-sans-serif, system-ui, sans-serif;
+}
+
+html, body {
+  background: var(--bg);
+  color: var(--fg);
+}
+
+body {
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  font-feature-settings: "tnum" 1;
+}
+
+h1, h2, h3, h4 {
+  font-family: var(--font-display);
+  letter-spacing: -0.01em;
+}
+
+.num { font-variant-numeric: tabular-nums; }
+
+::selection { background: var(--accent-soft); }
+
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; animation: none !important; }
+}

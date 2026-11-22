@@ -1,0 +1,12 @@
+__pycache__/
+*.pyc
+.pytest_cache/
+.venv/
+venv/
+.env
+.env.*
+!.env.example
+.DS_Store
+# smoke-test outputs (regenerate with: python -m training.run_pipeline --budget quick)
+models/quick/
+validation/results/quick/

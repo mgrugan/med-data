@@ -1,0 +1,13 @@
+# Runtime dependencies of the deployed API (inference only; no torch / sklearn / shap needed).
+# Versions pinned to the ones used to train and export the committed models.
+fastapi==0.165.0
+uvicorn[standard]==0.54.0
+pydantic==2.13.5
+python-multipart==0.0.32
+numpy==2.5.3
+pandas==3.0.5
+scipy==1.18.1
+catboost==1.2.10
+xgboost==3.4.1
+pypdf==6.17.0
+anthropic==2.12.0

@@ -1,0 +1,41 @@
+# Render Blueprint for RecoveryAI: a FastAPI inference API + a Next.js frontend.
+# Models are trained offline (python -m training.run_pipeline) and committed under models/,
+# so the API only loads artefacts; no training happens on Render.
+services:
+  - type: web
+    name: recoveryai-api
+    runtime: python
+    plan: free
+    buildCommand: pip install -r backend/requirements.txt
+    startCommand: uvicorn backend.app.main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /api/health
+    autoDeploy: true
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.13.5
+      - key: FRONTEND_ORIGINS
+        value: "*"
+      # Optional: enables Claude-based structuring of discharge instructions.
+      # Without it the deterministic rule-based extractor is used. Set it in the dashboard.
+      - key: ANTHROPIC_API_KEY
+        sync: false
+
+  - type: web
+    name: recoveryai-web
+    runtime: node
+    plan: free
+    rootDir: frontend
+    buildCommand: npm ci && npm run build
+    startCommand: npm start
+    autoDeploy: true
+    envVars:
+      - key: NODE_VERSION
+        value: 22.12.0
+      - key: NEXT_TELEMETRY_DISABLED
+        value: "1"
+      # The frontend proxies /api/* to the API service (see frontend/next.config.ts).
+      - key: BACKEND_URL
+        fromService:
+          type: web
+          name: recoveryai-api
+          property: host

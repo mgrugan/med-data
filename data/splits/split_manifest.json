@@ -1,0 +1,10 @@
+{
+  "seed": 20240531,
+  "holdout_fraction": 0.2,
+  "calibration_fraction_of_dev": 0.15,
+  "n_dev": 43972,
+  "n_test": 10994,
+  "n_dev_fit": 37376,
+  "n_dev_calibration": 6596,
+  "stratification": "deciles of Length_of_Stay"
+}
