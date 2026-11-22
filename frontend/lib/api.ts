@@ -18,7 +18,8 @@ export type Gate = { warning: boolean; headline: string; failed: string[] };
 
 export type Options = {
   categories: Record<string, string[]>;
-  age_range: [number, number];
+  numeric_ranges: Record<string, [number, number]>;
+  los_max: number;
   models: Record<string, string>;
   display_model: string;
   selected_model: string;
@@ -50,11 +51,13 @@ export type Prediction = {
   note?: string;
   language: string;
   understanding: {
-    test_result: { title: string; summary: string; detail: string; ask: string[]; dataset_note: string };
+    a1c: { title: string; summary: string; detail: string; value: string };
+    glucose: { title: string; detail: string; value: string };
+    test_note: string;
+    ask: string[];
     condition: { name: string; summary: string };
     medication: { name: string; summary: string };
     admission_type: { name: string; summary: string };
-    synthetic_note: string;
     disclaimer: string;
   };
 };

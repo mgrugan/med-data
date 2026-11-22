@@ -12,19 +12,22 @@ from backend.app.ml.features import CATEGORY_LEVELS  # noqa: E402
 
 
 def synthetic_frame(n=1500, seed=0, signal=True):
-    """Frame with the dataset's schema. With signal=True, LOS depends on admission type."""
+    """Frame with the derived (diabetes) schema. With signal=True, LOS depends on admission type."""
     rng = np.random.default_rng(seed)
     df = pd.DataFrame({c: rng.choice(v, n) for c, v in CATEGORY_LEVELS.items()})
-    df["Age"] = rng.integers(18, 90, n).astype(float)
-    df["Name"] = [f"p{i}" for i in range(n)]
-    df["Doctor"] = [f"d{i % 300}" for i in range(n)]
-    df["Hospital"] = [f"h{i % 200}" for i in range(n)]
-    df["Room Number"] = rng.integers(100, 500, n)
-    df["Billing Amount"] = rng.uniform(1000, 50000, n)
-    df["Date of Admission"] = pd.Timestamp("2022-01-01") + pd.to_timedelta(rng.integers(0, 700, n), unit="D")
-    base = df["Admission Type"].map({"Elective": 6, "Urgent": 12, "Emergency": 20}) if signal else 13
-    df["Length_of_Stay"] = np.clip(np.round(base + rng.normal(0, 3, n)), 1, 30).astype(float)
-    df["Discharge Date"] = df["Date of Admission"] + pd.to_timedelta(df["Length_of_Stay"], unit="D")
+    df["Age"] = rng.choice(np.arange(5, 100, 10), n).astype(float)
+    for c in ["Prior Inpatient", "Prior Emergency", "Prior Outpatient", "Lab Procedures", "Procedures",
+              "Medications Count", "Diagnoses Count"]:
+        df[c] = rng.poisson(1.0, n).astype(float)
+    df["Race"] = rng.choice(["Caucasian", "AfricanAmerican", "Other"], n)
+    df["Discharge Disposition"] = rng.choice(["Home", "Rehabilitation"], n)
+    df["Medication Change"] = rng.choice(["Changed", "No change"], n)
+    df["Payer"] = rng.choice(["MC", "Unknown"], n)
+    df["Medical Specialty"] = rng.choice(["Cardiology", "Unknown"], n)
+    df["encounter_id"] = np.arange(n)
+    df["patient_nbr"] = np.arange(n)
+    base = df["Admission Type"].map({"Elective": 2, "Urgent": 5, "Emergency": 8, "Other/Unknown": 5}) if signal else 5
+    df["Length_of_Stay"] = np.clip(np.round(base + rng.normal(0, 1.5, n)), 1, 14).astype(float)
     return df
 
 

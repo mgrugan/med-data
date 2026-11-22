@@ -16,24 +16,25 @@ export default function MethodPage() {
   const steps: Step[] = [
     {
       n: "01", title: "Start from a clear question",
-      body: <>To what extent can patient characteristics available near admission predict length of stay in a synthetic healthcare
-        dataset, and how reliably can models quantify uncertainty? A second question: do nonlinear models beat simple baselines by a
-        statistically meaningful margin?</>,
+      body: <>To what extent can patient characteristics available near admission predict length of stay, and how reliably can models
+        quantify uncertainty? A second question: do nonlinear models beat simple baselines by a statistically meaningful margin?</>,
     },
     {
-      n: "02", title: "Prepare the data",
-      body: <>The Kaggle healthcare dataset ({d ? d.rows_raw.toLocaleString() : "55,500"} rows) is <strong>synthetic</strong>: generated, not recorded.
-        Length of stay = discharge date − admission date. {d ? `${d.exact_duplicates_removed} exact duplicates` : "Exact duplicates"} were removed
-        so the same record cannot appear on both sides of a split. LOS is almost uniform between {d ? fmt(d.los_min, 0) : 1} and {d ? fmt(d.los_max, 0) : 30} days, with near-identical means in every group.
-        That is the first hint that there may be little to learn.</>,
-      link: { href: "/validation#reproducibility", label: "Data summary" },
+      n: "02", title: "Use real data, and say what it is",
+      body: <>The app uses the UCI <strong>Diabetes 130-US Hospitals</strong> dataset: {d ? d.rows_raw.toLocaleString() : "101,766"} real,
+        de-identified inpatient stays (1999–2008) of adults with diabetes, 1–14 days long. Only each patient&apos;s <strong>first</strong> stay is kept
+        ({d ? `${d.repeat_encounters_removed.toLocaleString()} repeat stays removed` : "repeat stays removed"}), so the same person never appears in both training and test data.
+        Stays ending in death or hospice are excluded, because that is not a discharge. The project first ran on a synthetic Kaggle dataset, where
+        nothing was predictable. That run is kept for comparison.</>,
+      link: { href: "/validation#synthetic", label: "Synthetic vs real" },
     },
     {
       n: "03", title: "Block data leakage",
-      body: <>The admission-time model sees only what is known at admission: age, gender, blood type, condition, admission type, medication
-        and test result (<strong>feature set A</strong>). Discharge date, anything derived from it, the final bill, and the patient name are excluded.
-        Doctor and hospital are near-unique synthetic names, so they behave like identifiers, not clinical factors. A separate research set B
-        tests the extra variables, flagged as leakage-prone, and is never used for predictions.</>,
+      body: <>The admission-time model sees only what is plausibly known on arrival: age band, gender, admission type and source, primary
+        diagnosis group, diabetes medication regimen, HbA1c and glucose ranges, and visits in the <em>previous</em> year (<strong>feature set A</strong>).
+        Counts accumulated during the stay (lab tests, procedures, medications, diagnoses), the medication-change flag and the discharge destination
+        would leak the answer. They live only in research set B, which shows how much they would inflate accuracy. Race is never a predictor; it is
+        used only to check that errors are fair.</>,
       link: { href: "/validation#setb", label: "Set A vs set B" },
     },
     {
@@ -121,9 +122,9 @@ export default function MethodPage() {
       <div className="mt-16 rounded-2xl border border-line bg-soft p-6 text-sm leading-relaxed text-muted">
         <p className="font-display font-semibold text-fg">Limitations</p>
         <p className="mt-2">
-          The dataset is synthetic. Its variables appear to be generated independently, so relationships that exist in real hospitals,
-          such as emergency admissions staying longer, need not exist here. Test results are categories only, with no test names or values.
-          No result here generalises to real patients, and nothing in RecoveryAI is a clinical discharge decision.
+          The data are real but narrow: US hospitals, 1999–2008, adults with diabetes, stays capped at 14 days, and age known only in
+          10-year bands. Many important drivers of length of stay, such as vital signs, severity scores and social circumstances, are not in the data, so
+          admission-time predictions remain uncertain. Associations are not causes. Nothing in RecoveryAI is a clinical discharge decision.
         </p>
       </div>
     </div>

@@ -49,6 +49,18 @@ def test_split_conformal_coverage(level):
     assert res["coverage"] == pytest.approx(level, abs=0.02)
 
 
+@pytest.mark.parametrize("level", [0.5, 0.8, 0.9, 0.95])
+def test_log_scale_conformal_coverage_and_asymmetry(level):
+    rng = np.random.default_rng(2)
+    y = np.clip(np.round(rng.gamma(2, 2.2, 30000)) + 1, 1, 14)
+    p = y * np.exp(rng.normal(0, 0.4, 30000))
+    res = evaluate(y[:6000], p[:6000], y[6000:], p[6000:], [level], method="log")["levels"][str(level)]
+    assert res["coverage"] == pytest.approx(level, abs=0.02)
+    from validation.conformal_prediction import interval
+    lo, hi = interval(np.array([4.0]), 0.5, "log")
+    assert (hi - 4.0) > (4.0 - lo)  # wider above than below
+
+
 def test_conformal_quantile_finite_sample_rank():
     assert conformal_quantile(np.arange(1, 10), 0.9) == 9  # ceil(10*0.9)=9th smallest
 

@@ -4,7 +4,7 @@ from __future__ import annotations
 import numpy as np
 import statsmodels.api as sm
 
-FIXED_BINS = [(0, 3), (3, 6), (6, 10), (10, 14), (14, 15), (15, 16), (16, 17), (17, 20), (20, 25), (25, 31)]
+FIXED_BINS = [(0, 2), (2, 3), (3, 4), (4, 5), (5, 6), (6, 8), (8, 10), (10, 15)]
 
 
 def calibration_report(y, p, n_bins: int = 10) -> dict:
@@ -23,7 +23,7 @@ def calibration_report(y, p, n_bins: int = 10) -> dict:
     for lo, hi in FIXED_BINS:
         m = (p >= lo) & (p < hi)
         if m.any():
-            fixed.append({"range": f"{lo}-{hi - 1 if hi == 31 else hi} days", "mean_predicted": float(p[m].mean()),
+            fixed.append({"range": f"{lo}-{hi} days", "mean_predicted": float(p[m].mean()),
                           "mean_observed": float(y[m].mean()), "n": int(m.sum())})
     # Calibration slope/intercept: regress observed on predicted. Ideal = slope 1, intercept 0.
     if np.std(p) > 1e-9:

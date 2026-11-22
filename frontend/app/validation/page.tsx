@@ -226,8 +226,16 @@ export default function ValidationPage() {
         <div className="grid gap-8 lg:grid-cols-2">
           <LinePlot diagonal xLabel="Nominal coverage" yLabel="Empirical test coverage" xFmt={(v) => pct(v)}
             series={[{ name: name(m), points: Object.values(T.conformal[m].levels).map((l: any) => ({ x: l.nominal, y: l.coverage })) }]} />
-          <Table head={["Level", "Coverage", "Mean width", "No-info width", "Ratio"]}
-            rows={Object.values(T.conformal[m].levels).map((l: any) => [pct(l.nominal), pct(l.coverage, 1), `${fmt(l.mean_width, 1)} d`, `${fmt(l.no_information_width, 1)} d`, fmt(l.width_ratio_vs_no_information, 2)])} />
+          <div>
+            <Table head={["Level", "Coverage", "Mean width", "No-info width", "Ratio"]}
+              rows={Object.values(T.conformal[m].levels).map((l: any) => [pct(l.nominal), pct(l.coverage, 1), `${fmt(l.mean_width, 1)} d`, `${fmt(l.no_information_width, 1)} d`, fmt(l.width_ratio_vs_no_information, 2)])} />
+            {T.conformal_absolute && (
+              <p className="mt-3 text-xs text-subtle">
+                Served intervals use a log-scale (multiplicative) score because stays are right-skewed: they are wider above the estimate than below.
+                Symmetric ± intervals for comparison, at 90%: coverage {pct(T.conformal_absolute[m].levels["0.9"].coverage, 1)}, mean width {fmt(T.conformal_absolute[m].levels["0.9"].mean_width, 1)} d.
+              </p>
+            )}
+          </div>
         </div>
         {(() => {
           const l = T.conformal[m].levels["0.9"];
@@ -295,7 +303,7 @@ export default function ValidationPage() {
         </Section>
       )}
 
-      <Section id="subgroups" title="Error by subgroup" desc="Test MAE with 95% bootstrap intervals. The data are synthetic, so differences point to model weaknesses, not biological truths.">
+      <Section id="subgroups" title="Error by subgroup" desc="Test MAE with 95% bootstrap intervals. Race is not a model input; it is shown only to check that errors are equitable. Differences point to model weaknesses, not biological truths.">
         <ModelPicker value={m} onChange={setM} keys={keys} />
         <div className="grid gap-x-10 gap-y-6 md:grid-cols-2">
           {Object.entries(T.subgroup_errors[m].groups).map(([g, rows]: [string, any]) => (
@@ -319,15 +327,35 @@ export default function ValidationPage() {
       )}
 
       <Section id="setb" title="Feature set B (research only)"
-        desc="Adds insurance, room number, admission calendar, Doctor/Hospital frequency encodings and Billing Amount. Billing is a final bill and would leak post-admission information, which is why set B is never used for predictions.">
+        desc="Adds variables counted during the stay or recorded at discharge: lab-procedure, procedure, medication and diagnosis counts, medication change and discharge destination, plus payer and admitting specialty. They are leakage-prone, so set B is never used for predictions. The gap between A and B shows how much leakage would inflate apparent accuracy.">
         <Table head={["Model", "Set A CV MAE", "Set B CV MAE", "Δ (B − A)", "corrected p", "Set B test MAE"]}
           rows={Object.entries(r.feature_set_b).map(([k, b]: [string, any]) => [name(k), fmt(r.repeated_cv[k].summary.mae.mean, 3), fmt(b.summary.mae.mean, 3),
             fmt(b.vs_set_A.mean_diff, 3), fmt(b.vs_set_A.p_value, 3), fmt(b.test_metrics.mae, 3)])} />
       </Section>
 
+      {r.synthetic_reference && (
+        <Section id="synthetic" title="Real data vs the original synthetic dataset"
+          desc="The same pipeline was first run on the synthetic Kaggle dataset. Every model tied the median baseline and none beat shuffled targets, so the app was moved to real data. Comparing the two shows what genuine signal looks like.">
+          {(() => {
+            const sr = r.synthetic_reference;
+            const gain = (mm: any, base: number) => `${fmt((1 - mm / base) * 100, 1)}%`;
+            const bSyn = sr.models.median_baseline.test_mae, bReal = T.metrics.median_baseline.mae;
+            return (
+              <Table head={["Model", "Synthetic: MAE", "gain vs median", "perm. p", "Real: MAE", "gain vs median", "perm. p"]}
+                rows={keys.filter((k) => sr.models[k]).map((k) => [name(k),
+                  fmt(sr.models[k].test_mae, 2), gain(sr.models[k].test_mae, bSyn), fmt(sr.models[k].perm_p, 3),
+                  fmt(T.metrics[k].mae, 2), gain(T.metrics[k].mae, bReal), r.permutation_tests[k] ? fmt(r.permutation_tests[k].p_value, 3) : "—"])} />
+            );
+          })()}
+          <p className="mt-3 text-xs text-subtle">
+            Synthetic stays are 1–30 days (mean {fmt(r.synthetic_reference.los_mean, 1)}); real stays are 1–14 days (mean {fmt(r.data.los_mean, 1)}), so MAEs are compared as relative gain over each dataset&apos;s own median baseline.
+          </p>
+        </Section>
+      )}
+
       <Section id="reproducibility" title="Reproducibility">
         <dl className="grid gap-4 text-sm sm:grid-cols-2 lg:grid-cols-3">
-          <div><dt className="text-subtle">Rows (after removing {r.data.exact_duplicates_removed} duplicates)</dt><dd className="num">{r.data.rows_clean.toLocaleString()} → dev {r.data.n_dev.toLocaleString()} / test {r.data.n_test.toLocaleString()}</dd></div>
+          <div><dt className="text-subtle">Patients (first encounter each; {r.data.repeat_encounters_removed?.toLocaleString()} repeat stays and {r.data.death_or_hospice_removed?.toLocaleString()} death/hospice removed)</dt><dd className="num">{r.data.rows_clean.toLocaleString()} → dev {r.data.n_dev.toLocaleString()} / test {r.data.n_test.toLocaleString()}</dd></div>
           <div><dt className="text-subtle">Global seed</dt><dd className="num">{r.seeds.global}</dd></div>
           <div><dt className="text-subtle">Pipeline runtime</dt><dd className="num">{fmt(r.runtime_minutes, 0)} min</dd></div>
           <div className="sm:col-span-2 lg:col-span-3"><dt className="text-subtle">Test-set fingerprint (SHA-256)</dt><dd className="num break-all text-xs">{r.data.test_sha256}</dd></div>

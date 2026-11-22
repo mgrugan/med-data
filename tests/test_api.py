@@ -10,8 +10,9 @@ from fastapi.testclient import TestClient
 ROOT = Path(__file__).resolve().parents[1]
 pytestmark = pytest.mark.skipif(not (ROOT / "models" / "manifest.json").exists(), reason="models not trained")
 
-PATIENT = dict(age=62, gender="Male", blood_type="A+", medical_condition="Cancer", admission_type="Urgent",
-               medication="Aspirin", test_result="Abnormal", days_hospitalized=4)
+PATIENT = dict(age=72, gender="Male", admission_type="Emergency", admission_source="Emergency Room",
+               medical_condition="Circulatory", medication="Insulin only", a1c_result=">8%", glucose_serum="Not tested",
+               prior_inpatient=1, prior_emergency=0, prior_outpatient=0, days_hospitalized=2)
 
 
 @pytest.fixture(scope="module")
@@ -23,11 +24,11 @@ def client():
 def test_health_and_options(client):
     assert client.get("/api/health").json()["status"] == "ok"
     o = client.get("/api/options").json()
-    assert o["display_model"] in o["models"] and 0.9 in o["levels"]
+    assert o["display_model"] in o["models"] and 0.9 in o["levels"] and o["los_max"] == 14
 
 
 def test_predict_remaining_is_clamped_and_interval_ordered(client):
-    for d in [0, 4, 40]:
+    for d in [0, 2, 30]:
         r = client.post("/api/predict", json={**PATIENT, "days_hospitalized": d}).json()
         p = r["prediction"]
         assert p["remaining"] >= 0 and p["remaining_interval"][0] >= 0
@@ -38,6 +39,7 @@ def test_predict_remaining_is_clamped_and_interval_ordered(client):
 
 def test_predict_rejects_invalid_category(client):
     assert client.post("/api/predict", json={**PATIENT, "gender": "Other"}).status_code == 422
+    assert client.post("/api/predict", json={**PATIENT, "a1c_result": "9.1%"}).status_code == 422
 
 
 def test_served_predictions_match_training_models():

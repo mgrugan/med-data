@@ -30,7 +30,7 @@ import numpy as np
 import pandas as pd
 
 from backend.app.ml.features import (FEATURE_SUBSETS_A, LEAKAGE_RISK_FEATURES, SET_A_CATEGORICAL,
-                                     SET_A_NUMERIC, SET_B_EXTRA_CATEGORICAL, SET_B_EXTRA_NUMERIC)
+                                     SET_A_NUMERIC, SET_B_EXTRA_CATEGORICAL, SET_B_EXTRA_NUMERIC, TARGET)
 from validation import (bootstrap_validation as bv, calibration as cal, conformal_prediction as cp,
                         error_analysis as ea, explainability as ex, learning_curves as lc,
                         model_comparison as mc, survival_metrics as sv)
@@ -205,8 +205,12 @@ def run(budget_name: str) -> dict:
     for i, a in enumerate(B.models):
         for b in B.models[i + 1:]:
             diffs[f"{b}__vs__{a}"] = bv.bootstrap_difference(y_test, test_pred[b], test_pred[a], idx=idx, seed=GLOBAL_SEED)
+    # Served intervals use the log-scale (multiplicative) score, pre-specified because LOS is
+    # right-skewed; the symmetric absolute-residual version is reported for comparison.
     conformal = {k: cp.evaluate(y_cal, cal_pred[k], y_test, test_pred[k], CONFORMAL_LEVELS, test,
-                                dev_fit["Length_of_Stay"].to_numpy()) for k in B.models}
+                                dev_fit["Length_of_Stay"].to_numpy(), method="log") for k in B.models}
+    conformal_abs = {k: cp.evaluate(y_cal, cal_pred[k], y_test, test_pred[k], CONFORMAL_LEVELS, test,
+                                    dev_fit["Length_of_Stay"].to_numpy(), method="absolute") for k in B.models}
     calib = {k: cal.calibration_report(y_test, test_pred[k]) for k in B.models}
     errors = {k: ea.subgroup_errors(test, test_pred[k], seed=GLOBAL_SEED) for k in B.models}
     resid_by_obs = {k: ea.residuals_by_observed(y_test, test_pred[k]) for k in B.models}
@@ -216,7 +220,7 @@ def run(budget_name: str) -> dict:
                for k in B.models}
 
     # survival metrics for the distributional models
-    grid = np.arange(1.0, 30.0)
+    grid = np.arange(1.0, float(df[TARGET].max()))
     survival = {}
     t_fit = dev_fit["Length_of_Stay"].to_numpy(float)
     if "xgboost_aft" in final_models:
@@ -289,7 +293,7 @@ def run(budget_name: str) -> dict:
                                              "bootstrap": GLOBAL_SEED + 2024, "permutation": GLOBAL_SEED + 55},
         "research_questions": {
             "primary": ("To what extent can patient characteristics available near hospital admission predict "
-                        "length of stay in a synthetic healthcare dataset, and how reliably can modern "
+                        "length of stay in a real, de-identified hospital dataset, and how reliably can modern "
                         "machine-learning models quantify uncertainty in those predictions?"),
             "secondary": ("Do advanced nonlinear machine-learning models provide statistically meaningful "
                           "predictive improvement over simple statistical and naive baselines?")},
@@ -300,16 +304,18 @@ def run(budget_name: str) -> dict:
                          "B": {"categorical": SET_A_CATEGORICAL + SET_B_EXTRA_CATEGORICAL,
                                "numeric": SET_A_NUMERIC + SET_B_EXTRA_NUMERIC,
                                "leakage_risk": sorted(LEAKAGE_RISK_FEATURES)},
-                         "excluded": {"Name": "direct identifier", "Discharge Date": "defines the target (leakage)",
-                                      "Date of Admission": "used only to derive the target and set-B calendar features",
-                                      "Doctor": "near-unique synthetic identifier", "Hospital": "near-unique synthetic identifier"}},
+                         "excluded": {"encounter_id / patient_nbr": "identifiers",
+                                      "Race": "not used as a predictor; used only to audit error parity",
+                                      "weight": "97% missing", "readmitted": "post-discharge outcome",
+                                      "diag_2 / diag_3": "secondary diagnoses are coded at discharge",
+                                      "set-B variables": "accumulated during the stay or recorded at discharge"}},
         "models": model_info, "nested_cv": nested, "final_params": final_params,
         "final_tuning": {k: {kk: v for kk, v in s.items() if kk != "trials"} | {"n_trials": len(s["trials"])}
                          for k, s in final_studies.items()},
         "repeated_cv": {k: {kk: v for kk, v in r.items()} for k, r in repeated.items()},
         "permutation_tests": permutation, "learning_curves": curves, "selection": selection,
         "test": {"metrics": test_metrics, "bootstrap": boot, "paired_differences": diffs,
-                 "conformal": conformal, "calibration": calib, "subgroup_errors": errors,
+                 "conformal": conformal, "conformal_absolute": conformal_abs, "calibration": calib, "subgroup_errors": errors,
                  "residuals_by_observed": resid_by_obs, "scatter": scatter, "survival": survival,
                  "c_index_point_predictions": point_c_index},
         "explainability": {"shap": shap, "permutation_importance": perm_imp},
@@ -342,6 +348,7 @@ def export_models(models, params, conformal, test_metrics, selection, gate, out:
     for k, m in models.items():
         e = {"display_name": m.display_name, "family": m.family, "params": params[k],
              "conformal_q": {lv: conformal[k]["levels"][lv]["q"] for lv in conformal[k]["levels"]},
+             "conformal_method": conformal[k]["method"],
              "test_metrics": test_metrics[k]}
         if k == "median_baseline":
             e["value"] = m.median_

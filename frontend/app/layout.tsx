@@ -9,7 +9,7 @@ const sora = Sora({ subsets: ["latin"], variable: "--font-sora", display: "swap"
 
 export const metadata: Metadata = {
   title: "RecoveryAI",
-  description: "Educational research prototype: length-of-stay estimation with rigorous validation, trained on synthetic data.",
+  description: "Educational research prototype: length-of-stay estimation with rigorous validation, trained on real de-identified hospital data (UCI Diabetes 130-US, 1999–2008).",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -27,8 +27,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <main className="mx-auto max-w-6xl px-4 pb-24 pt-8 sm:px-6 sm:pt-12">{children}</main>
         <footer className="border-t border-line">
           <p className="mx-auto max-w-6xl px-4 py-6 text-xs leading-relaxed text-subtle sm:px-6">
-            Educational research prototype trained on a synthetic dataset. Not medical advice, and never a clinical
-            discharge decision.
+            Educational research prototype trained on de-identified records of US inpatients with diabetes (UCI Diabetes
+            130-US Hospitals, 1999–2008). Not medical advice, and never a clinical discharge decision.
           </p>
         </footer>
       </body>

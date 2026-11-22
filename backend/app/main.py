@@ -25,7 +25,8 @@ from .ml.predictor import days_between, get_predictor, get_report
 from .recovery.extractor import CATEGORIES, extract
 from .recovery.schedule import build_schedule
 
-DISCLAIMER = ("RecoveryAI is an educational research prototype trained on a synthetic dataset. Its outputs are not "
+DISCLAIMER = ("RecoveryAI is an educational research prototype trained on historical, de-identified hospital data "
+              "(UCI Diabetes 130-US Hospitals, 1999-2008). Its outputs are not "
               "medical advice and must never be used as a clinical discharge decision.")
 
 app = FastAPI(title="RecoveryAI API", version="1.0.0", description=DISCLAIMER)
@@ -39,13 +40,17 @@ def _lit(col):
 
 
 class PatientIn(BaseModel):
-    age: int = Field(ge=0, le=110)
+    age: int = Field(ge=0, le=100, description="age in years (the model was trained on 10-year bands)")
     gender: _lit("Gender")
-    blood_type: _lit("Blood Type")
-    medical_condition: _lit("Medical Condition")
     admission_type: _lit("Admission Type")
+    admission_source: _lit("Admission Source")
+    medical_condition: _lit("Medical Condition")
     medication: _lit("Medication")
-    test_result: _lit("Test Results")
+    a1c_result: _lit("A1C Result")
+    glucose_serum: _lit("Glucose Serum")
+    prior_inpatient: int = Field(default=0, ge=0, le=50)
+    prior_emergency: int = Field(default=0, ge=0, le=100)
+    prior_outpatient: int = Field(default=0, ge=0, le=100)
     admission_date: date | None = None
     today: date | None = None
     days_hospitalized: float | None = Field(default=None, ge=0, le=365)
@@ -101,14 +106,15 @@ def predict(body: PatientIn):
     if body.model and body.model not in p.entries:
         raise HTTPException(404, f"unknown model {body.model!r}")
     data = body.model_dump()
+    data["age"] = min(95, (int(body.age) // 10) * 10 + 5)  # match the 10-year bands used in training
     if data["days_hospitalized"] is None:
         data["days_hospitalized"] = (days_between(body.admission_date, body.today or date.today())
                                      if body.admission_date else 0.0)
     out = p.predict(data, model=body.model, level=body.level)
-    out["understanding"] = explain_patient(body.medical_condition, body.medication, body.test_result,
-                                           body.admission_type)
+    out["understanding"] = explain_patient(body.medical_condition, body.medication, body.a1c_result,
+                                           body.glucose_serum, body.admission_type)
     out["language"] = ("The model estimates that discharge may occur approximately within this range. This is a "
-                       "statistical estimate from synthetic data, not a discharge date.")
+                       "statistical estimate from historical data, not a discharge date.")
     out["disclaimer"] = DISCLAIMER
     return out
 

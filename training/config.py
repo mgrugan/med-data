@@ -13,7 +13,7 @@ from pathlib import Path
 import numpy as np
 
 ROOT = Path(__file__).resolve().parents[1]
-DATA_PATH = ROOT / "data" / "raw" / "healthcare_dataset.csv"
+DATA_PATH = ROOT / "data" / "raw" / "diabetic_data.csv"
 SPLIT_DIR = ROOT / "data" / "splits"
 MODEL_DIR = ROOT / "models"
 RESULTS_DIR = ROOT / "validation" / "results"
@@ -62,10 +62,10 @@ BUDGETS = {
     # The configuration used for the committed results.
     "full": Budget(
         name="full", outer_folds=5, inner_folds=5, inner_folds_nn=3, cv_repeats=3,
-        trials={"gamma_glm": 18, "xgboost": 25, "xgboost_aft": 15, "catboost": 12, "ft_transformer": 4},
+        trials={"gamma_glm": 18, "xgboost": 25, "xgboost_aft": 15, "catboost": 8, "ft_transformer": 3},
         permutations={"median_baseline": 0, "condition_median": 200, "gamma_glm": 200,
-                      "xgboost": 40, "xgboost_aft": 20, "catboost": 20, "ft_transformer": 5},
-        bootstrap=1000, learning_curve_seeds=3, loocv_n=1000, ft_max_epochs=30,
+                      "xgboost": 40, "xgboost_aft": 20, "catboost": 20, "ft_transformer": 3},
+        bootstrap=1000, learning_curve_seeds=3, loocv_n=1000, ft_max_epochs=20,
     ),
     # Fast end-to-end smoke test (used by the test suite / CI).
     "quick": Budget(

@@ -18,7 +18,7 @@ import numpy as np
 import pandas as pd
 from scipy import stats
 
-from .features import CATEGORY_LEVELS, TabularEncoder
+from .features import CATEGORY_LEVELS, NUMERIC_RANGES, TabularEncoder
 from .ft_numpy import FTTransformerNumpy
 from .glm_design import GLMDesign
 
@@ -27,8 +27,10 @@ MODEL_DIR = Path(os.environ.get("RECOVERYAI_MODEL_DIR", ROOT / "models"))
 REPORT_PATH = Path(os.environ.get("RECOVERYAI_REPORT", ROOT / "validation" / "results" / "validation_report.json"))
 
 FEATURE_LABELS = {
-    "Age": "Age", "Gender": "Gender", "Blood Type": "Blood type", "Medical Condition": "Medical condition",
-    "Admission Type": "Admission type", "Medication": "Medication", "Test Results": "Test result",
+    "Age": "Age", "Gender": "Gender", "Medical Condition": "Primary diagnosis", "Admission Type": "Admission type",
+    "Admission Source": "Admission source", "Medication": "Diabetes medication", "A1C Result": "HbA1c",
+    "Glucose Serum": "Blood glucose", "Prior Inpatient": "Inpatient stays in past year",
+    "Prior Emergency": "Emergency visits in past year", "Prior Outpatient": "Outpatient visits in past year",
 }
 
 
@@ -47,7 +49,7 @@ class Predictor:
             g = e["gamma_glm"]["glm"]
             self.glm = {"design": GLMDesign.from_dict(g["design"]), "coef": np.array(g["coef"]),
                         "shape": g["shape"], "median_factor": g["median_factor"], "point": g["point"],
-                        "names": g["column_names"]}
+                        "names": g["column_names"], "features": g["column_features"]}
         self.xgb = {}
         for k in ("xgboost", "xgboost_aft"):
             if k in e:
@@ -69,9 +71,11 @@ class Predictor:
     # ---------------------------------------------------------------- predictions
     def _frame(self, p: dict) -> pd.DataFrame:
         return pd.DataFrame([{
-            "Age": float(p["age"]), "Gender": p["gender"], "Blood Type": p["blood_type"],
-            "Medical Condition": p["medical_condition"], "Admission Type": p["admission_type"],
-            "Medication": p["medication"], "Test Results": p["test_result"],
+            "Age": float(p["age"]), "Gender": p["gender"], "Admission Type": p["admission_type"],
+            "Admission Source": p["admission_source"], "Medical Condition": p["medical_condition"],
+            "Medication": p["medication"], "A1C Result": p["a1c_result"], "Glucose Serum": p["glucose_serum"],
+            "Prior Inpatient": float(p["prior_inpatient"]), "Prior Emergency": float(p["prior_emergency"]),
+            "Prior Outpatient": float(p["prior_outpatient"]),
         }])
 
     def _glm_mu(self, df):
@@ -144,16 +148,16 @@ class Predictor:
             contribs = []
             # Group dummy columns back to their factor. Effects are relative to the reference level.
             groups: dict[str, float] = {}
-            for name, coef, xv in zip(g["names"], g["coef"], x):
-                if name == "Intercept":
+            for f, coef, xv in zip(g["features"], g["coef"], x):
+                if f == "Intercept":
                     continue
-                f = "Age" if name.startswith("Age") else name.split("[")[0]
                 groups[f] = groups.get(f, 0.0) + float(coef * xv)
             for f, lin in groups.items():
                 contribs.append({"feature": f, "value": str(df[f].iloc[0]) if f in df else "",
                                  "days": (math.exp(lin) - 1) * pred / math.exp(lin) if lin else 0.0,
                                  "multiplier": math.exp(lin)})
-            return self._text("GLM coefficients (relative to reference levels)", None, contribs, "days")
+            return self._text("GLM coefficients (relative to reference levels, age 60 and no prior visits)",
+                              None, contribs, "days")
         return {"method": "none", "note": ("Per-patient attributions are not computed for this model. "
                                            "See the Model Validation page for its permutation importance."),
                 "contributions": [], "sentences": []}
@@ -174,7 +178,7 @@ class Predictor:
         return {"method": method, "base_value": base, "unit": unit, "contributions": contribs,
                 "sentences": sentences, "total_abs_days": total,
                 "caveat": ("These attributions describe how the model arrived at its number. They are "
-                           "associations learned from synthetic data, not causes.")}
+                           "associations learned from historical data, not causes.")}
 
     # ---------------------------------------------------------------- public API
     def predict(self, p: dict, model: str | None = None, level: float = 0.9) -> dict[str, Any]:
@@ -186,7 +190,11 @@ class Predictor:
         for k, e in self.entries.items():
             pr = self.predict_one(k, df)
             q = e["conformal_q"][level_key]
-            lo, hi = max(0.0, pr - q), pr + q
+            if e.get("conformal_method") == "log":   # multiplicative interval on log1p scale
+                z = math.log1p(max(pr, 0.0))
+                lo, hi = max(0.0, math.expm1(z - q) - 1e-9), math.expm1(z + q) + 1e-9
+            else:
+                lo, hi = max(0.0, pr - q), pr + q
             results[k] = {"name": e["display_name"], "total_los": pr, "interval": [lo, hi],
                           "remaining": max(0.0, pr - days_in),
                           "remaining_interval": [max(0.0, lo - days_in), max(0.0, hi - days_in)],
@@ -218,8 +226,8 @@ class Predictor:
                 "prob_still_admitted_now": 1 - f_d, "method": "Gamma GLM, conditioned on stay > days already spent"}
 
     def options(self) -> dict[str, Any]:
-        return {"categories": {k: v for k, v in CATEGORY_LEVELS.items() if k != "Insurance Provider"},
-                "age_range": [18, 90], "models": {k: e["display_name"] for k, e in self.entries.items()},
+        return {"categories": CATEGORY_LEVELS, "numeric_ranges": NUMERIC_RANGES,
+                "los_max": self.manifest.get("training_los_max", 14), "models": {k: e["display_name"] for k, e in self.entries.items()},
                 "display_model": self.manifest["display_model"], "selected_model": self.manifest["selected_model"],
                 "levels": sorted(float(x) for x in self.entries["median_baseline"]["conformal_q"]),
                 "quality_gate": self.manifest["quality_gate"]}
@@ -239,7 +247,24 @@ def get_report() -> dict:
     pc = REPORT_PATH.parent / "positive_control.json"
     if pc.exists():
         report["positive_control"] = json.loads(pc.read_text(), parse_constant=lambda _: None)
+    ref = REPORT_PATH.parent / "synthetic_reference" / "validation_report.json"
+    if ref.exists():
+        report["synthetic_reference"] = summarize_reference(json.loads(ref.read_text(), parse_constant=lambda _: None))
     return report
+
+
+def summarize_reference(r: dict) -> dict:
+    """Compact summary of the earlier run on the synthetic Kaggle dataset, for comparison."""
+    T = r["test"]
+    return {
+        "dataset": "Kaggle prasad22/healthcare-dataset (synthetic)", "n": r["data"]["rows_clean"],
+        "los_mean": r["data"]["los_mean"], "los_sd": r["data"]["los_sd"],
+        "models": {k: {"test_mae": T["metrics"][k]["mae"], "test_r2": T["metrics"][k]["r2"],
+                       "nested_mae": r["nested_cv"][k]["summary"]["mae"]["mean"],
+                       "perm_p": r["permutation_tests"].get(k, {}).get("p_value")} for k in T["metrics"]},
+        "gate_failed": sum(c["failed"] for c in r["quality_gate"]["checks"]),
+        "selected_model": r["selection"]["selected_model"],
+    }
 
 
 def days_between(a: date, b: date) -> int:

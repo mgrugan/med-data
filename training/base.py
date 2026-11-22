@@ -12,7 +12,7 @@ from typing import Any
 import numpy as np
 import pandas as pd
 
-from backend.app.ml.features import FrequencyEncoder, TARGET, prepare_frame
+from backend.app.ml.features import TARGET, prepare_frame
 from .config import EARLY_STOP_FRACTION, GLOBAL_SEED
 
 
@@ -37,7 +37,7 @@ class LOSModel:
         self.seed = seed
         self.threads = threads
         self.params: dict[str, Any] = {}
-        self.freq_encoder: FrequencyEncoder | None = None
+        self.freq_encoder = None  # no fold-fitted derived features for this dataset
         self.extra = kw
 
     # ---- hyper-parameters ---------------------------------------------------------
@@ -53,8 +53,6 @@ class LOSModel:
 
     # ---- preprocessing helpers -----------------------------------------------------
     def _prep_fit(self, df: pd.DataFrame) -> pd.DataFrame:
-        if self.feature_set == "B":
-            self.freq_encoder = FrequencyEncoder().fit(df)
         return prepare_frame(df, self.feature_set, self.freq_encoder)
 
     def _prep(self, df: pd.DataFrame) -> pd.DataFrame:

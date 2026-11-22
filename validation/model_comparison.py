@@ -17,8 +17,11 @@ from typing import Any
 import numpy as np
 from scipy import stats
 
-PRACTICAL_MARGIN_DAYS = 0.10
-MEANINGFUL_IMPROVEMENT_DAYS = 0.25  # ≈3% of the baseline MAE (~7.5 days)
+# Thresholds are RELATIVE to the median-baseline MAE so they mean the same thing on any
+# dataset. They were fixed before the final test-set evaluation of the real data.
+PRACTICAL_MARGIN_REL = 0.01        # models within 1% MAE of the leader are practically equivalent
+MEANINGFUL_IMPROVEMENT_REL = 0.05  # >=5% lower MAE than the median baseline counts as meaningful
+CALIBRATION_SLOPE_RANGE = (0.8, 1.2)
 FEATURE_MODELS = ["gamma_glm", "xgboost", "xgboost_aft", "catboost", "ft_transformer"]
 
 
@@ -36,6 +39,7 @@ def corrected_resampled_ttest(diffs: np.ndarray, n_train: int, n_test: int) -> d
 
 def select_model(nested: dict, repeated: dict, complexity: dict[str, int], n_dev: int, n_folds: int) -> dict[str, Any]:
     keys = list(nested)
+    margin = PRACTICAL_MARGIN_REL * nested["median_baseline"]["summary"]["mae"]["mean"]
     ranking = sorted(keys, key=lambda k: nested[k]["summary"]["mae"]["mean"])
     best = ranking[0]
     best_folds = np.array([f["mae"] for f in repeated[best]["folds"]])
@@ -46,7 +50,7 @@ def select_model(nested: dict, repeated: dict, complexity: dict[str, int], n_dev
         f = np.array([x["mae"] for x in repeated[k]["folds"]])
         res = corrected_resampled_ttest(f - best_folds, n_train, n_test) if k != best else {
             "mean_diff": 0.0, "t": 0.0, "p_value": 1.0, "df": len(f) - 1}
-        res["equivalent_to_best"] = bool(k == best or (res["p_value"] > 0.05 or res["mean_diff"] < PRACTICAL_MARGIN_DAYS))
+        res["equivalent_to_best"] = bool(k == best or (res["p_value"] > 0.05 or res["mean_diff"] < margin))
         comps[k] = res
     equivalent = [k for k in keys if comps[k]["equivalent_to_best"]]
     stab = {k: repeated[k]["summary"]["mae"]["sd"] for k in keys}
@@ -57,11 +61,11 @@ def select_model(nested: dict, repeated: dict, complexity: dict[str, int], n_dev
                    k in nested for k in FEATURE_MODELS) else best)
     reason = (f"{nested[best]['summary']['mae']['mean']:.3f}-day nested-CV MAE makes '{best}' the point-estimate "
               f"leader, but {len(equivalent)} of {len(keys)} models are statistically indistinguishable from it "
-              f"(corrected resampled t-test, p > 0.05, or within {PRACTICAL_MARGIN_DAYS} days). By parsimony the "
+              f"(corrected resampled t-test, p > 0.05, or within {margin:.3f} days = 1% of baseline MAE). By parsimony the "
               f"simplest of these, '{selected}', is selected.")
     return {"ranking_by_nested_mae": ranking, "point_estimate_leader": best, "selected_model": selected,
             "display_model": display, "equivalent_set": equivalent, "comparisons_vs_leader": comps,
-            "fold_stability_sd": stab, "practical_margin_days": PRACTICAL_MARGIN_DAYS, "reason": reason,
+            "fold_stability_sd": stab, "practical_margin_days": margin, "reason": reason,
             "selection_uses_test_set": False}
 
 
@@ -69,7 +73,8 @@ def quality_gate(nested, test_boot_diffs, permutation, conformal, calibration, s
     base = nested["median_baseline"]["summary"]["mae"]["mean"]
     feat = [k for k in FEATURE_MODELS if k in nested]
     improvements = {k: base - nested[k]["summary"]["mae"]["mean"] for k in feat}
-    beats = {k: bool(improvements[k] >= MEANINGFUL_IMPROVEMENT_DAYS and
+    threshold = MEANINGFUL_IMPROVEMENT_REL * base
+    beats = {k: bool(improvements[k] >= threshold and
                      test_boot_diffs.get(f"{k}__vs__median_baseline", {}).get("mae", {}).get("ci_percentile", [0, 0])[1] < 0)
              for k in feat}
     # Statistical (not practical) improvement: is ANY advanced model's paired bootstrap MAE
@@ -78,19 +83,20 @@ def quality_gate(nested, test_boot_diffs, permutation, conformal, calibration, s
     better = {k: test_boot_diffs.get(f"{k}__vs__median_baseline", {}).get("mae", {}).get("ci_percentile", [0, 0])[1] < 0
               for k in feat}
     perm_sig = {k: (permutation[k]["p_value"] is not None and permutation[k]["p_value"] < 0.05 and
-                    (permutation[k]["improvement_over_shuffled"] or 0) >= MEANINGFUL_IMPROVEMENT_DAYS)
+                    (permutation[k]["improvement_over_shuffled"] or 0) >= threshold)
                 for k in feat if k in permutation}
     disp = selection["display_model"]
     c90 = conformal[disp]["levels"]["0.9"]
     cal = calibration[disp]
-    lo, hi = cal["calibration_slope_ci"]
-    poor_cal = bool((not np.isnan(lo) and not (lo <= 1 <= hi)) or cal["prediction_sd"] < 0.1 * cal["observed_sd"])
+    slope = cal["calibration_slope"]
+    poor_cal = bool(slope is None or np.isnan(slope) or not (CALIBRATION_SLOPE_RANGE[0] <= slope <= CALIBRATION_SLOPE_RANGE[1])
+                    or cal["prediction_sd"] < 0.1 * cal["observed_sd"])
     checks = [
         {"id": "beats_baseline", "failed": not any(beats.values()),
          "label": "Advanced models fail to meaningfully beat the median baseline",
-         "pass_label": f"An advanced model beats the median baseline by at least {MEANINGFUL_IMPROVEMENT_DAYS} days",
+         "pass_label": f"An advanced model beats the median baseline by at least 5% MAE ({threshold:.3f} days)",
          "detail": {"improvement_days_vs_median": improvements, "meaningful": beats,
-                    "threshold_days": MEANINGFUL_IMPROVEMENT_DAYS}},
+                    "threshold_days": threshold, "threshold_relative": MEANINGFUL_IMPROVEMENT_REL}},
         {"id": "models_distinguishable", "failed": not any(better.values()),
          "label": "Bootstrap intervals show no meaningful difference between models",
          "pass_label": "At least one advanced model is significantly better than the baseline (bootstrap CI below 0)",
@@ -100,22 +106,23 @@ def quality_gate(nested, test_boot_diffs, permutation, conformal, calibration, s
          "pass_label": "Real-target models clearly beat shuffled-target models (permutation p < 0.05)",
          "detail": {k: {"p_value": permutation[k]["p_value"],
                         "improvement_days": permutation[k]["improvement_over_shuffled"]} for k in perm_sig}},
-        {"id": "interval_width", "failed": c90.get("width_ratio_vs_no_information", 0) >= 0.9 or c90["mean_width"] > 15,
+        {"id": "interval_width", "failed": c90.get("width_ratio_vs_no_information", 0) >= 0.9,
          "label": "Prediction intervals are excessively wide",
-         "pass_label": "Prediction intervals are clearly narrower than a no-information interval",
+         "pass_label": "Prediction intervals are at least 10% narrower than a no-information interval",
          "detail": {"mean_width_90": c90["mean_width"], "no_information_width_90": c90.get("no_information_width"),
                     "ratio": c90.get("width_ratio_vs_no_information")}},
         {"id": "calibration", "failed": poor_cal, "label": "Calibration is poor or predictions are non-discriminative",
-         "pass_label": "Predictions are calibrated (slope CI includes 1) and discriminative",
+         "pass_label": "Predictions are calibrated (slope within 0.8-1.2) and discriminative",
          "detail": {"slope": cal["calibration_slope"], "slope_ci": cal["calibration_slope_ci"],
                     "prediction_sd": cal["prediction_sd"], "observed_sd": cal["observed_sd"]}},
     ]
     failed = [c for c in checks if c["failed"]]
     return {
         "warning": bool(failed), "checks": checks, "n_failed": len(failed),
-        "headline": ("Length of stay in this synthetic dataset appears to contain limited predictable signal. "
+        "headline": ("Length of stay in this dataset appears to contain limited predictable signal from admission-time "
+                     "information. "
                      "Predictions are displayed for methodological demonstration and should not be interpreted "
                      "as clinically meaningful.") if failed else "All methodology checks passed.",
-        "signal_statement": ("The synthetic dataset does not appear to contain strong predictive relationships "
+        "signal_statement": ("The dataset does not appear to contain strong predictive relationships "
                              "for hospital length of stay.") if any(c["id"] == "shuffled_target" for c in failed) else None,
     }

@@ -20,7 +20,7 @@ import pandas as pd
 import statsmodels.api as sm
 from scipy import stats
 
-from backend.app.ml.features import FEATURE_SUBSETS_A, SET_A_CATEGORICAL, SET_B_EXTRA_CATEGORICAL
+from backend.app.ml.features import feature_columns, FEATURE_SUBSETS_A
 from backend.app.ml.glm_design import GLMDesign
 from .base import LOSModel
 
@@ -48,20 +48,16 @@ class GammaGLM(LOSModel):
     def default_params(self):
         return {"feature_subset": "A_full", "age_term": "linear", "point": "median"}
 
-    def _cats(self, subset: str) -> list[str]:
-        if self.feature_set == "B":
-            return SET_A_CATEGORICAL + SET_B_EXTRA_CATEGORICAL
-        return [c for c in FEATURE_SUBSETS_A[subset] if c in SET_A_CATEGORICAL]
+    def _cols(self, subset: str) -> tuple[list[str], list[str]]:
+        cats, nums = feature_columns(self.feature_set, subset)
+        return cats, [c for c in nums if c != "Age"]  # Age is handled by the age_term
 
     def fit(self, df, params=None):
         self.params = {**self.default_params(), **(params or {})}
         df = self._prep_fit(df)
-        self.design = GLMDesign(self._cats(self.params["feature_subset"]), self.params["age_term"]).fit(df)
+        cats, counts = self._cols(self.params["feature_subset"])
+        self.design = GLMDesign(cats, self.params["age_term"], counts).fit(df)
         X = self.design.matrix(df)
-        if self.feature_set == "B":
-            extra = ["Room Number", "admit_month", "Billing Amount", "doctor_freq", "hospital_freq"]
-            self.extra_stats = {c: (float(df[c].mean()), float(df[c].std() or 1.0)) for c in extra}
-            X = np.column_stack([X] + [(df[c] - m) / s for c, (m, s) in self.extra_stats.items()])
         y = self.y(df)
         with warnings.catch_warnings():
             warnings.simplefilter("ignore")
@@ -74,11 +70,7 @@ class GammaGLM(LOSModel):
         return self
 
     def _X(self, df):
-        df = self._prep(df)
-        X = self.design.matrix(df)
-        if self.feature_set == "B":
-            X = np.column_stack([X] + [(df[c] - m) / s for c, (m, s) in self.extra_stats.items()])
-        return X
+        return self.design.matrix(self._prep(df))
 
     def predict_mean(self, df) -> np.ndarray:
         return np.exp(self._X(df) @ self.result_.params)
@@ -89,10 +81,7 @@ class GammaGLM(LOSModel):
 
     # ---- statistical reporting -----------------------------------------------------
     def column_names(self) -> list[str]:
-        names = self.design.column_names()
-        if self.feature_set == "B":
-            names += [f"{c} (standardised)" for c in self.extra_stats]
-        return names
+        return self.design.column_names()
 
     def information_criteria(self) -> dict[str, float]:
         """Exact Gamma log-likelihood at the fitted mean with MLE-consistent dispersion.
@@ -157,7 +146,7 @@ class GammaGLM(LOSModel):
         return {"design": self.design.to_dict(), "coef": self.result_.params.tolist(),
                 "shape": self.shape_, "median_factor": self.median_factor_,
                 "point": self.params["point"], "params": self.params,
-                "column_names": self.column_names()}
+                "column_names": self.column_names(), "column_features": self.design.column_features()}
 
 
 def loocv_demo(df: pd.DataFrame, n: int, seed: int) -> dict[str, Any]:

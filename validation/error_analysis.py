@@ -1,7 +1,8 @@
 """Subgroup error analysis on the final test set.
 
-Differences between subgroups describe where the *model* is systematically weaker. The
-dataset is synthetic, so they must not be read as biological or clinical truths.
+Differences between subgroups describe where the *model* is systematically weaker (and,
+for Race, whether errors are equitable - race is NOT a model input). They are associations
+in one de-identified US dataset from 1999-2008 and must not be read as causal or biological truths.
 """
 from __future__ import annotations
 
@@ -10,7 +11,8 @@ import pandas as pd
 
 from backend.app.ml.features import age_group
 
-GROUP_COLUMNS = ["Gender", "Age group", "Medical Condition", "Admission Type", "Medication", "Test Results"]
+GROUP_COLUMNS = ["Gender", "Age group", "Race", "Medical Condition", "Admission Type", "Admission Source",
+                 "Medication", "A1C Result"]
 
 
 def subgroup_errors(test: pd.DataFrame, pred: np.ndarray, B: int = 200, seed: int = 0) -> dict:

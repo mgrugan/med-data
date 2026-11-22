@@ -1,7 +1,8 @@
 """Positive control: can this validation framework detect signal when it truly exists?
 
-A null result ("no model beats the median") is only convincing if the same pipeline would
-have found signal had it been there. We keep the real feature rows but replace LOS with a
+A null (or weak) result is only convincing if the same pipeline would have found signal
+had it been there, and a positive result is only trustworthy if the framework recovers a KNOWN
+effect at roughly the right size. We keep the real feature rows but replace LOS with a
 semi-synthetic target containing a KNOWN, modest admission-time effect plus noise with the
 same spread as the real LOS:
 
@@ -28,20 +29,21 @@ from training.registry import make
 from .metrics import all_metrics
 from .permutation_tests import permutation_test
 
-EFFECTS = {
-    "Admission Type": {"Elective": 0.80, "Urgent": 1.00, "Emergency": 1.30},
-    "Medical Condition": {"Arthritis": 0.90, "Asthma": 0.95, "Diabetes": 1.05, "Hypertension": 1.00,
-                          "Obesity": 1.00, "Cancer": 1.35},
-}
+from backend.app.ml.features import CATEGORY_LEVELS
+
+# Known multiplicative effects spread evenly over each factor's levels (0.8x ... 1.3x).
+EFFECTS = {c: dict(zip(CATEGORY_LEVELS[c], np.linspace(0.8, 1.3, len(CATEGORY_LEVELS[c])).round(3).tolist()))
+           for c in ["Admission Type", "Medical Condition"]}
 
 
-def semi_synthetic_target(df: pd.DataFrame, seed: int, noise_sd: float = 6.0) -> np.ndarray:
+def semi_synthetic_target(df: pd.DataFrame, seed: int, noise_sd: float = 2.5, base: float = 4.0,
+                          lo: float = 1, hi: float = 14) -> np.ndarray:
     rng = np.random.default_rng(seed)
     mult = df["Admission Type"].map(EFFECTS["Admission Type"]).to_numpy() * \
         df["Medical Condition"].map(EFFECTS["Medical Condition"]).to_numpy() * \
-        (1 + 0.006 * (df["Age"].to_numpy() - 50))
-    y = 12.0 * mult + rng.normal(0, noise_sd, len(df))
-    return np.clip(np.round(y), 1, 30)
+        (1 + 0.006 * (df["Age"].to_numpy() - 60))
+    y = base * mult + rng.normal(0, noise_sd, len(df))
+    return np.clip(np.round(y), lo, hi)
 
 
 def run(models=("median_baseline", "gamma_glm", "xgboost", "catboost"), n_perm: int = 10) -> dict:
@@ -50,7 +52,7 @@ def run(models=("median_baseline", "gamma_glm", "xgboost", "catboost"), n_perm: 
     df, _ = clean(load_raw())
     dev = make_splits(df, persist=False).dev.copy()
     dev["Length_of_Stay"] = semi_synthetic_target(dev, GLOBAL_SEED)
-    out = {"design": {"effects": EFFECTS, "age_effect_per_year": 0.006, "base_days": 12.0, "noise_sd": 6.0,
+    out = {"design": {"effects": EFFECTS, "age_effect_per_year": 0.006, "base_days": 4.0, "noise_sd": 2.5,
                       "target_sd": float(dev["Length_of_Stay"].std())}, "cv": {}, "permutation": {}}
     # Oracle: the best achievable MAE given the noise (predict the true median of the noisy target).
     for k in models:
@@ -66,11 +68,10 @@ def run(models=("median_baseline", "gamma_glm", "xgboost", "catboost"), n_perm: 
     base = out["cv"]["median_baseline"]["mae"]["mean"]
     out["improvement_over_median"] = {k: base - v["mae"]["mean"] for k, v in out["cv"].items()}
     out["conclusion"] = (
-        "The framework recovers a known, modest admission-time effect: advanced models clearly beat the median "
-        "baseline and the shuffled-target control. The null result on the real LOS target is therefore a property "
-        "of the synthetic data, not a failure of the validation pipeline."
+        "The framework recovers a known, modest admission-time effect: models clearly beat the median baseline "
+        "and the shuffled-target control, so the pipeline is sensitive to signal of this size."
         if max(v for k, v in out["improvement_over_median"].items() if k != "median_baseline") > 0.25 else
-        "WARNING: the framework did not recover the injected effect; the real-data null result is inconclusive.")
+        "WARNING: the framework did not recover the injected effect; results on the real target are inconclusive.")
     (RESULTS_DIR / "positive_control.json").write_text(json.dumps(out, indent=1))
     return out
 

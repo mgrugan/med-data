@@ -1,22 +1,26 @@
 """Feature definitions and fold-safe preprocessing shared by training and the API.
 
-Everything in this module is deliberately dependency-light (numpy/pandas only) so the
-deployed API can reproduce the exact preprocessing used during training without
-shipping scikit-learn objects.
+DATASET: UCI "Diabetes 130-US Hospitals for Years 1999-2008" (Strack et al., 2014) -
+real, de-identified inpatient encounters from the Cerner Health Facts warehouse, CC BY 4.0.
+Target: ``time_in_hospital`` (whole days, 1-14), renamed ``Length_of_Stay``.
+
+Raw columns are mapped to readable names in ``training/data.py``. This module is
+dependency-light (numpy/pandas only) so the API can reproduce preprocessing exactly.
 
 LEAKAGE POLICY
 --------------
-The admission-time model must never see information that only exists after discharge.
-* ``Discharge Date`` and anything derived from it (including ``Length_of_Stay``) is the
-  target, never a predictor.
-* ``Billing Amount`` is a *final* bill in this dataset and is therefore unavailable at
-  admission. It appears only in the research feature set B, explicitly flagged as a
-  leakage-risk variable, so we can show what happens when it is (wrongly) included.
-* ``Name`` is a direct identifier and is never used.
-* ``Doctor`` and ``Hospital`` are Faker-generated strings that are nearly unique per row
-  (~40k distinct values in ~55k rows). They behave like identifiers, not clinical
-  factors, so they are excluded from set A. Set B only uses fold-fitted *frequency*
-  encodings of them to test that claim empirically.
+Feature set A contains only information plausibly available near admission:
+demographics, admission type/source, primary diagnosis group, the diabetes medication
+regimen, HbA1c / glucose result ranges, and visit counts from the PRECEDING year.
+
+Set B (research only, never served) adds variables that are accumulated DURING the stay or
+recorded AT DISCHARGE - lab-procedure count, procedure count, medication count, number of
+coded diagnoses, medication change, discharge disposition - plus payer and admitting
+specialty. These are flagged as leakage risks; set B exists to show how much they inflate
+apparent accuracy.
+
+Identifiers (encounter_id, patient_nbr) are never predictors. Race is used only to check
+error parity across groups, not as a predictor.
 """
 from __future__ import annotations
 
@@ -28,42 +32,38 @@ import pandas as pd
 
 TARGET = "Length_of_Stay"
 
-RAW_COLUMNS = [
-    "Name", "Age", "Gender", "Blood Type", "Medical Condition", "Date of Admission",
-    "Doctor", "Hospital", "Insurance Provider", "Billing Amount", "Room Number",
-    "Admission Type", "Discharge Date", "Medication", "Test Results",
-]
+# Never usable as predictors by any model.
+FORBIDDEN_PREDICTORS = {TARGET, "encounter_id", "patient_nbr", "readmitted", "Race"}
 
-# Columns that may NEVER be used as predictors by any model.
-FORBIDDEN_PREDICTORS = {"Name", "Discharge Date", TARGET, "Date of Admission"}
+# ---- Feature set A: admission-time -------------------------------------------------
+SET_A_CATEGORICAL = ["Gender", "Admission Type", "Admission Source", "Medical Condition", "Medication",
+                     "A1C Result", "Glucose Serum"]
+SET_A_NUMERIC = ["Age", "Prior Inpatient", "Prior Emergency", "Prior Outpatient"]
 
-# ---- Feature set A: clinically plausible, admission-time --------------------------
-SET_A_CATEGORICAL = ["Gender", "Blood Type", "Medical Condition", "Admission Type",
-                     "Medication", "Test Results"]
-SET_A_NUMERIC = ["Age"]
-
-# ---- Feature set B: expanded research features (experimental only) ----------------
-SET_B_EXTRA_CATEGORICAL = ["Insurance Provider"]
-SET_B_EXTRA_NUMERIC = ["Room Number", "admit_month", "admit_dow", "admit_year",
-                       "Billing Amount", "doctor_freq", "hospital_freq"]
-LEAKAGE_RISK_FEATURES = {"Billing Amount"}
+# ---- Feature set B: expanded research features (leakage-prone) ---------------------
+SET_B_EXTRA_CATEGORICAL = ["Discharge Disposition", "Medication Change", "Payer", "Medical Specialty"]
+SET_B_EXTRA_NUMERIC = ["Lab Procedures", "Procedures", "Medications Count", "Diagnoses Count"]
+LEAKAGE_RISK_FEATURES = {"Lab Procedures", "Procedures", "Medications Count", "Diagnoses Count",
+                         "Discharge Disposition", "Medication Change"}
 
 # Inner-loop feature-selection options for set A (chosen by Optuna inside inner CV).
 FEATURE_SUBSETS_A = {
     "A_full": SET_A_CATEGORICAL + SET_A_NUMERIC,
-    "A_no_blood_type": [c for c in SET_A_CATEGORICAL if c != "Blood Type"] + SET_A_NUMERIC,
-    "A_no_test_result": [c for c in SET_A_CATEGORICAL if c != "Test Results"] + SET_A_NUMERIC,
+    "A_no_prior_visits": SET_A_CATEGORICAL + ["Age"],
+    "A_no_lab_results": [c for c in SET_A_CATEGORICAL if c not in ("A1C Result", "Glucose Serum")] + SET_A_NUMERIC,
 }
 
 CATEGORY_LEVELS = {
     "Gender": ["Female", "Male"],
-    "Blood Type": ["A+", "A-", "AB+", "AB-", "B+", "B-", "O+", "O-"],
-    "Medical Condition": ["Arthritis", "Asthma", "Cancer", "Diabetes", "Hypertension", "Obesity"],
-    "Admission Type": ["Elective", "Emergency", "Urgent"],
-    "Medication": ["Aspirin", "Ibuprofen", "Lipitor", "Paracetamol", "Penicillin"],
-    "Test Results": ["Abnormal", "Inconclusive", "Normal"],
-    "Insurance Provider": ["Aetna", "Blue Cross", "Cigna", "Medicare", "UnitedHealthcare"],
+    "Admission Type": ["Elective", "Emergency", "Other/Unknown", "Urgent"],
+    "Admission Source": ["Emergency Room", "Other/Unknown", "Referral", "Transfer"],
+    "Medical Condition": ["Circulatory", "Diabetes", "Digestive", "Genitourinary", "Injury", "Musculoskeletal",
+                          "Neoplasms", "Other", "Respiratory"],
+    "Medication": ["Insulin + oral", "Insulin only", "None", "Oral agents only"],
+    "A1C Result": [">7%", ">8%", "Normal", "Not tested"],
+    "Glucose Serum": [">200", ">300", "Normal", "Not tested"],
 }
+NUMERIC_RANGES = {"Age": (5, 95), "Prior Inpatient": (0, 10), "Prior Emergency": (0, 10), "Prior Outpatient": (0, 10)}
 
 
 def feature_columns(feature_set: str, subset: str = "A_full") -> tuple[list[str], list[str]]:
@@ -82,53 +82,8 @@ def feature_columns(feature_set: str, subset: str = "A_full") -> tuple[list[str]
     return cats, nums
 
 
-def add_admission_calendar(df: pd.DataFrame) -> pd.DataFrame:
-    """Calendar features derived from the admission date only (known at admission)."""
-    out = df.copy()
-    adm = pd.to_datetime(out["Date of Admission"])
-    out["admit_month"] = adm.dt.month.astype(float)
-    out["admit_dow"] = adm.dt.dayofweek.astype(float)
-    out["admit_year"] = adm.dt.year.astype(float)
-    return out
-
-
-# ------------------------------------------------------------------------------------
-# Fold-fitted encoders. Each has fit/transform and to_dict/from_dict.
-# ------------------------------------------------------------------------------------
-@dataclass
-class FrequencyEncoder:
-    """Maps a high-cardinality identifier to its count in the *training fold*."""
-    columns: dict[str, str] = field(default_factory=lambda: {"Doctor": "doctor_freq",
-                                                              "Hospital": "hospital_freq"})
-    counts: dict[str, dict[str, int]] = field(default_factory=dict)
-
-    def fit(self, df: pd.DataFrame) -> "FrequencyEncoder":
-        self.counts = {c: df[c].value_counts().to_dict() for c in self.columns if c in df}
-        return self
-
-    def transform(self, df: pd.DataFrame) -> pd.DataFrame:
-        out = df.copy()
-        for src, dst in self.columns.items():
-            if src in out:
-                out[dst] = out[src].map(self.counts.get(src, {})).fillna(0).astype(float)
-            else:
-                out[dst] = 0.0
-        return out
-
-    def to_dict(self) -> dict[str, Any]:
-        return {"columns": self.columns, "counts": self.counts}
-
-    @classmethod
-    def from_dict(cls, d: dict[str, Any]) -> "FrequencyEncoder":
-        return cls(columns=d["columns"], counts=d["counts"])
-
-
-def prepare_frame(df: pd.DataFrame, feature_set: str, freq_encoder: FrequencyEncoder | None) -> pd.DataFrame:
-    """Add derived (admission-time) columns needed by the feature set."""
-    if feature_set == "B":
-        df = add_admission_calendar(df)
-        assert freq_encoder is not None
-        df = freq_encoder.transform(df)
+def prepare_frame(df: pd.DataFrame, feature_set: str, encoder=None) -> pd.DataFrame:
+    """All derived columns are built row-wise in the loader, so no fold-fitted state is needed."""
     return df
 
 
@@ -202,6 +157,6 @@ class TabularEncoder:
 
 
 def age_group(age: pd.Series | np.ndarray) -> pd.Series:
-    bins = [-np.inf, 29, 44, 59, 74, np.inf]
-    labels = ["<30", "30-44", "45-59", "60-74", "75+"]
+    bins = [-np.inf, 39, 59, 69, 79, np.inf]
+    labels = ["<40", "40-59", "60-69", "70-79", "80+"]
     return pd.cut(pd.Series(age).astype(float), bins=bins, labels=labels).astype(str)

@@ -79,7 +79,7 @@ def main():
     h = r["data"]["los_histogram"]
     fig, ax = plt.subplots(figsize=(7, 3))
     ax.bar([int(x) for x in h], list(h.values()), color=BLUE, width=.8)
-    _style(ax, "Length of stay distribution (synthetic data)", "Days", "Patients")
+    _style(ax, "Length of stay distribution (UCI Diabetes 130-US, first encounters)", "Days", "Patients")
     fig.tight_layout(); fig.savefig(FIG_DIR / "los_distribution.png", dpi=150); plt.close(fig)
     print("figures written to", FIG_DIR)
 

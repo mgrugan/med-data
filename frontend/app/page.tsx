@@ -13,14 +13,18 @@ import { HBars, RangeBar } from "@/components/charts";
 import { cn, fmt, pct } from "@/lib/utils";
 
 type Form = {
-  age: number; gender: string; blood_type: string; medical_condition: string; admission_type: string;
-  medication: string; test_result: string; days_hospitalized: number; levelIdx: number; model: string;
+  age: number; gender: string; admission_type: string; admission_source: string; medical_condition: string;
+  medication: string; a1c_result: string; glucose_serum: string; prior_inpatient: number; prior_emergency: number;
+  prior_outpatient: number; days_hospitalized: number; levelIdx: number; model: string;
 };
 
 const DEFAULT: Form = {
-  age: 55, gender: "Female", blood_type: "O+", medical_condition: "Diabetes", admission_type: "Emergency",
-  medication: "Aspirin", test_result: "Abnormal", days_hospitalized: 3, levelIdx: 2, model: "",
+  age: 65, gender: "Female", admission_type: "Emergency", admission_source: "Emergency Room",
+  medical_condition: "Circulatory", medication: "Insulin only", a1c_result: "Not tested", glucose_serum: "Not tested",
+  prior_inpatient: 0, prior_emergency: 0, prior_outpatient: 0, days_hospitalized: 2, levelIdx: 2, model: "",
 };
+
+const ageBand = (a: number) => (a >= 95 ? "90+" : `${a - 5}–${a + 4}`);
 
 function Field({ label, value, children }: { label: string; value?: React.ReactNode; children: React.ReactNode }) {
   return (
@@ -69,7 +73,8 @@ export default function EstimatePage() {
         <p className="text-sm text-subtle">Length-of-stay estimate</p>
         <h1 className="mt-2 text-3xl font-semibold sm:text-4xl">How much longer might the stay be?</h1>
         <p className="mt-3 text-muted">
-          Adjust the admission details. The model gives a range rather than a date, and the{" "}
+          Adjust the admission details of an adult inpatient with diabetes. The model, trained on about 70,000 real
+          de-identified US hospital stays, gives a range rather than a date. The{" "}
           <Link href="/method" className="text-accent hover:underline">methodology</Link> explains how far that range can be trusted.
         </p>
       </section>
@@ -85,38 +90,47 @@ export default function EstimatePage() {
       <div className="grid gap-8 lg:grid-cols-[340px_1fr]">
         {/* ---------------- inputs */}
         <aside className="min-w-0 space-y-7 lg:sticky lg:top-24 lg:self-start">
-          <Field label="Age" value={`${f.age} years`}>
-            <Slider min={18} max={90} step={1} value={[f.age]} onValueChange={([v]) => set("age", v)} aria-label="Age" />
+          <Field label="Age" value={`${ageBand(f.age)} years`}>
+            <Slider min={5} max={95} step={10} value={[f.age]} onValueChange={([v]) => set("age", v)} aria-label="Age band" />
           </Field>
           <Field label="Days already in hospital" value={`${f.days_hospitalized} days`}>
-            <Slider min={0} max={30} step={1} value={[f.days_hospitalized]} onValueChange={([v]) => set("days_hospitalized", v)} aria-label="Days already in hospital" />
+            <Slider min={0} max={opts?.los_max ?? 14} step={1} value={[f.days_hospitalized]} onValueChange={([v]) => set("days_hospitalized", v)} aria-label="Days already in hospital" />
           </Field>
           {cats && (
             <>
               <Field label="Admission type">
-                <Segmented label="Admission type" value={f.admission_type} options={cats["Admission Type"]} onChange={(v) => set("admission_type", v)} />
-              </Field>
-              <Field label="Test result">
-                <Segmented label="Test result" value={f.test_result} options={cats["Test Results"]} onChange={(v) => set("test_result", v)} />
+                <Segmented label="Admission type" value={f.admission_type} options={cats["Admission Type"].filter((x) => x !== "Other/Unknown")} onChange={(v) => set("admission_type", v)} />
               </Field>
               <Field label="Gender">
                 <Segmented label="Gender" value={f.gender} options={cats["Gender"]} onChange={(v) => set("gender", v)} />
               </Field>
+              <Field label="HbA1c result">
+                <Segmented label="HbA1c result" value={f.a1c_result} options={["Not tested", "Normal", ">7%", ">8%"]} onChange={(v) => set("a1c_result", v)} />
+              </Field>
+              <Field label="Blood glucose (max)">
+                <Segmented label="Blood glucose" value={f.glucose_serum} options={["Not tested", "Normal", ">200", ">300"]} onChange={(v) => set("glucose_serum", v)} />
+              </Field>
               <div className="grid grid-cols-2 gap-4">
-                <Field label="Condition">
+                <Field label="Primary diagnosis">
                   <SimpleSelect value={f.medical_condition} options={cats["Medical Condition"]} onChange={(v) => set("medical_condition", v)} />
                 </Field>
-                <Field label="Medication">
-                  <SimpleSelect value={f.medication} options={cats["Medication"]} onChange={(v) => set("medication", v)} />
+                <Field label="Arrived via">
+                  <SimpleSelect value={f.admission_source} options={cats["Admission Source"]} onChange={(v) => set("admission_source", v)} />
                 </Field>
-                <Field label="Blood type">
-                  <SimpleSelect value={f.blood_type} options={cats["Blood Type"]} onChange={(v) => set("blood_type", v)} />
+                <Field label="Diabetes medication">
+                  <SimpleSelect value={f.medication} options={cats["Medication"]} onChange={(v) => set("medication", v)} />
                 </Field>
                 <Field label="Model">
                   <SimpleSelect value={opts?.models[f.model] ?? ""} options={Object.values(opts!.models)}
                     onChange={(v) => set("model", Object.entries(opts!.models).find(([, n]) => n === v)?.[0] ?? f.model)} />
                 </Field>
               </div>
+              <p className="pt-1 text-xs font-medium uppercase tracking-wider text-subtle">Visits in the past year</p>
+              {([["prior_inpatient", "Hospital stays"], ["prior_emergency", "Emergency visits"], ["prior_outpatient", "Outpatient visits"]] as const).map(([k, label]) => (
+                <Field key={k} label={label} value={f[k] >= 10 ? "10+" : `${f[k]}`}>
+                  <Slider min={0} max={10} step={1} value={[f[k]]} onValueChange={([v]) => set(k, v)} aria-label={label} />
+                </Field>
+              ))}
               <Field label="Range confidence" value={pct(level)}>
                 <Slider min={0} max={opts!.levels.length - 1} step={1} value={[f.levelIdx]} onValueChange={([v]) => set("levelIdx", v)} aria-label="Prediction interval level" />
               </Field>
@@ -145,7 +159,7 @@ export default function EstimatePage() {
                     </div>
                   </div>
                   <RangeBar lo={res.prediction.remaining_interval[0]} hi={res.prediction.remaining_interval[1]}
-                    point={res.prediction.remaining} max={Math.max(30, res.prediction.remaining_interval[1])} />
+                    point={res.prediction.remaining} max={Math.max(opts?.los_max ?? 14, res.prediction.remaining_interval[1])} />
                   <p className="mt-6 text-sm leading-relaxed text-muted">{res.language}</p>
                   <dl className="mt-5 grid gap-4 border-t border-line pt-5 text-sm sm:grid-cols-2">
                     <div>
@@ -173,9 +187,11 @@ export default function EstimatePage() {
                 <CardContent>
                   <dl className="grid grid-cols-2 gap-x-6 gap-y-4 text-sm sm:grid-cols-3">
                     {[
-                      ["Condition", f.medical_condition], ["Admission type", f.admission_type],
+                      ["Primary diagnosis", f.medical_condition], ["Admission type", f.admission_type],
                       ["Admission date", admitted.toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" })],
-                      ["Medication", f.medication], ["Test result", f.test_result], ["Age", `${f.age}`],
+                      ["Diabetes medication", f.medication], ["HbA1c", f.a1c_result], ["Blood glucose", f.glucose_serum],
+                      ["Arrived via", f.admission_source], ["Age", ageBand(f.age)],
+                      ["Hospital stays, past year", `${f.prior_inpatient}`],
                     ].map(([k, v]) => (
                       <div key={k}><dt className="text-subtle">{k}</dt><dd className="mt-0.5 font-medium">{v}</dd></div>
                     ))}
@@ -204,13 +220,21 @@ export default function EstimatePage() {
               <Card>
                 <CardHeader><CardTitle>Understanding my results</CardTitle></CardHeader>
                 <CardContent className="space-y-5 text-sm leading-relaxed">
+                  <div className="grid gap-5 sm:grid-cols-2">
+                    <div>
+                      <p className="font-medium">{res.understanding.a1c.title}</p>
+                      <p className="mt-1 text-muted">{res.understanding.a1c.summary} {res.understanding.a1c.detail}</p>
+                    </div>
+                    <div>
+                      <p className="font-medium">{res.understanding.glucose.title}</p>
+                      <p className="mt-1 text-muted">{res.understanding.glucose.detail}</p>
+                    </div>
+                  </div>
+                  <p className="text-xs text-subtle">{res.understanding.test_note}</p>
                   <div>
-                    <p className="font-medium">Test result: {res.understanding.test_result.title}</p>
-                    <p className="mt-1 text-muted">{res.understanding.test_result.summary} {res.understanding.test_result.detail}</p>
-                    <p className="mt-2 text-xs text-subtle">{res.understanding.test_result.dataset_note}</p>
-                    <p className="mt-3 text-subtle">Questions to ask your care team</p>
+                    <p className="text-subtle">Questions to ask your care team</p>
                     <ul className="mt-1 list-disc space-y-0.5 pl-5 text-muted">
-                      {res.understanding.test_result.ask.map((q) => <li key={q}>{q}</li>)}
+                      {res.understanding.ask.map((q) => <li key={q}>{q}</li>)}
                     </ul>
                   </div>
                   <div className="grid gap-4 border-t border-line pt-5 sm:grid-cols-3">
@@ -218,7 +242,7 @@ export default function EstimatePage() {
                       <div key={x.name}><p className="font-medium">{x.name}</p><p className="mt-1 text-muted">{x.summary}</p></div>
                     ))}
                   </div>
-                  <p className="text-xs text-subtle">{res.understanding.synthetic_note} {res.understanding.disclaimer}</p>
+                  <p className="text-xs text-subtle">{res.understanding.disclaimer}</p>
                 </CardContent>
               </Card>
 

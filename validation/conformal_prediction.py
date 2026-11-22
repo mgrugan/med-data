@@ -28,17 +28,33 @@ def conformal_quantile(residuals: np.ndarray, level: float) -> float:
     return float(r[min(k, n) - 1])
 
 
-def interval(pred: np.ndarray, q: float) -> tuple[np.ndarray, np.ndarray]:
-    return np.maximum(0.0, pred - q), pred + q
+def interval(pred: np.ndarray, q: float, method: str = "absolute") -> tuple[np.ndarray, np.ndarray]:
+    """absolute: symmetric  pred ± q.
+    log: multiplicative  expm1(log1p(pred) ± q)  - asymmetric, wider above than below, which
+         suits a right-skewed target such as LOS. Coverage guarantee is unchanged because the
+         conformity score |log1p(y) - log1p(pred)| is just a different (monotone) score."""
+    pred = np.asarray(pred, float)
+    eps = 1e-9  # LOS is integer-valued: many outcomes sit exactly on an endpoint; avoid round-off exclusion
+    if method == "log":
+        z = np.log1p(np.maximum(pred, 0))
+        return np.maximum(0.0, np.expm1(z - q) - eps), np.expm1(z + q) + eps
+    return np.maximum(0.0, pred - q - eps), pred + q + eps
+
+
+def scores(y, p, method: str = "absolute") -> np.ndarray:
+    y, p = np.asarray(y, float), np.asarray(p, float)
+    if method == "log":
+        return np.abs(np.log1p(y) - np.log1p(np.maximum(p, 0)))
+    return np.abs(y - p)
 
 
 def evaluate(y_cal, p_cal, y_test, p_test, levels, test_df: pd.DataFrame | None = None,
-             y_dev_marginal=None) -> dict:
+             y_dev_marginal=None, method: str = "absolute") -> dict:
     y_test, p_test = np.asarray(y_test, float), np.asarray(p_test, float)
-    out = {"n_calibration": int(len(y_cal)), "levels": {}}
+    out = {"n_calibration": int(len(y_cal)), "method": method, "levels": {}}
     for lv in levels:
-        q = conformal_quantile(np.asarray(y_cal) - np.asarray(p_cal), lv)
-        lo, hi = interval(p_test, q)
+        q = conformal_quantile(scores(y_cal, p_cal, method), lv)
+        lo, hi = interval(p_test, q, method)
         cover = (y_test >= lo) & (y_test <= hi)
         res = {"q": q, "coverage": float(cover.mean()), "mean_width": float(np.mean(hi - lo)),
                "median_width": float(np.median(hi - lo)), "nominal": lv}
@@ -52,7 +68,7 @@ def evaluate(y_cal, p_cal, y_test, p_test, levels, test_df: pd.DataFrame | None 
         if test_df is not None:
             groups = {}
             frame = test_df.assign(_cover=cover, _age=age_group(test_df["Age"]).values)
-            for col in ["Medical Condition", "Admission Type", "Gender", "_age"]:
+            for col in ["Medical Condition", "Admission Type", "Gender", "Race", "_age"]:
                 g = frame.groupby(col)["_cover"].agg(["mean", "size"])
                 groups["Age group" if col == "_age" else col] = {
                     str(k): {"coverage": float(v["mean"]), "n": int(v["size"])} for k, v in g.iterrows()}
