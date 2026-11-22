@@ -44,6 +44,11 @@ def test_grounding_removes_hallucinated_fields_and_items():
     assert len(g["grounding_warnings"]) == 3
 
 
+def test_warning_signs_are_monitoring():
+    out = extract("Call your doctor if your temperature is above 101 F or the wound becomes red.", use_llm=False)
+    assert out["plan"]["monitoring"] and not out["plan"]["wound_care"]
+
+
 def test_parsers():
     assert parse_interval_hours("every 8 hours") == 8
     assert parse_times_per_day("twice daily") == 2 and parse_times_per_day("TID") == 3

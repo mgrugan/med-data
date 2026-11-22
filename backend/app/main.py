@@ -15,6 +15,8 @@ from typing import Literal
 from fastapi import FastAPI, File, HTTPException, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.gzip import GZipMiddleware
+from fastapi.staticfiles import StaticFiles
+from pathlib import Path
 from pydantic import BaseModel, Field
 
 from .explanations import explain_patient
@@ -79,14 +81,6 @@ def _t(s: str) -> time:
         raise HTTPException(422, f"invalid time {s!r}; use HH:MM")
     h, m = map(int, s.split(":"))
     return time(h % 24, m % 60)
-
-
-@app.get("/", include_in_schema=False)
-def root():
-    """The API has no UI; point visitors to the web app and the interactive docs."""
-    return {"service": "RecoveryAI API", "status": "ok",
-            "message": "This is the backend API. Open the recoveryai-web service URL for the app.",
-            "docs": "/docs", "health": "/api/health", "disclaimer": DISCLAIMER}
 
 
 @app.get("/api/health")
@@ -162,3 +156,16 @@ async def recovery_upload(file: UploadFile = File(...), use_llm: bool | None = N
 def recovery_schedule(body: ScheduleIn):
     plan = {c: [i.model_dump() for i in body.plan.get(c, [])] for c in CATEGORIES}
     return build_schedule(plan, body.start_date or date.today(), body.view_days, _t(body.wake_time), _t(body.bed_time))
+
+
+# ---------------------------------------------------------------- web app
+# The static export of the Next.js frontend (npm run export) is served from the same
+# service, so one URL gives both the app and the API. Mounted last: /api/* routes win.
+STATIC_DIR = Path(__file__).parent / "static"
+if STATIC_DIR.exists():
+    app.mount("/", StaticFiles(directory=STATIC_DIR, html=True), name="web")
+else:
+    @app.get("/", include_in_schema=False)
+    def root():
+        return {"service": "RecoveryAI API", "status": "ok", "docs": "/docs", "health": "/api/health",
+                "disclaimer": DISCLAIMER}

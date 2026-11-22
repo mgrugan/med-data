@@ -82,6 +82,10 @@ def classify(sentence: str) -> str | None:
     hits = [c for c in _PRIORITY if any(re.search(k, s) for k in _KEYWORDS[c])]
     if not hits:
         return None
+    # Warning signs / when-to-seek-help sentences are monitoring, even if they mention a wound or food.
+    if re.search(r"\bcall (?:your|the|911)\b|\bwatch for\b|\bsigns of\b|\bseek (?:medical|emergency|care|help)\b|"
+                 r"\bgo to the (?:emergency|er)\b", s) and "restrictions" not in hits[:1]:
+        return "monitoring"
     # "take ... mg" style sentences are medications even if they also mention food or monitoring
     if "medications" in hits and _DOSE.search(sentence) and "restrictions" not in hits:
         return "medications"

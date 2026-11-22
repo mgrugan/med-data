@@ -149,13 +149,12 @@ duration or date not present in that quote is replaced with *Not specified*.
 
 ## Deploying on Render
 
-`render.yaml` defines two web services:
+`render.yaml` defines **one** web service, `recoveryai-api`. It serves the API under `/api/*` and the web app at `/`
+(a static export of the Next.js frontend committed in `backend/app/static`), so a single URL gives you everything.
+After changing the frontend, rebuild the export with `cd frontend && npm run export` and commit `backend/app/static`.
 
-* `recoveryai-api`: Python, `uvicorn backend.app.main:app`, serving the committed `models/`.
-* `recoveryai-web`: Node, Next.js, proxying `/api/*` to the API via `BACKEND_URL` (taken from the API service's host).
-
-Render reads the Blueprint from the branch you select, and it must contain `render.yaml` at the repository root.
-Merge this branch into `main`, or point the Blueprint at this branch. Optionally add `ANTHROPIC_API_KEY` to the API service.
+Optionally add `ANTHROPIC_API_KEY` to the service. The frontend can still run as its own Next.js server
+(`npm run build && npm start` with `BACKEND_URL` set), but this is not required.
 
 ## Reproducibility
 

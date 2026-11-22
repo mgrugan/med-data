@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start -p ${PORT:-3000}",
-    "lint": "tsc --noEmit"
+    "lint": "tsc --noEmit",
+    "export": "STATIC_EXPORT=1 next build && rm -rf ../backend/app/static && cp -r out ../backend/app/static"
   },
   "dependencies": {
     "@radix-ui/react-label": "2.1.7",
