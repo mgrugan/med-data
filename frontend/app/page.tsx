@@ -45,7 +45,8 @@ const Robot = dynamic(() => import("@/components/fx/robot"), { ssr: false });
 
 const LOADING_MS = 3600;
 type Phase = "form" | "loading" | "report";
-type Box = { top: number; left: number; width: number; height: number };
+/** Start transform for Pip's flight: offset of its box centre from the screen centre, and relative size. */
+type Box = { dx: number; dy: number; s: number };
 
 export default function EstimatePage() {
   const [opts, setOpts] = React.useState<Options | null>(null);
@@ -75,7 +76,11 @@ export default function EstimatePage() {
     if (!opts || phase !== "form") return;
     const r = robotRef.current?.getBoundingClientRect();
     setErr(null); setStep(0); setLeaving(false);
-    setBox(r ? { top: r.top, left: r.left, width: r.width, height: r.height } : { top: 0, left: 0, width: window.innerWidth, height: window.innerHeight });
+    // The canvas goes full screen at once (so Pip is drawn at the right size and centred), and a
+    // transform carries it in a straight line from its spot on the page to the middle of the screen.
+    const vw = document.documentElement.clientWidth, vh = window.innerHeight;
+    const fit = (w: number, h: number) => Math.min(w / 1.6, h / 2.75); // same fit rule as the robot scene
+    setBox(r ? { dx: r.left + r.width / 2 - vw / 2, dy: r.top + r.height / 2 - vh / 2, s: fit(r.width, r.height) / fit(vw, vh) } : { dx: 0, dy: 0, s: 1 });
     setPhase("loading");
     // Two frames later the robot box transitions to the full screen.
     requestAnimationFrame(() => requestAnimationFrame(() => setFull(true)));
@@ -100,9 +105,10 @@ export default function EstimatePage() {
   const robotStyle: React.CSSProperties | undefined = box
     ? {
         position: "fixed", zIndex: 61,
-        top: full ? 0 : box.top, left: full ? 0 : box.left,
-        width: full ? "100vw" : box.width, height: full ? "100dvh" : box.height,
-        transition: "top .8s cubic-bezier(.2,.8,.2,1), left .8s cubic-bezier(.2,.8,.2,1), width .8s cubic-bezier(.2,.8,.2,1), height .8s cubic-bezier(.2,.8,.2,1), opacity .45s ease",
+        inset: 0,
+        transform: full ? "none" : `translate(${box.dx}px, ${box.dy}px) scale(${box.s})`,
+        transformOrigin: "50% 50%",
+        transition: "transform .8s cubic-bezier(.2,.8,.2,1), opacity .45s ease",
         opacity: leaving ? 0 : 1,
       }
     : undefined;

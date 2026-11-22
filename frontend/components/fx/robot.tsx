@@ -212,9 +212,10 @@ function RobotPrototype({ color = "#c4c4c4", screenColor = "#00ffc6", screenGlow
     if (!bodyRef.current || !headRef.current) return;
     const dt = Math.min(delta, 0.1);
     const t = state.clock.getElapsedTime();
-    // Thinking: Pip scans left and right instead of following the pointer.
-    const tx = thinking ? Math.sin(t * 2.2) * 0.7 : state.pointer.x;
-    const ty = thinking ? 0.15 + Math.sin(t * 3.1) * 0.15 : state.pointer.y;
+    // Thinking: Pip stays centred and facing forward; only the head glances gently from side to side.
+    const tx = thinking ? 0 : state.pointer.x;
+    const ty = thinking ? 0.1 : state.pointer.y;
+    const glance = thinking ? Math.sin(t * 2.2) * 0.35 : 0;
     const bob = thinking ? Math.sin(t * 6) * 0.015 : Math.sin(t * 1.4) * 0.01;
     bodyRef.current.position.y = -0.3 + bob;
 
@@ -223,7 +224,7 @@ function RobotPrototype({ color = "#c4c4c4", screenColor = "#00ffc6", screenGlow
     bodyRef.current.rotation.y = L(bodyRef.current.rotation.y, bodyRotY, 6 * dt);
     bodyRef.current.rotation.x = L(bodyRef.current.rotation.x, bodyRotX, 6 * dt);
     bodyRef.current.rotation.z = L(bodyRef.current.rotation.z, bodyRotZ, 6 * dt);
-    headRef.current.rotation.y = L(headRef.current.rotation.y, tx * 1.1, 12 * dt);
+    headRef.current.rotation.y = L(headRef.current.rotation.y, tx * 1.1 + glance, 12 * dt);
     headRef.current.rotation.x = L(headRef.current.rotation.x, -ty * 0.3, 12 * dt);
   });
 
