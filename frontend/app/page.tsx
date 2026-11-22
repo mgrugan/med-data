@@ -12,6 +12,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Alert } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { ROBOT_NAME } from "@/components/fx/robot-name";
+import { PipSplash } from "@/components/fx/pip-splash";
 import { HBars, RangeBar } from "@/components/charts";
 import { cn, fmt, pct } from "@/lib/utils";
 
@@ -60,6 +61,15 @@ export default function EstimatePage() {
   const [leaving, setLeaving] = React.useState(false);
   const [step, setStep] = React.useState(0);
   const robotRef = React.useRef<HTMLDivElement>(null);
+  // Loading screen: shown until Pip has been drawn (and for at least a moment, so it never flashes).
+  const [pipReady, setPipReady] = React.useState(false);
+  const [minShown, setMinShown] = React.useState(false);
+  React.useEffect(() => {
+    const a = setTimeout(() => setMinShown(true), 900);
+    const b = setTimeout(() => setPipReady(true), 12000); // never trap the page if WebGL is unavailable
+    return () => { clearTimeout(a); clearTimeout(b); };
+  }, []);
+  const onPipReady = React.useCallback(() => setPipReady(true), []);
   const set = <K extends keyof Form>(k: K, v: Form[K]) => setF((p) => ({ ...p, [k]: v }));
 
   React.useEffect(() => {
@@ -280,6 +290,7 @@ export default function EstimatePage() {
   /* ------------------------------------------------------------------ form (+ loading overlay) */
   return (
     <div className="space-y-10">
+      <PipSplash done={pipReady && minShown} />
       <section className="max-w-2xl">
         <p className="text-sm text-subtle">Length-of-stay estimate</p>
         <h1 className="mt-2 text-3xl font-bold sm:text-4xl">How much longer might the stay be?</h1>
@@ -357,7 +368,7 @@ export default function EstimatePage() {
           </div>
           <div ref={robotRef} className="absolute inset-0 top-16">
             <div style={robotStyle} className={box ? "" : "h-full w-full"}>
-              <Robot thinking={phase === "loading"} />
+              <Robot thinking={phase === "loading"} onReady={onPipReady} />
             </div>
           </div>
         </div>
@@ -367,7 +378,7 @@ export default function EstimatePage() {
       {phase === "loading" && (
         <div role="status" aria-live="polite"
           className={cn("fixed inset-0 z-[60] transition-opacity duration-500", full && !leaving ? "opacity-100" : "opacity-0")}>
-          <div className="absolute inset-0 bg-black/85 backdrop-blur-xl" />
+          <div className="absolute inset-x-0 top-0 h-[max(100%,100lvh)] bg-black/85 backdrop-blur-xl" />
           <div className="absolute left-1/2 top-1/2 h-[min(78vh,78vw)] w-[min(78vh,78vw)] -translate-x-1/2 -translate-y-1/2">
             <div className="spin-ring absolute inset-0" />
             <div className="spin-ring spin-ring-slow absolute inset-[6%]" />

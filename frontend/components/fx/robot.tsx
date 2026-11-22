@@ -286,16 +286,42 @@ function RobotPrototype({ color = "#c4c4c4", screenColor = "#00ffc6", screenGlow
   );
 }
 
-/** Pip in a transparent canvas that fills its parent. */
-export default function Robot({ thinking = false, className }: { thinking?: boolean; className?: string }) {
+/** Calls onReady once Pip has actually been drawn (textures generated and two frames rendered). */
+function ReadySignal({ onReady }: { onReady?: () => void }) {
+  const frames = useRef(0);
+  const done = useRef(false);
+  const { scene } = useThree();
+  useFrame(() => {
+    if (done.current) return;
+    // Pip's body appears only after its textures exist; wait for a mesh with a map, then two frames.
+    let textured = false;
+    scene.traverse((o) => { if (!textured && (o as THREE.Mesh).isMesh && ((o as THREE.Mesh).material as THREE.MeshStandardMaterial)?.map) textured = true; });
+    if (!textured) return;
+    if (++frames.current >= 2) { done.current = true; onReady?.(); }
+  });
+  return null;
+}
+
+/** Pip in a transparent canvas that fills its parent. Rendering pauses while it is off-screen. */
+export default function Robot({ thinking = false, className, onReady }: { thinking?: boolean; className?: string; onReady?: () => void }) {
   const [source, setSource] = useState<HTMLElement | undefined>(undefined);
-  useEffect(() => setSource(document.body), []);
+  const [inView, setInView] = useState(true);
+  const [light, setLight] = useState(false);
+  const wrap = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    setSource(document.body);
+    setLight(window.matchMedia("(pointer: coarse), (max-width: 768px)").matches);
+    const io = new IntersectionObserver(([e]) => setInView(e.isIntersecting));
+    if (wrap.current) io.observe(wrap.current);
+    return () => io.disconnect();
+  }, []);
   return (
-    <div className={className} style={{ width: "100%", height: "100%" }}>
+    <div ref={wrap} className={className} style={{ width: "100%", height: "100%" }}>
       {source && <Canvas
         camera={{ position: [0, 0.2, 6], fov: 40 }}
-        gl={{ alpha: true, antialias: true }}
-        dpr={[1, 2]}
+        gl={{ alpha: true, antialias: !light, powerPreference: "high-performance" }}
+        dpr={light ? [1, 1.5] : [1, 2]}
+        frameloop={inView || thinking ? "always" : "never"}
         eventSource={source}
         eventPrefix="client"
         style={{ background: "transparent" }}
@@ -307,6 +333,7 @@ export default function Robot({ thinking = false, className }: { thinking?: bool
         <FitGroup>
           <RobotPrototype thinking={thinking} />
         </FitGroup>
+        <ReadySignal onReady={onReady} />
       </Canvas>}
     </div>
   );

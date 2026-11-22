@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Manrope, Montserrat, Sora } from "next/font/google";
 import Link from "next/link";
 import { Nav } from "@/components/nav";
-import { ChromeArcs } from "@/components/fx/chrome-arcs";
+import { Background } from "@/components/fx/background";
 import "./globals.css";
 
 const manrope = Manrope({ subsets: ["latin"], variable: "--font-manrope", display: "swap" });
@@ -30,9 +30,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className={`${manrope.variable} ${sora.variable} ${montserrat.variable}`}>
       <body className="min-h-screen">
-        <div aria-hidden className="pointer-events-none fixed inset-0 -z-10 opacity-75">
-          <ChromeArcs interactive={false} label="" />
-        </div>
+        <Background />
         <header className="sticky top-0 z-40 border-b border-line bg-black/40 backdrop-blur-xl">
           <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-x-4 gap-y-1 px-4 py-3 sm:h-16 sm:flex-nowrap sm:py-0 sm:px-6">
             <Link href="/" className="flex items-center gap-2.5">

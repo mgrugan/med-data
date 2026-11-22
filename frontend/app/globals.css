@@ -125,6 +125,14 @@ h1, h2, h3, h4, h5, h6, strong, b, th,
 /* big call to action */
 @utility glass-strong { --glass-glow: 0.6; --glass-glow-hover: 0.85; --glass-spread: -8px; --glass-blur: 18px; }
 
+/* Phones and touch screens: keep the light on the glass but stop it spinning (each spinning
+   edge repaints every frame), and use a lighter blur so scrolling stays smooth. */
+@media (hover: none), (max-width: 768px) {
+  .glass::before, .glass::after { animation: none; }
+  .glass::after { filter: blur(8px); }
+  .panel { -webkit-backdrop-filter: blur(10px) saturate(130%); backdrop-filter: blur(10px) saturate(130%); }
+}
+
 /* glass panels (cards) */
 .panel {
   background: var(--card);
@@ -150,3 +158,11 @@ h1, h2, h3, h4, h5, h6, strong, b, th,
 @media (prefers-reduced-motion: reduce) {
   * { transition: none !important; animation: none !important; }
 }
+
+/* ---------------------------------------------------------------- Pip loading screen */
+@keyframes pip-blink { 0%, 92%, 100% { transform: scaleY(1); } 95% { transform: scaleY(0.1); } }
+.pip-eye { animation: pip-blink 3s ease-in-out infinite; transform-origin: center; }
+@keyframes pip-dots { 0% { content: ""; } 25% { content: "."; } 50% { content: ".."; } 75%, 100% { content: "..."; } }
+.pip-dots::after { content: ""; display: inline-block; width: 1.2em; text-align: left; animation: pip-dots 1.2s steps(1) infinite; }
+@keyframes pip-bar { from { transform: translateX(-110%); } to { transform: translateX(320%); } }
+.pip-bar { animation: pip-bar 1.3s cubic-bezier(.45, 0, .55, 1) infinite; }

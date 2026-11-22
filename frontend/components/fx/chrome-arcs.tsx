@@ -23,6 +23,10 @@ export interface ChromeArcsProps extends React.HTMLAttributes<HTMLDivElement> {
   interactive?: boolean
   /** Accessible name. Without children the arcs are announced as an image with this label. */
   label?: string
+  /** (local addition) Highest device-pixel ratio to render at. Lower it on phones. */
+  maxDpr?: number
+  /** (local addition) Frame-rate cap; 0 = every display frame. */
+  maxFps?: number
 }
 
 // One loop in seconds at speed 1: every ring moves out by exactly one place and the light
@@ -260,6 +264,8 @@ export function ChromeArcs({
   intensity = 1,
   interactive = true,
   label = "Chrome arcs",
+  maxDpr = 2,
+  maxFps = 0,
   className,
   style,
   onPointerMove,
@@ -315,7 +321,7 @@ export function ChromeArcs({
     let cw = 0, ch = 0, ref = 1
     const resize = () => {
       const r = canvas.getBoundingClientRect()
-      const dpr = Math.min(window.devicePixelRatio || 1, 2, Math.sqrt(MAX_PIXELS / Math.max(r.width * r.height, 1)))
+      const dpr = Math.min(window.devicePixelRatio || 1, maxDpr, Math.sqrt(MAX_PIXELS / Math.max(r.width * r.height, 1)))
       cw = Math.max(1, Math.round(r.width * dpr))
       ch = Math.max(1, Math.round(r.height * dpr))
       if (canvas.width !== cw || canvas.height !== ch) {
@@ -325,8 +331,14 @@ export function ChromeArcs({
       scale.current = viewScale(r.width, r.height)
       ref = (scale.current * r.width) / cw
       gl.viewport(0, 0, cw, ch)
-      kick.current()
+      // Resizing clears the canvas. Redraw in this same frame (local addition) so it never
+      // flashes black, e.g. when a phone's address bar shows or hides during scrolling.
+      if (ready) {
+        cancelAnimationFrame(raf)
+        frame(performance.now())
+      } else kick.current()
     }
+    let ready = false
     const ro = new ResizeObserver(resize)
     ro.observe(canvas)
     resize()
@@ -344,8 +356,16 @@ export function ChromeArcs({
     })
     io.observe(canvas)
 
+    const minGap = maxFps > 0 ? 1000 / maxFps - 2 : 0
+    let drawn = -1e9
     function frame(now: number) {
       raf = 0
+      // Frame-rate cap (local addition): skip frames that come too soon, keep the loop alive.
+      if (minGap > 0 && now - drawn < minGap && last >= 0) {
+        if (visible) raf = requestAnimationFrame(frame)
+        return
+      }
+      drawn = now
       const dt = last < 0 ? 0 : Math.min(Math.max(now - last, 0) / 1000, 1 / 20)
       last = now
       // The flow follows wall time, so a dropped frame never slows it down.
@@ -373,6 +393,7 @@ export function ChromeArcs({
       if (visible && !raf) raf = requestAnimationFrame(frame)
     }
     raf = requestAnimationFrame(frame)
+    ready = true
 
     const lost = (e: Event) => {
       e.preventDefault()
@@ -392,7 +413,7 @@ export function ChromeArcs({
       gl.deleteBuffer(buf)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [speed, rings, tintKey, intensity, interactive, fallback])
+  }, [speed, rings, tintKey, intensity, interactive, fallback, maxDpr, maxFps])
 
   const track = (e: React.PointerEvent<HTMLDivElement>) => {
     const r = rootRef.current?.getBoundingClientRect()
