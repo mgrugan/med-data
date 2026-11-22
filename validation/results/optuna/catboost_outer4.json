@@ -1,0 +1,189 @@
+{
+ "model": "catboost",
+ "context": "_outer4",
+ "seed": 20241031,
+ "n_folds": 5,
+ "n_trials": 8,
+ "sampler": "TPESampler",
+ "best_params": {
+  "feature_subset": "A_full",
+  "depth": 6,
+  "learning_rate": 0.08462526249408758,
+  "iterations": 1300,
+  "l2_leaf_reg": 1.613858787861556,
+  "random_strength": 0.002552534554896997,
+  "bagging_temperature": 1.7131110955271085,
+  "loss_function": "MAE"
+ },
+ "best_inner_cv_mae": 2.101794285811165,
+ "trials": [
+  {
+   "number": 0,
+   "params": {
+    "feature_subset": "A_full",
+    "depth": 6,
+    "learning_rate": 0.05,
+    "iterations": 1500,
+    "l2_leaf_reg": 3.0,
+    "random_strength": 1.0,
+    "bagging_temperature": 1.0,
+    "loss_function": "RMSE"
+   },
+   "inner_cv_mae": 2.1773311792293715,
+   "fold_mae": [
+    2.168186077701865,
+    2.170129981124376,
+    2.1819590796954396,
+    2.180302470556552,
+    2.1860782870686255
+   ]
+  },
+  {
+   "number": 1,
+   "params": {
+    "feature_subset": "A_no_prior_visits",
+    "depth": 8,
+    "learning_rate": 0.014154379409407704,
+    "iterations": 1000,
+    "l2_leaf_reg": 5.051851063253731,
+    "random_strength": 0.13119289249807872,
+    "bagging_temperature": 0.22844075459032864,
+    "loss_function": "RMSE"
+   },
+   "inner_cv_mae": 2.182033502208072,
+   "fold_mae": [
+    2.1754855352498947,
+    2.173784482755683,
+    2.1884144881258436,
+    2.1842100046958413,
+    2.188273000213099
+   ]
+  },
+  {
+   "number": 2,
+   "params": {
+    "feature_subset": "A_no_lab_results",
+    "depth": 3,
+    "learning_rate": 0.05445257351360557,
+    "iterations": 1500,
+    "l2_leaf_reg": 10.266283126638863,
+    "random_strength": 0.06432124185677437,
+    "bagging_temperature": 1.6119278586858035,
+    "loss_function": "MAE"
+   },
+   "inner_cv_mae": 2.1175895108835787,
+   "fold_mae": [
+    2.1142564074752284,
+    2.1119541713380228,
+    2.1078097732025545,
+    2.126128990878917,
+    2.1277982115231713
+   ]
+  },
+  {
+   "number": 3,
+   "params": {
+    "feature_subset": "A_no_prior_visits",
+    "depth": 3,
+    "learning_rate": 0.04045114725380244,
+    "iterations": 1200,
+    "l2_leaf_reg": 5.87905558024321,
+    "random_strength": 0.24080055857657795,
+    "bagging_temperature": 0.14468425876825797,
+    "loss_function": "MAE"
+   },
+   "inner_cv_mae": 2.109875526291053,
+   "fold_mae": [
+    2.106336211138939,
+    2.0977781247806853,
+    2.104184440337236,
+    2.1188815907021405,
+    2.122197264496265
+   ]
+  },
+  {
+   "number": 4,
+   "params": {
+    "feature_subset": "A_full",
+    "depth": 6,
+    "learning_rate": 0.11070742189728054,
+    "iterations": 400,
+    "l2_leaf_reg": 21.07878463081807,
+    "random_strength": 0.007484566818892296,
+    "bagging_temperature": 2.1031712444593245,
+    "loss_function": "MAE"
+   },
+   "inner_cv_mae": 2.1035398085088177,
+   "fold_mae": [
+    2.1055698006223524,
+    2.095757239826573,
+    2.0949002045069176,
+    2.1073620227273446,
+    2.1141097748608995
+   ]
+  },
+  {
+   "number": 5,
+   "params": {
+    "feature_subset": "A_full",
+    "depth": 6,
+    "learning_rate": 0.025537307214706748,
+    "iterations": 500,
+    "l2_leaf_reg": 14.65809435672394,
+    "random_strength": 0.001058319127940089,
+    "bagging_temperature": 1.3098658275826731,
+    "loss_function": "MAE"
+   },
+   "inner_cv_mae": 2.1027268508401873,
+   "fold_mae": [
+    2.102760728548839,
+    2.09089278486862,
+    2.0978079339714197,
+    2.108154082770775,
+    2.114018724041284
+   ]
+  },
+  {
+   "number": 6,
+   "params": {
+    "feature_subset": "A_full",
+    "depth": 6,
+    "learning_rate": 0.08462526249408758,
+    "iterations": 1300,
+    "l2_leaf_reg": 1.613858787861556,
+    "random_strength": 0.002552534554896997,
+    "bagging_temperature": 1.7131110955271085,
+    "loss_function": "MAE"
+   },
+   "inner_cv_mae": 2.101794285811165,
+   "fold_mae": [
+    2.100135926062117,
+    2.0919088920838713,
+    2.0949916314901174,
+    2.106518183979439,
+    2.11541679544028
+   ]
+  },
+  {
+   "number": 7,
+   "params": {
+    "feature_subset": "A_full",
+    "depth": 6,
+    "learning_rate": 0.015054170727630047,
+    "iterations": 600,
+    "l2_leaf_reg": 1.1054866825415568,
+    "random_strength": 0.0034415932752037133,
+    "bagging_temperature": 2.4210133596199017,
+    "loss_function": "MAE"
+   },
+   "inner_cv_mae": 2.1043560070708014,
+   "fold_mae": [
+    2.1027047101712353,
+    2.091939942458775,
+    2.0993843933923277,
+    2.110593896470143,
+    2.1171570928615266
+   ]
+  }
+ ]
+}

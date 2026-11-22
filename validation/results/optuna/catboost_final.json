@@ -1,0 +1,189 @@
+{
+ "model": "catboost",
+ "context": "_final",
+ "seed": 20240538,
+ "n_folds": 5,
+ "n_trials": 8,
+ "sampler": "TPESampler",
+ "best_params": {
+  "feature_subset": "A_full",
+  "depth": 5,
+  "learning_rate": 0.03991791533975903,
+  "iterations": 1700,
+  "l2_leaf_reg": 1.6862786175553512,
+  "random_strength": 0.007069131109217347,
+  "bagging_temperature": 2.9583572082041947,
+  "loss_function": "MAE"
+ },
+ "best_inner_cv_mae": 2.1009894270172955,
+ "trials": [
+  {
+   "number": 0,
+   "params": {
+    "feature_subset": "A_full",
+    "depth": 6,
+    "learning_rate": 0.05,
+    "iterations": 1500,
+    "l2_leaf_reg": 3.0,
+    "random_strength": 1.0,
+    "bagging_temperature": 1.0,
+    "loss_function": "RMSE"
+   },
+   "inner_cv_mae": 2.177848929941618,
+   "fold_mae": [
+    2.183312759084241,
+    2.183345048305742,
+    2.1584482383226224,
+    2.167999143829322,
+    2.1961394601661617
+   ]
+  },
+  {
+   "number": 1,
+   "params": {
+    "feature_subset": "A_no_prior_visits",
+    "depth": 4,
+    "learning_rate": 0.010183707112141614,
+    "iterations": 1800,
+    "l2_leaf_reg": 2.187670132168742,
+    "random_strength": 7.191678944820195,
+    "bagging_temperature": 0.09460001190697398,
+    "loss_function": "MAE"
+   },
+   "inner_cv_mae": 2.1134447301283537,
+   "fold_mae": [
+    2.1239670783536533,
+    2.1171176386273967,
+    2.10238597057352,
+    2.0949229308339525,
+    2.128830032253246
+   ]
+  },
+  {
+   "number": 2,
+   "params": {
+    "feature_subset": "A_full",
+    "depth": 3,
+    "learning_rate": 0.24237669382252955,
+    "iterations": 1200,
+    "l2_leaf_reg": 1.675658134430005,
+    "random_strength": 0.19588781942143565,
+    "bagging_temperature": 1.551542972666395,
+    "loss_function": "RMSE"
+   },
+   "inner_cv_mae": 2.182622480533073,
+   "fold_mae": [
+    2.1902554010829247,
+    2.1857158002002004,
+    2.165009847617622,
+    2.1718363581653604,
+    2.200294995599257
+   ]
+  },
+  {
+   "number": 3,
+   "params": {
+    "feature_subset": "A_full",
+    "depth": 5,
+    "learning_rate": 0.016316894696271,
+    "iterations": 1700,
+    "l2_leaf_reg": 1.5875488363864854,
+    "random_strength": 3.000876096975204,
+    "bagging_temperature": 1.3726032366641805,
+    "loss_function": "MAE"
+   },
+   "inner_cv_mae": 2.1023850749324287,
+   "fold_mae": [
+    2.112096968280211,
+    2.1078583363587358,
+    2.0903018003627047,
+    2.0841052058249194,
+    2.117563063835572
+   ]
+  },
+  {
+   "number": 4,
+   "params": {
+    "feature_subset": "A_full",
+    "depth": 5,
+    "learning_rate": 0.03991791533975903,
+    "iterations": 1700,
+    "l2_leaf_reg": 1.6862786175553512,
+    "random_strength": 0.007069131109217347,
+    "bagging_temperature": 2.9583572082041947,
+    "loss_function": "MAE"
+   },
+   "inner_cv_mae": 2.1009894270172955,
+   "fold_mae": [
+    2.11178187845125,
+    2.1081770965637445,
+    2.0895463474889184,
+    2.0831599029545624,
+    2.1122819096280017
+   ]
+  },
+  {
+   "number": 5,
+   "params": {
+    "feature_subset": "A_full",
+    "depth": 4,
+    "learning_rate": 0.027789121880799867,
+    "iterations": 1900,
+    "l2_leaf_reg": 1.0845569406603703,
+    "random_strength": 0.026202049332685304,
+    "bagging_temperature": 2.493900186631198,
+    "loss_function": "MAE"
+   },
+   "inner_cv_mae": 2.102656374405776,
+   "fold_mae": [
+    2.114330366387406,
+    2.1084606239860624,
+    2.0892911091900386,
+    2.0835109076020157,
+    2.117688864863356
+   ]
+  },
+  {
+   "number": 6,
+   "params": {
+    "feature_subset": "A_full",
+    "depth": 4,
+    "learning_rate": 0.014396906111226872,
+    "iterations": 800,
+    "l2_leaf_reg": 13.753353518456075,
+    "random_strength": 0.6165848269842573,
+    "bagging_temperature": 2.713016547336589,
+    "loss_function": "MAE"
+   },
+   "inner_cv_mae": 2.1092603088017574,
+   "fold_mae": [
+    2.119281538736645,
+    2.112322123712157,
+    2.100214748510474,
+    2.089589580623404,
+    2.1248935524261063
+   ]
+  },
+  {
+   "number": 7,
+   "params": {
+    "feature_subset": "A_full",
+    "depth": 5,
+    "learning_rate": 0.13105562082390204,
+    "iterations": 700,
+    "l2_leaf_reg": 15.298538031414257,
+    "random_strength": 0.0017837414232427583,
+    "bagging_temperature": 0.7581717449716243,
+    "loss_function": "MAE"
+   },
+   "inner_cv_mae": 2.1028724466885174,
+   "fold_mae": [
+    2.1152058784260612,
+    2.107873240112845,
+    2.089730898296193,
+    2.085608166303338,
+    2.1159440503041496
+   ]
+  }
+ ]
+}

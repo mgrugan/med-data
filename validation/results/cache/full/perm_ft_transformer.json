@@ -1,0 +1,15 @@
+{
+ "model": "ft_transformer",
+ "n_permutations": 3,
+ "observed_mae": 2.09209432130032,
+ "null_mae": [
+  2.235147190311203,
+  2.2253836737057275,
+  2.2094024760504203
+ ],
+ "null_mean": 2.2233111133557837,
+ "null_sd": 0.01299689223989545,
+ "improvement_over_shuffled": 0.13121679205546366,
+ "p_value": 0.25,
+ "min_attainable_p": 0.25
+}

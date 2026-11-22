@@ -1,0 +1,189 @@
+{
+ "model": "catboost",
+ "context": "_outer2",
+ "seed": 20240831,
+ "n_folds": 5,
+ "n_trials": 8,
+ "sampler": "TPESampler",
+ "best_params": {
+  "feature_subset": "A_no_lab_results",
+  "depth": 4,
+  "learning_rate": 0.17167627838263944,
+  "iterations": 700,
+  "l2_leaf_reg": 7.366922312742054,
+  "random_strength": 0.029071582601522917,
+  "bagging_temperature": 2.030367317986948,
+  "loss_function": "MAE"
+ },
+ "best_inner_cv_mae": 2.1164451236937585,
+ "trials": [
+  {
+   "number": 0,
+   "params": {
+    "feature_subset": "A_full",
+    "depth": 6,
+    "learning_rate": 0.05,
+    "iterations": 1500,
+    "l2_leaf_reg": 3.0,
+    "random_strength": 1.0,
+    "bagging_temperature": 1.0,
+    "loss_function": "RMSE"
+   },
+   "inner_cv_mae": 2.182059268512127,
+   "fold_mae": [
+    2.2037031938198712,
+    2.181516397494305,
+    2.1970041671312535,
+    2.14472180258683,
+    2.1833507815283757
+   ]
+  },
+  {
+   "number": 1,
+   "params": {
+    "feature_subset": "A_no_lab_results",
+    "depth": 8,
+    "learning_rate": 0.016184496399456308,
+    "iterations": 1400,
+    "l2_leaf_reg": 11.508264601279501,
+    "random_strength": 0.08039621130562222,
+    "bagging_temperature": 0.6176462664146324,
+    "loss_function": "RMSE"
+   },
+   "inner_cv_mae": 2.194640208668825,
+   "fold_mae": [
+    2.214027224470275,
+    2.19017943647919,
+    2.2113164261153444,
+    2.159491610433118,
+    2.1981863458462003
+   ]
+  },
+  {
+   "number": 2,
+   "params": {
+    "feature_subset": "A_no_lab_results",
+    "depth": 3,
+    "learning_rate": 0.013813460244465434,
+    "iterations": 1500,
+    "l2_leaf_reg": 1.2813557190073985,
+    "random_strength": 0.12274219771811597,
+    "bagging_temperature": 0.508383396664693,
+    "loss_function": "MAE"
+   },
+   "inner_cv_mae": 2.121130353967255,
+   "fold_mae": [
+    2.1361447312737125,
+    2.115714678951728,
+    2.1357127484160565,
+    2.089914098859938,
+    2.12816551233484
+   ]
+  },
+  {
+   "number": 3,
+   "params": {
+    "feature_subset": "A_no_lab_results",
+    "depth": 5,
+    "learning_rate": 0.2181994916758537,
+    "iterations": 1800,
+    "l2_leaf_reg": 4.477080586452039,
+    "random_strength": 0.7072821190027069,
+    "bagging_temperature": 2.4162397523124253,
+    "loss_function": "MAE"
+   },
+   "inner_cv_mae": 2.117243543364305,
+   "fold_mae": [
+    2.128677268752351,
+    2.112405994101274,
+    2.134589203618996,
+    2.0826638023158623,
+    2.1278814480330417
+   ]
+  },
+  {
+   "number": 4,
+   "params": {
+    "feature_subset": "A_no_prior_visits",
+    "depth": 7,
+    "learning_rate": 0.18602138134854962,
+    "iterations": 2000,
+    "l2_leaf_reg": 8.253647454367206,
+    "random_strength": 0.02329537030487135,
+    "bagging_temperature": 2.3054061582667282,
+    "loss_function": "RMSE"
+   },
+   "inner_cv_mae": 2.1868002230950263,
+   "fold_mae": [
+    2.2132809725250393,
+    2.1808682662594925,
+    2.2010301084419854,
+    2.14881361518568,
+    2.190008153062935
+   ]
+  },
+  {
+   "number": 5,
+   "params": {
+    "feature_subset": "A_no_lab_results",
+    "depth": 4,
+    "learning_rate": 0.17167627838263944,
+    "iterations": 700,
+    "l2_leaf_reg": 7.366922312742054,
+    "random_strength": 0.029071582601522917,
+    "bagging_temperature": 2.030367317986948,
+    "loss_function": "MAE"
+   },
+   "inner_cv_mae": 2.1164451236937585,
+   "fold_mae": [
+    2.129428641561727,
+    2.112620516978613,
+    2.1316988723054955,
+    2.0831659859543086,
+    2.125311601668647
+   ]
+  },
+  {
+   "number": 6,
+   "params": {
+    "feature_subset": "A_no_lab_results",
+    "depth": 3,
+    "learning_rate": 0.10079944382289788,
+    "iterations": 800,
+    "l2_leaf_reg": 20.74452281881414,
+    "random_strength": 0.4066333550461743,
+    "bagging_temperature": 2.694694497925959,
+    "loss_function": "MAE"
+   },
+   "inner_cv_mae": 2.11716835367982,
+   "fold_mae": [
+    2.131140565106066,
+    2.110989740769619,
+    2.135316518511916,
+    2.08490866054576,
+    2.123486283465738
+   ]
+  },
+  {
+   "number": 7,
+   "params": {
+    "feature_subset": "A_no_lab_results",
+    "depth": 3,
+    "learning_rate": 0.1415717229936243,
+    "iterations": 1900,
+    "l2_leaf_reg": 2.8873119833465393,
+    "random_strength": 0.0011109841135234502,
+    "bagging_temperature": 1.4647473901283348,
+    "loss_function": "MAE"
+   },
+   "inner_cv_mae": 2.118643256105304,
+   "fold_mae": [
+    2.1325624395248606,
+    2.1131468798026125,
+    2.135347457339858,
+    2.0882627583815023,
+    2.123896745477689
+   ]
+  }
+ ]
+}

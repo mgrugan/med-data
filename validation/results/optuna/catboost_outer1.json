@@ -1,0 +1,189 @@
+{
+ "model": "catboost",
+ "context": "_outer1",
+ "seed": 20240731,
+ "n_folds": 5,
+ "n_trials": 8,
+ "sampler": "TPESampler",
+ "best_params": {
+  "feature_subset": "A_full",
+  "depth": 5,
+  "learning_rate": 0.04457040993254746,
+  "iterations": 800,
+  "l2_leaf_reg": 23.32742394134915,
+  "random_strength": 0.0034771740743967227,
+  "bagging_temperature": 1.297569136258966,
+  "loss_function": "MAE"
+ },
+ "best_inner_cv_mae": 2.0965957390920815,
+ "trials": [
+  {
+   "number": 0,
+   "params": {
+    "feature_subset": "A_full",
+    "depth": 6,
+    "learning_rate": 0.05,
+    "iterations": 1500,
+    "l2_leaf_reg": 3.0,
+    "random_strength": 1.0,
+    "bagging_temperature": 1.0,
+    "loss_function": "RMSE"
+   },
+   "inner_cv_mae": 2.1746939665706657,
+   "fold_mae": [
+    2.1802611763153976,
+    2.1879632788031937,
+    2.150299646930382,
+    2.1578243100665238,
+    2.1971214207378313
+   ]
+  },
+  {
+   "number": 1,
+   "params": {
+    "feature_subset": "A_no_lab_results",
+    "depth": 7,
+    "learning_rate": 0.1731146834048683,
+    "iterations": 1700,
+    "l2_leaf_reg": 6.842827678588058,
+    "random_strength": 4.335767983513142,
+    "bagging_temperature": 2.9678538007011763,
+    "loss_function": "MAE"
+   },
+   "inner_cv_mae": 2.1133264289254092,
+   "fold_mae": [
+    2.1178693729864864,
+    2.118108467713838,
+    2.101093366947237,
+    2.090341127126199,
+    2.1392198098532877
+   ]
+  },
+  {
+   "number": 2,
+   "params": {
+    "feature_subset": "A_full",
+    "depth": 4,
+    "learning_rate": 0.17859096334832295,
+    "iterations": 1200,
+    "l2_leaf_reg": 15.44499162116272,
+    "random_strength": 6.351953464454005,
+    "bagging_temperature": 2.3694966062355514,
+    "loss_function": "RMSE"
+   },
+   "inner_cv_mae": 2.176546626643463,
+   "fold_mae": [
+    2.184244330728734,
+    2.192570998729172,
+    2.1513405582302036,
+    2.1588072046676734,
+    2.195770040861532
+   ]
+  },
+  {
+   "number": 3,
+   "params": {
+    "feature_subset": "A_full",
+    "depth": 3,
+    "learning_rate": 0.18622338090632826,
+    "iterations": 1600,
+    "l2_leaf_reg": 6.994998803409272,
+    "random_strength": 0.019439542649898126,
+    "bagging_temperature": 0.7670498793241445,
+    "loss_function": "MAE"
+   },
+   "inner_cv_mae": 2.1038401078425624,
+   "fold_mae": [
+    2.10862247384204,
+    2.108258664116911,
+    2.0910170237185786,
+    2.084511371264797,
+    2.1267910062704827
+   ]
+  },
+  {
+   "number": 4,
+   "params": {
+    "feature_subset": "A_no_lab_results",
+    "depth": 8,
+    "learning_rate": 0.010504842261039248,
+    "iterations": 800,
+    "l2_leaf_reg": 7.293365344664576,
+    "random_strength": 1.3985283718549884,
+    "bagging_temperature": 0.4396774803311788,
+    "loss_function": "RMSE"
+   },
+   "inner_cv_mae": 2.1900791323978854,
+   "fold_mae": [
+    2.198696569201083,
+    2.2017066947835957,
+    2.1684102037820128,
+    2.168847643124333,
+    2.2127345510984013
+   ]
+  },
+  {
+   "number": 5,
+   "params": {
+    "feature_subset": "A_full",
+    "depth": 5,
+    "learning_rate": 0.023309175361294045,
+    "iterations": 1100,
+    "l2_leaf_reg": 2.4863925154963495,
+    "random_strength": 0.0023601684147223066,
+    "bagging_temperature": 1.3049081288896989,
+    "loss_function": "MAE"
+   },
+   "inner_cv_mae": 2.098101526272756,
+   "fold_mae": [
+    2.1048854507906705,
+    2.1060270836757415,
+    2.0837201871393978,
+    2.0793214824051027,
+    2.1165534273528666
+   ]
+  },
+  {
+   "number": 6,
+   "params": {
+    "feature_subset": "A_full",
+    "depth": 4,
+    "learning_rate": 0.03154472113014595,
+    "iterations": 1100,
+    "l2_leaf_reg": 3.9044459689811397,
+    "random_strength": 0.007060496871043354,
+    "bagging_temperature": 2.7317140239809072,
+    "loss_function": "MAE"
+   },
+   "inner_cv_mae": 2.101045135737201,
+   "fold_mae": [
+    2.1062405287792814,
+    2.1072969967026394,
+    2.08898317712455,
+    2.0827442814204566,
+    2.119960694659078
+   ]
+  },
+  {
+   "number": 7,
+   "params": {
+    "feature_subset": "A_full",
+    "depth": 5,
+    "learning_rate": 0.04457040993254746,
+    "iterations": 800,
+    "l2_leaf_reg": 23.32742394134915,
+    "random_strength": 0.0034771740743967227,
+    "bagging_temperature": 1.297569136258966,
+    "loss_function": "MAE"
+   },
+   "inner_cv_mae": 2.0965957390920815,
+   "fold_mae": [
+    2.102587123529489,
+    2.104081423347559,
+    2.082787084026825,
+    2.0795765474118304,
+    2.1139465171447047
+   ]
+  }
+ ]
+}

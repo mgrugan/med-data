@@ -67,10 +67,15 @@ def run(models=("median_baseline", "gamma_glm", "xgboost", "catboost"), n_perm: 
             out["permutation"][k] = permutation_test(k, dev, params.get(k, {}), n_perm, GLOBAL_SEED + 55)
     base = out["cv"]["median_baseline"]["mae"]["mean"]
     out["improvement_over_median"] = {k: base - v["mae"]["mean"] for k, v in out["cv"].items()}
+    # Detection rule (same relative threshold as the quality gate): a >= 5% MAE gain over the median
+    # AND a permutation p-value at its floor 1/(n_perm+1). An absolute 0.25-day rule was used for the
+    # earlier 1-30-day synthetic target; it does not transfer to a 1-14-day target.
+    out["detection_rule"] = {"min_relative_gain": 0.05, "p_value_floor": 1.0 / (n_perm + 1)}
     out["conclusion"] = (
         "The framework recovers a known, modest admission-time effect: models clearly beat the median baseline "
         "and the shuffled-target control, so the pipeline is sensitive to signal of this size."
-        if max(v for k, v in out["improvement_over_median"].items() if k != "median_baseline") > 0.25 else
+        if (max(v for k, v in out["improvement_over_median"].items() if k != "median_baseline") >= 0.05 * base
+            and min(p["p_value"] for p in out["permutation"].values()) <= 1.0 / (n_perm + 1) + 1e-12) else
         "WARNING: the framework did not recover the injected effect; results on the real target are inconclusive.")
     (RESULTS_DIR / "positive_control.json").write_text(json.dumps(out, indent=1))
     return out

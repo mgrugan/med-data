@@ -1,6 +1,6 @@
 """RecoveryAI API (FastAPI).
 
-Educational / research prototype trained on SYNTHETIC data. Nothing returned by this API
+Educational / research prototype trained on real, de-identified hospital data. Nothing returned by this API
 is a clinical discharge decision.
 """
 from __future__ import annotations

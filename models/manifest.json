@@ -1,0 +1,804 @@
+{
+ "budget": "full",
+ "created_at": "2026-11-22T08:22:12.275201+00:00",
+ "seed": 20240531,
+ "feature_set": "A",
+ "models": {
+  "median_baseline": {
+   "display_name": "Median Baseline",
+   "family": "baseline",
+   "params": {},
+   "conformal_q": {
+    "0.5": 0.4054651081081644,
+    "0.8": 0.6931471805599453,
+    "0.9": 0.810930216216329,
+    "0.95": 1.01160091167848
+   },
+   "conformal_method": "log",
+   "test_metrics": {
+    "mae": 2.2158067743318566,
+    "rmse": 3.1908920691016345,
+    "medae": 2.0,
+    "r2": -0.1876647031207146,
+    "mape": 62.31716892035599,
+    "bias": -1.2684007431756468
+   },
+   "value": 3.0
+  },
+  "condition_median": {
+   "display_name": "Condition Median",
+   "family": "baseline",
+   "params": {},
+   "conformal_q": {
+    "0.5": 0.4054651081081644,
+    "0.8": 0.6931471805599453,
+    "0.9": 0.916290731874155,
+    "0.95": 1.01160091167848
+   },
+   "conformal_method": "log",
+   "test_metrics": {
+    "mae": 2.189724167500357,
+    "rmse": 3.071221190313146,
+    "medae": 2.0,
+    "r2": -0.10025110059954079,
+    "mape": 68.6010372402755,
+    "bias": -0.8977418893811634
+   },
+   "table": {
+    "Circulatory": 3.0,
+    "Diabetes": 3.0,
+    "Digestive": 4.0,
+    "Genitourinary": 3.0,
+    "Injury": 4.0,
+    "Musculoskeletal": 3.0,
+    "Neoplasms": 4.0,
+    "Other": 4.0,
+    "Respiratory": 3.0
+   },
+   "global": 3.0
+  },
+  "gamma_glm": {
+   "display_name": "Gamma GLM (log link)",
+   "family": "statistical",
+   "params": {
+    "feature_subset": "A_full",
+    "age_term": "quadratic",
+    "point": "median"
+   },
+   "conformal_q": {
+    "0.5": 0.3685609307153741,
+    "0.8": 0.7051675252814871,
+    "0.9": 0.8501157963885877,
+    "0.95": 0.9487166794310841
+   },
+   "conformal_method": "log",
+   "test_metrics": {
+    "mae": 2.1372688907461117,
+    "rmse": 2.9128618817584746,
+    "medae": 1.6426312394107274,
+    "r2": 0.010286703077687642,
+    "mape": 71.23208104759084,
+    "bias": -0.6173427460832752
+   },
+   "glm": {
+    "design": {
+     "categorical": [
+      "Gender",
+      "Admission Type",
+      "Admission Source",
+      "Medical Condition",
+      "Medication",
+      "A1C Result",
+      "Glucose Serum"
+     ],
+     "age_term": "quadratic",
+     "counts": [
+      "Prior Inpatient",
+      "Prior Emergency",
+      "Prior Outpatient"
+     ],
+     "levels": {
+      "Gender": [
+       "Female",
+       "Male"
+      ],
+      "Admission Type": [
+       "Elective",
+       "Emergency",
+       "Other/Unknown",
+       "Urgent"
+      ],
+      "Admission Source": [
+       "Emergency Room",
+       "Other/Unknown",
+       "Referral",
+       "Transfer"
+      ],
+      "Medical Condition": [
+       "Circulatory",
+       "Diabetes",
+       "Digestive",
+       "Genitourinary",
+       "Injury",
+       "Musculoskeletal",
+       "Neoplasms",
+       "Other",
+       "Respiratory"
+      ],
+      "Medication": [
+       "Insulin + oral",
+       "Insulin only",
+       "None",
+       "Oral agents only"
+      ],
+      "A1C Result": [
+       ">7%",
+       ">8%",
+       "Normal",
+       "Not tested"
+      ],
+      "Glucose Serum": [
+       ">200",
+       ">300",
+       "Normal",
+       "Not tested"
+      ]
+     }
+    },
+    "coef": [
+     1.6963957910515204,
+     -0.023043666088330538,
+     0.02559776394874747,
+     0.011464977363660856,
+     0.05971563613524775,
+     -0.06881971753899123,
+     -0.05051578974469157,
+     0.1580568774182712,
+     0.047466660584263604,
+     0.06938139122559314,
+     -0.024988092172013438,
+     0.09508597680046824,
+     0.010817202181742185,
+     0.2525144803095796,
+     0.14575427172307392,
+     -0.04196983407795304,
+     -0.055254597194521624,
+     -0.19428876835865272,
+     -0.17248160507657712,
+     -0.0026598451182366497,
+     0.015027349331798069,
+     -0.13872972322269958,
+     0.12365760956956855,
+     -0.0999531229383027,
+     -0.1260082300653065,
+     0.06635806326803038,
+     -0.004161526650998338,
+     0.1499357567448563,
+     -0.03103737971144538,
+     -0.04515790708444432
+    ],
+    "shape": 2.2119178009681537,
+    "median_factor": 0.8540076752009601,
+    "point": "median",
+    "params": {
+     "feature_subset": "A_full",
+     "age_term": "quadratic",
+     "point": "median"
+    },
+    "column_names": [
+     "Intercept",
+     "Gender[Male]",
+     "Admission Type[Emergency]",
+     "Admission Type[Other/Unknown]",
+     "Admission Type[Urgent]",
+     "Admission Source[Other/Unknown]",
+     "Admission Source[Referral]",
+     "Admission Source[Transfer]",
+     "Medical Condition[Diabetes]",
+     "Medical Condition[Digestive]",
+     "Medical Condition[Genitourinary]",
+     "Medical Condition[Injury]",
+     "Medical Condition[Musculoskeletal]",
+     "Medical Condition[Neoplasms]",
+     "Medical Condition[Other]",
+     "Medical Condition[Respiratory]",
+     "Medication[Insulin only]",
+     "Medication[None]",
+     "Medication[Oral agents only]",
+     "A1C Result[>8%]",
+     "A1C Result[Normal]",
+     "A1C Result[Not tested]",
+     "Glucose Serum[>300]",
+     "Glucose Serum[Normal]",
+     "Glucose Serum[Not tested]",
+     "Age (per 10y, centred 60)",
+     "Age^2",
+     "log1p(Prior Inpatient)",
+     "log1p(Prior Emergency)",
+     "log1p(Prior Outpatient)"
+    ],
+    "column_features": [
+     "Intercept",
+     "Gender",
+     "Admission Type",
+     "Admission Type",
+     "Admission Type",
+     "Admission Source",
+     "Admission Source",
+     "Admission Source",
+     "Medical Condition",
+     "Medical Condition",
+     "Medical Condition",
+     "Medical Condition",
+     "Medical Condition",
+     "Medical Condition",
+     "Medical Condition",
+     "Medical Condition",
+     "Medication",
+     "Medication",
+     "Medication",
+     "A1C Result",
+     "A1C Result",
+     "A1C Result",
+     "Glucose Serum",
+     "Glucose Serum",
+     "Glucose Serum",
+     "Age",
+     "Age",
+     "Prior Inpatient",
+     "Prior Emergency",
+     "Prior Outpatient"
+    ]
+   }
+  },
+  "xgboost": {
+   "display_name": "XGBoost",
+   "family": "tree",
+   "params": {
+    "feature_subset": "A_full",
+    "max_depth": 6,
+    "learning_rate": 0.0433468591021709,
+    "subsample": 0.6602550138676898,
+    "colsample_bytree": 0.801991177863917,
+    "min_child_weight": 5.358349286144949,
+    "gamma": 0.00028603822678246847,
+    "reg_alpha": 0.21589383579050272,
+    "reg_lambda": 6.791398324301122,
+    "target_transform": "log1p",
+    "objective": "reg:absoluteerror"
+   },
+   "conformal_q": {
+    "0.5": 0.3630083746521773,
+    "0.8": 0.6817011345166049,
+    "0.9": 0.8488038888046733,
+    "0.95": 0.9525445689754662
+   },
+   "conformal_method": "log",
+   "test_metrics": {
+    "mae": 2.096479076444379,
+    "rmse": 2.890013435494725,
+    "medae": 1.5508984327316284,
+    "r2": 0.025752401323377083,
+    "mape": 67.44560952391929,
+    "bias": -0.6673539780848057
+   },
+   "file": "xgboost.json",
+   "encoder": {
+    "categorical": [
+     "Gender",
+     "Admission Type",
+     "Admission Source",
+     "Medical Condition",
+     "Medication",
+     "A1C Result",
+     "Glucose Serum"
+    ],
+    "numeric": [
+     "Age",
+     "Prior Inpatient",
+     "Prior Emergency",
+     "Prior Outpatient"
+    ],
+    "levels": {
+     "Gender": [
+      "Female",
+      "Male"
+     ],
+     "Admission Type": [
+      "Elective",
+      "Emergency",
+      "Other/Unknown",
+      "Urgent"
+     ],
+     "Admission Source": [
+      "Emergency Room",
+      "Other/Unknown",
+      "Referral",
+      "Transfer"
+     ],
+     "Medical Condition": [
+      "Circulatory",
+      "Diabetes",
+      "Digestive",
+      "Genitourinary",
+      "Injury",
+      "Musculoskeletal",
+      "Neoplasms",
+      "Other",
+      "Respiratory"
+     ],
+     "Medication": [
+      "Insulin + oral",
+      "Insulin only",
+      "None",
+      "Oral agents only"
+     ],
+     "A1C Result": [
+      ">7%",
+      ">8%",
+      "Normal",
+      "Not tested"
+     ],
+     "Glucose Serum": [
+      ">200",
+      ">300",
+      "Normal",
+      "Not tested"
+     ]
+    },
+    "means": {
+     "Age": 65.39786460413208,
+     "Prior Inpatient": 0.17595998234515228,
+     "Prior Emergency": 0.10294457638874294,
+     "Prior Outpatient": 0.278841505706299
+    },
+    "stds": {
+     "Age": 15.917915362531597,
+     "Prior Inpatient": 0.604265838826319,
+     "Prior Emergency": 0.5242351118003374,
+     "Prior Outpatient": 1.0516377236287524
+    }
+   },
+   "best_iteration": 449,
+   "feature_names": [
+    "Gender=Female",
+    "Gender=Male",
+    "Admission Type=Elective",
+    "Admission Type=Emergency",
+    "Admission Type=Other/Unknown",
+    "Admission Type=Urgent",
+    "Admission Source=Emergency Room",
+    "Admission Source=Other/Unknown",
+    "Admission Source=Referral",
+    "Admission Source=Transfer",
+    "Medical Condition=Circulatory",
+    "Medical Condition=Diabetes",
+    "Medical Condition=Digestive",
+    "Medical Condition=Genitourinary",
+    "Medical Condition=Injury",
+    "Medical Condition=Musculoskeletal",
+    "Medical Condition=Neoplasms",
+    "Medical Condition=Other",
+    "Medical Condition=Respiratory",
+    "Medication=Insulin + oral",
+    "Medication=Insulin only",
+    "Medication=None",
+    "Medication=Oral agents only",
+    "A1C Result=>7%",
+    "A1C Result=>8%",
+    "A1C Result=Normal",
+    "A1C Result=Not tested",
+    "Glucose Serum=>200",
+    "Glucose Serum=>300",
+    "Glucose Serum=Normal",
+    "Glucose Serum=Not tested",
+    "Age",
+    "Prior Inpatient",
+    "Prior Emergency",
+    "Prior Outpatient"
+   ]
+  },
+  "xgboost_aft": {
+   "display_name": "XGBoost AFT (survival)",
+   "family": "tree",
+   "params": {
+    "feature_subset": "A_full",
+    "max_depth": 8,
+    "learning_rate": 0.02752229783977573,
+    "subsample": 0.8722882138147584,
+    "colsample_bytree": 0.6399350715634452,
+    "min_child_weight": 19.12970749685662,
+    "gamma": 0.0010357005901314284,
+    "reg_alpha": 3.388345718551125e-06,
+    "reg_lambda": 4.112001077739212,
+    "aft_distribution": "logistic",
+    "aft_scale": 0.8902378103947487
+   },
+   "conformal_q": {
+    "0.5": 0.3623862996176541,
+    "0.8": 0.6824516600050192,
+    "0.9": 0.8455341493882279,
+    "0.95": 0.9543362344158786
+   },
+   "conformal_method": "log",
+   "test_metrics": {
+    "mae": 2.0979837081489316,
+    "rmse": 2.9218424117087745,
+    "medae": 1.5064917005281209,
+    "r2": 0.00417460328075725,
+    "mape": 65.07412984504106,
+    "bias": -0.8019564532234775
+   },
+   "file": "xgboost_aft.json",
+   "encoder": {
+    "categorical": [
+     "Gender",
+     "Admission Type",
+     "Admission Source",
+     "Medical Condition",
+     "Medication",
+     "A1C Result",
+     "Glucose Serum"
+    ],
+    "numeric": [
+     "Age",
+     "Prior Inpatient",
+     "Prior Emergency",
+     "Prior Outpatient"
+    ],
+    "levels": {
+     "Gender": [
+      "Female",
+      "Male"
+     ],
+     "Admission Type": [
+      "Elective",
+      "Emergency",
+      "Other/Unknown",
+      "Urgent"
+     ],
+     "Admission Source": [
+      "Emergency Room",
+      "Other/Unknown",
+      "Referral",
+      "Transfer"
+     ],
+     "Medical Condition": [
+      "Circulatory",
+      "Diabetes",
+      "Digestive",
+      "Genitourinary",
+      "Injury",
+      "Musculoskeletal",
+      "Neoplasms",
+      "Other",
+      "Respiratory"
+     ],
+     "Medication": [
+      "Insulin + oral",
+      "Insulin only",
+      "None",
+      "Oral agents only"
+     ],
+     "A1C Result": [
+      ">7%",
+      ">8%",
+      "Normal",
+      "Not tested"
+     ],
+     "Glucose Serum": [
+      ">200",
+      ">300",
+      "Normal",
+      "Not tested"
+     ]
+    },
+    "means": {
+     "Age": 65.39786460413208,
+     "Prior Inpatient": 0.17595998234515228,
+     "Prior Emergency": 0.10294457638874294,
+     "Prior Outpatient": 0.278841505706299
+    },
+    "stds": {
+     "Age": 15.917915362531597,
+     "Prior Inpatient": 0.604265838826319,
+     "Prior Emergency": 0.5242351118003374,
+     "Prior Outpatient": 1.0516377236287524
+    }
+   },
+   "best_iteration": 258,
+   "feature_names": [
+    "Gender=Female",
+    "Gender=Male",
+    "Admission Type=Elective",
+    "Admission Type=Emergency",
+    "Admission Type=Other/Unknown",
+    "Admission Type=Urgent",
+    "Admission Source=Emergency Room",
+    "Admission Source=Other/Unknown",
+    "Admission Source=Referral",
+    "Admission Source=Transfer",
+    "Medical Condition=Circulatory",
+    "Medical Condition=Diabetes",
+    "Medical Condition=Digestive",
+    "Medical Condition=Genitourinary",
+    "Medical Condition=Injury",
+    "Medical Condition=Musculoskeletal",
+    "Medical Condition=Neoplasms",
+    "Medical Condition=Other",
+    "Medical Condition=Respiratory",
+    "Medication=Insulin + oral",
+    "Medication=Insulin only",
+    "Medication=None",
+    "Medication=Oral agents only",
+    "A1C Result=>7%",
+    "A1C Result=>8%",
+    "A1C Result=Normal",
+    "A1C Result=Not tested",
+    "Glucose Serum=>200",
+    "Glucose Serum=>300",
+    "Glucose Serum=Normal",
+    "Glucose Serum=Not tested",
+    "Age",
+    "Prior Inpatient",
+    "Prior Emergency",
+    "Prior Outpatient"
+   ]
+  },
+  "catboost": {
+   "display_name": "CatBoost",
+   "family": "tree",
+   "params": {
+    "feature_subset": "A_full",
+    "depth": 5,
+    "learning_rate": 0.03991791533975903,
+    "iterations": 1700,
+    "l2_leaf_reg": 1.6862786175553512,
+    "random_strength": 0.007069131109217347,
+    "bagging_temperature": 2.9583572082041947,
+    "loss_function": "MAE"
+   },
+   "conformal_q": {
+    "0.5": 0.35834866477525873,
+    "0.8": 0.6866855794204205,
+    "0.9": 0.8462135700978428,
+    "0.95": 0.9557846202136581
+   },
+   "conformal_method": "log",
+   "test_metrics": {
+    "mae": 2.0939826439914913,
+    "rmse": 2.9023026222808888,
+    "medae": 1.5431746835865876,
+    "r2": 0.017449210541141458,
+    "mape": 66.70210354170642,
+    "bias": -0.7193649977989133
+   },
+   "file": "catboost.cbm",
+   "feature_names": [
+    "Gender",
+    "Admission Type",
+    "Admission Source",
+    "Medical Condition",
+    "Medication",
+    "A1C Result",
+    "Glucose Serum",
+    "Age",
+    "Prior Inpatient",
+    "Prior Emergency",
+    "Prior Outpatient"
+   ],
+   "categorical": [
+    "Gender",
+    "Admission Type",
+    "Admission Source",
+    "Medical Condition",
+    "Medication",
+    "A1C Result",
+    "Glucose Serum"
+   ]
+  },
+  "ft_transformer": {
+   "display_name": "FT-Transformer",
+   "family": "neural",
+   "params": {
+    "feature_subset": "A_full",
+    "d_token": 32,
+    "n_blocks": 2,
+    "n_heads": 4,
+    "attn_dropout": 0.1,
+    "ffn_dropout": 0.1,
+    "residual_dropout": 0.0,
+    "lr": 0.001,
+    "weight_decay": 1e-05,
+    "batch_size": 512,
+    "loss": "l1"
+   },
+   "conformal_q": {
+    "0.5": 0.3640086593393155,
+    "0.8": 0.6877074355897107,
+    "0.9": 0.8583700754814348,
+    "0.95": 0.9598306440597428
+   },
+   "conformal_method": "log",
+   "test_metrics": {
+    "mae": 2.1004470528168766,
+    "rmse": 2.8834513913562287,
+    "medae": 1.5654510259628296,
+    "r2": 0.030171617962478026,
+    "mape": 68.73765970078314,
+    "bias": -0.6210292400215904
+   },
+   "ft": {
+    "n_blocks": 2,
+    "n_heads": 4,
+    "n_cat": 7,
+    "n_num": 4,
+    "y_mean": 4.275373589188508,
+    "y_std": 2.9372185276936573,
+    "encoder": {
+     "categorical": [
+      "Gender",
+      "Admission Type",
+      "Admission Source",
+      "Medical Condition",
+      "Medication",
+      "A1C Result",
+      "Glucose Serum"
+     ],
+     "numeric": [
+      "Age",
+      "Prior Inpatient",
+      "Prior Emergency",
+      "Prior Outpatient"
+     ],
+     "levels": {
+      "Gender": [
+       "Female",
+       "Male"
+      ],
+      "Admission Type": [
+       "Elective",
+       "Emergency",
+       "Other/Unknown",
+       "Urgent"
+      ],
+      "Admission Source": [
+       "Emergency Room",
+       "Other/Unknown",
+       "Referral",
+       "Transfer"
+      ],
+      "Medical Condition": [
+       "Circulatory",
+       "Diabetes",
+       "Digestive",
+       "Genitourinary",
+       "Injury",
+       "Musculoskeletal",
+       "Neoplasms",
+       "Other",
+       "Respiratory"
+      ],
+      "Medication": [
+       "Insulin + oral",
+       "Insulin only",
+       "None",
+       "Oral agents only"
+      ],
+      "A1C Result": [
+       ">7%",
+       ">8%",
+       "Normal",
+       "Not tested"
+      ],
+      "Glucose Serum": [
+       ">200",
+       ">300",
+       "Normal",
+       "Not tested"
+      ]
+     },
+     "means": {
+      "Age": 65.39786460413208,
+      "Prior Inpatient": 0.17595998234515228,
+      "Prior Emergency": 0.10294457638874294,
+      "Prior Outpatient": 0.278841505706299
+     },
+     "stds": {
+      "Age": 15.917915362531597,
+      "Prior Inpatient": 0.604265838826319,
+      "Prior Emergency": 0.5242351118003374,
+      "Prior Outpatient": 1.0516377236287524
+     }
+    }
+   },
+   "file": "ft_transformer.npz",
+   "history": [
+    {
+     "epoch": 1,
+     "train_loss": 0.7462850158569961,
+     "es_mae": 2.190090171275594
+    },
+    {
+     "epoch": 2,
+     "train_loss": 0.7324034125347061,
+     "es_mae": 2.168323275119931
+    },
+    {
+     "epoch": 3,
+     "train_loss": 0.7266051061283532,
+     "es_mae": 2.1557021240268046
+    },
+    {
+     "epoch": 4,
+     "train_loss": 0.7234937250454092,
+     "es_mae": 2.15212194004596
+    },
+    {
+     "epoch": 5,
+     "train_loss": 0.7222065672193844,
+     "es_mae": 2.1379683038776487
+    },
+    {
+     "epoch": 6,
+     "train_loss": 0.7188570983122416,
+     "es_mae": 2.138837721980184
+    },
+    {
+     "epoch": 7,
+     "train_loss": 0.7182397314106933,
+     "es_mae": 2.13349362925954
+    },
+    {
+     "epoch": 8,
+     "train_loss": 0.7167812467626387,
+     "es_mae": 2.127756047118557
+    },
+    {
+     "epoch": 9,
+     "train_loss": 0.7162367301971518,
+     "es_mae": 2.123331903910226
+    },
+    {
+     "epoch": 10,
+     "train_loss": 0.7142704478793107,
+     "es_mae": 2.1253147614808983
+    },
+    {
+     "epoch": 11,
+     "train_loss": 0.7145202325481755,
+     "es_mae": 2.1257137566767303
+    },
+    {
+     "epoch": 12,
+     "train_loss": 0.7141372444725936,
+     "es_mae": 2.1242588839144103
+    },
+    {
+     "epoch": 13,
+     "train_loss": 0.7125736506546326,
+     "es_mae": 2.1238196739483
+    },
+    {
+     "epoch": 14,
+     "train_loss": 0.7115653724007954,
+     "es_mae": 2.1256528056534765
+    },
+    {
+     "epoch": 15,
+     "train_loss": 0.7118296225160428,
+     "es_mae": 2.1248260310037943
+    }
+   ]
+  }
+ },
+ "selected_model": "xgboost",
+ "display_model": "xgboost",
+ "quality_gate": {
+  "warning": false,
+  "headline": "All methodology checks passed.",
+  "failed": []
+ },
+ "training_los_median": 3.0,
+ "training_los_max": 14.0
+}

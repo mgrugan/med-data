@@ -1,0 +1,304 @@
+{
+ "model": "gamma_glm",
+ "context": "_final",
+ "seed": 20240538,
+ "n_folds": 5,
+ "n_trials": 18,
+ "sampler": "GridSampler",
+ "best_params": {
+  "feature_subset": "A_full",
+  "age_term": "quadratic",
+  "point": "median"
+ },
+ "best_inner_cv_mae": 2.133073837268502,
+ "trials": [
+  {
+   "number": 0,
+   "params": {
+    "feature_subset": "A_full",
+    "age_term": "quadratic",
+    "point": "mean"
+   },
+   "inner_cv_mae": 2.2061340722323792,
+   "fold_mae": [
+    2.2126187023371515,
+    2.201115116685614,
+    2.1913604518127823,
+    2.2017586919122407,
+    2.223817398414108
+   ]
+  },
+  {
+   "number": 1,
+   "params": {
+    "feature_subset": "A_full",
+    "age_term": "linear",
+    "point": "median"
+   },
+   "inner_cv_mae": 2.1331702321204715,
+   "fold_mae": [
+    2.14184099081849,
+    2.13102715293826,
+    2.123124900526978,
+    2.1182017223500016,
+    2.15165639396863
+   ]
+  },
+  {
+   "number": 2,
+   "params": {
+    "feature_subset": "A_full",
+    "age_term": "binned",
+    "point": "mean"
+   },
+   "inner_cv_mae": 2.208036964360126,
+   "fold_mae": [
+    2.2139088607379596,
+    2.204726545626154,
+    2.193852911750164,
+    2.2015437541518246,
+    2.2261527495345272
+   ]
+  },
+  {
+   "number": 3,
+   "params": {
+    "feature_subset": "A_no_prior_visits",
+    "age_term": "quadratic",
+    "point": "median"
+   },
+   "inner_cv_mae": 2.138860425434781,
+   "fold_mae": [
+    2.1480515981195896,
+    2.1359356976038963,
+    2.1289934328278597,
+    2.1245101414636864,
+    2.156811257158871
+   ]
+  },
+  {
+   "number": 4,
+   "params": {
+    "feature_subset": "A_no_prior_visits",
+    "age_term": "linear",
+    "point": "mean"
+   },
+   "inner_cv_mae": 2.2136975417176856,
+   "fold_mae": [
+    2.2197419286501674,
+    2.2070202079819925,
+    2.2008197078492935,
+    2.211087949839008,
+    2.2298179142679673
+   ]
+  },
+  {
+   "number": 5,
+   "params": {
+    "feature_subset": "A_no_prior_visits",
+    "age_term": "linear",
+    "point": "median"
+   },
+   "inner_cv_mae": 2.138987381628888,
+   "fold_mae": [
+    2.1478457441747936,
+    2.136227267605386,
+    2.129387634896409,
+    2.124491137267882,
+    2.156985124199969
+   ]
+  },
+  {
+   "number": 6,
+   "params": {
+    "feature_subset": "A_no_lab_results",
+    "age_term": "linear",
+    "point": "median"
+   },
+   "inner_cv_mae": 2.1444578848804037,
+   "fold_mae": [
+    2.1512942394504813,
+    2.1418346000353594,
+    2.132374855330806,
+    2.1326181660138213,
+    2.16416756357155
+   ]
+  },
+  {
+   "number": 7,
+   "params": {
+    "feature_subset": "A_no_prior_visits",
+    "age_term": "quadratic",
+    "point": "mean"
+   },
+   "inner_cv_mae": 2.212946352085937,
+   "fold_mae": [
+    2.219016788980463,
+    2.2063700399712474,
+    2.199935577992611,
+    2.2105468422565644,
+    2.2288625112287965
+   ]
+  },
+  {
+   "number": 8,
+   "params": {
+    "feature_subset": "A_no_lab_results",
+    "age_term": "binned",
+    "point": "median"
+   },
+   "inner_cv_mae": 2.1454331224502576,
+   "fold_mae": [
+    2.152596245040804,
+    2.1437688307156035,
+    2.13347128416289,
+    2.132278352547499,
+    2.165050899784492
+   ]
+  },
+  {
+   "number": 9,
+   "params": {
+    "feature_subset": "A_no_prior_visits",
+    "age_term": "binned",
+    "point": "mean"
+   },
+   "inner_cv_mae": 2.2149424753146203,
+   "fold_mae": [
+    2.2205602537507865,
+    2.210063770818859,
+    2.2023733982923113,
+    2.210446773607161,
+    2.231268180103983
+   ]
+  },
+  {
+   "number": 10,
+   "params": {
+    "feature_subset": "A_no_lab_results",
+    "age_term": "quadratic",
+    "point": "median"
+   },
+   "inner_cv_mae": 2.1443643375534545,
+   "fold_mae": [
+    2.151739205366174,
+    2.1416569823074765,
+    2.132053273368515,
+    2.1323960962004853,
+    2.1639761305246217
+   ]
+  },
+  {
+   "number": 11,
+   "params": {
+    "feature_subset": "A_full",
+    "age_term": "binned",
+    "point": "median"
+   },
+   "inner_cv_mae": 2.1345709981036856,
+   "fold_mae": [
+    2.143430359064233,
+    2.133503511736278,
+    2.124839290445293,
+    2.118158572260871,
+    2.152923257011753
+   ]
+  },
+  {
+   "number": 12,
+   "params": {
+    "feature_subset": "A_no_lab_results",
+    "age_term": "linear",
+    "point": "mean"
+   },
+   "inner_cv_mae": 2.219144812438733,
+   "fold_mae": [
+    2.223623581105618,
+    2.2131122056030916,
+    2.2028821103976917,
+    2.2175849485328674,
+    2.2385212165543975
+   ]
+  },
+  {
+   "number": 13,
+   "params": {
+    "feature_subset": "A_no_lab_results",
+    "age_term": "quadratic",
+    "point": "mean"
+   },
+   "inner_cv_mae": 2.218486932357692,
+   "fold_mae": [
+    2.2231348024410686,
+    2.212605351156619,
+    2.202018217374528,
+    2.21702225394458,
+    2.2376540368716635
+   ]
+  },
+  {
+   "number": 14,
+   "params": {
+    "feature_subset": "A_no_lab_results",
+    "age_term": "binned",
+    "point": "mean"
+   },
+   "inner_cv_mae": 2.220197964861169,
+   "fold_mae": [
+    2.2241941801162555,
+    2.215415280937185,
+    2.2044640712157024,
+    2.2169845464497024,
+    2.2399317455869996
+   ]
+  },
+  {
+   "number": 15,
+   "params": {
+    "feature_subset": "A_full",
+    "age_term": "quadratic",
+    "point": "median"
+   },
+   "inner_cv_mae": 2.133073837268502,
+   "fold_mae": [
+    2.1420654310931817,
+    2.1308705210383883,
+    2.122698001492016,
+    2.1182956776200923,
+    2.1514395550988326
+   ]
+  },
+  {
+   "number": 16,
+   "params": {
+    "feature_subset": "A_full",
+    "age_term": "linear",
+    "point": "mean"
+   },
+   "inner_cv_mae": 2.2067864860219455,
+   "fold_mae": [
+    2.213158335570849,
+    2.201544008124426,
+    2.192210702425492,
+    2.202252474893313,
+    2.224766909095648
+   ]
+  },
+  {
+   "number": 17,
+   "params": {
+    "feature_subset": "A_no_prior_visits",
+    "age_term": "binned",
+    "point": "median"
+   },
+   "inner_cv_mae": 2.140314880358049,
+   "fold_mae": [
+    2.1492835662442173,
+    2.138807035185097,
+    2.1309048719101913,
+    2.124357106234824,
+    2.1582218222159177
+   ]
+  }
+ ]
+}

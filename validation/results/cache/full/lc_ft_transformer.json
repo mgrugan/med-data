@@ -1,0 +1,47 @@
+{
+ "model": "ft_transformer",
+ "points": [
+  {
+   "fraction": 0.1,
+   "n_train": 4478,
+   "train_mae": 2.2160270415868757,
+   "train_sd": 0.0,
+   "val_mae": 2.201066521650214,
+   "val_sd": 0.0
+  },
+  {
+   "fraction": 0.25,
+   "n_train": 11195,
+   "train_mae": 2.102616906730444,
+   "train_sd": 0.0,
+   "val_mae": 2.121427314244836,
+   "val_sd": 0.0
+  },
+  {
+   "fraction": 0.5,
+   "n_train": 22390,
+   "train_mae": 2.1055823829143163,
+   "train_sd": 0.0,
+   "val_mae": 2.1166034957773987,
+   "val_sd": 0.0
+  },
+  {
+   "fraction": 0.75,
+   "n_train": 33585,
+   "train_mae": 2.0780905042355555,
+   "train_sd": 0.0,
+   "val_mae": 2.1052345197811517,
+   "val_sd": 0.0
+  },
+  {
+   "fraction": 1.0,
+   "n_train": 44780,
+   "train_mae": 2.0797943678483626,
+   "train_sd": 0.0,
+   "val_mae": 2.1026344765463487,
+   "val_sd": 0.0
+  }
+ ],
+ "final_gap": 0.02284010869798614,
+ "diagnosis": "converged with small train/validation gap; extra data unlikely to help (little learnable signal)"
+}
