@@ -65,10 +65,21 @@ def _json_default(o):
     raise TypeError(type(o))
 
 
+def finite(o):
+    """Recursively replace NaN / ±inf with None so the JSON is standards-compliant."""
+    if isinstance(o, dict):
+        return {k: finite(v) for k, v in o.items()}
+    if isinstance(o, (list, tuple)):
+        return [finite(v) for v in o]
+    if isinstance(o, (float, np.floating)):
+        return float(o) if np.isfinite(o) else None
+    return o
+
+
 def dump(obj, path: Path) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
-    txt = json.dumps(obj, default=_json_default, indent=1, allow_nan=True)
-    path.write_text(txt.replace("NaN", "null"))
+    obj = json.loads(json.dumps(obj, default=_json_default))  # normalise numpy types first
+    path.write_text(json.dumps(finite(obj), indent=1, allow_nan=False))
 
 
 class Cache:
@@ -352,6 +363,9 @@ def export_models(models, params, conformal, test_metrics, selection, gate, out:
             e["ft"] = m.export_numpy(out / "ft_transformer.npz")
             e["file"], e["history"] = "ft_transformer.npz", m.history
         entries[k] = e
+        if k == "gamma_glm":  # statsmodels keeps the training data; not needed for prediction
+            m.result_.remove_data()
+            m._y_train = None
         if k != "ft_transformer":
             joblib.dump(m, out / f"{k}.joblib")
     manifest = {"budget": budget, "created_at": datetime.now(timezone.utc).isoformat(), "seed": GLOBAL_SEED,

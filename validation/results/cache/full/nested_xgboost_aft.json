@@ -379,11 +379,11 @@
       "aft_distribution": "logistic",
       "aft_scale": 0.3254309778274082
      },
-     "inner_cv_mae": Infinity,
+     "inner_cv_mae": null,
      "fold_mae": [
       1922552000.5577593,
       49019402.600620724,
-      Infinity,
+      null,
       4679990.320131166,
       2054344.2812501346
      ]

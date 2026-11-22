@@ -1,0 +1,47 @@
+{
+ "model": "catboost",
+ "points": [
+  {
+   "fraction": 0.1,
+   "n_train": 3518,
+   "train_mae": 7.549913544761162,
+   "train_sd": 0.018535360564045558,
+   "val_mae": 7.542497292745812,
+   "val_sd": 0.010557149556841713
+  },
+  {
+   "fraction": 0.25,
+   "n_train": 8794,
+   "train_mae": 7.536291522746637,
+   "train_sd": 0.054634342711161694,
+   "val_mae": 7.537980320107418,
+   "val_sd": 0.0013054081471509543
+  },
+  {
+   "fraction": 0.5,
+   "n_train": 17588,
+   "train_mae": 7.527389316560714,
+   "train_sd": 0.019670602158998213,
+   "val_mae": 7.537243886318566,
+   "val_sd": 0.0015885771754861734
+  },
+  {
+   "fraction": 0.75,
+   "n_train": 26383,
+   "train_mae": 7.498955206088918,
+   "train_sd": 0.01372828726305924,
+   "val_mae": 7.541547806209754,
+   "val_sd": 0.004753910665047862
+  },
+  {
+   "fraction": 1.0,
+   "n_train": 35177,
+   "train_mae": 7.484455802945384,
+   "train_sd": 0.016689584624537655,
+   "val_mae": 7.540322149836808,
+   "val_sd": 0.006188322045534639
+  }
+ ],
+ "final_gap": 0.055866346891424,
+ "diagnosis": "converged with small train/validation gap; extra data unlikely to help (little learnable signal)"
+}

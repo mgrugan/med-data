@@ -1,0 +1,9 @@
+{
+ "n": 1000,
+ "model_fits_required": 1000,
+ "loocv_mae": 7.544922740373409,
+ "loocv_mae_se": 0.14319764592079473,
+ "kfold10_mae": 7.561293247064815,
+ "median_baseline_loocv_mae": 7.37,
+ "full_data_fits_that_would_be_required": 43972
+}

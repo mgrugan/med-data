@@ -1,0 +1,47 @@
+{
+ "model": "xgboost",
+ "points": [
+  {
+   "fraction": 0.1,
+   "n_train": 3518,
+   "train_mae": 7.531246174549726,
+   "train_sd": 0.0447460080061125,
+   "val_mae": 7.537719041803737,
+   "val_sd": 0.0005981488386134011
+  },
+  {
+   "fraction": 0.25,
+   "n_train": 8794,
+   "train_mae": 7.45363759636635,
+   "train_sd": 0.11467331183104466,
+   "val_mae": 7.547918831256161,
+   "val_sd": 0.012985412164473987
+  },
+  {
+   "fraction": 0.5,
+   "n_train": 17588,
+   "train_mae": 7.517037761481606,
+   "train_sd": 0.021025993405163097,
+   "val_mae": 7.535533774475133,
+   "val_sd": 0.00026346621605932496
+  },
+  {
+   "fraction": 0.75,
+   "n_train": 26383,
+   "train_mae": 7.434862713703592,
+   "train_sd": 0.041845914358693295,
+   "val_mae": 7.542560958790015,
+   "val_sd": 0.004615571134611095
+  },
+  {
+   "fraction": 1.0,
+   "n_train": 35177,
+   "train_mae": 7.43085033672565,
+   "train_sd": 0.09726461517651373,
+   "val_mae": 7.540413349904141,
+   "val_sd": 0.007113483117206369
+  }
+ ],
+ "final_gap": 0.10956301317849082,
+ "diagnosis": "converged with small train/validation gap; extra data unlikely to help (little learnable signal)"
+}

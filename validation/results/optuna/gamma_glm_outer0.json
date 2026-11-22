@@ -1,0 +1,304 @@
+{
+ "model": "gamma_glm",
+ "context": "_outer0",
+ "seed": 20240631,
+ "n_folds": 5,
+ "n_trials": 18,
+ "sampler": "GridSampler",
+ "best_params": {
+  "feature_subset": "A_no_test_result",
+  "age_term": "quadratic",
+  "point": "mean"
+ },
+ "best_inner_cv_mae": 7.518586634102249,
+ "trials": [
+  {
+   "number": 0,
+   "params": {
+    "feature_subset": "A_no_test_result",
+    "age_term": "binned",
+    "point": "median"
+   },
+   "inner_cv_mae": 7.595863990032844,
+   "fold_mae": [
+    7.594928720075583,
+    7.629197438821012,
+    7.616844117282652,
+    7.616962985907545,
+    7.521386688077427
+   ]
+  },
+  {
+   "number": 1,
+   "params": {
+    "feature_subset": "A_no_test_result",
+    "age_term": "linear",
+    "point": "mean"
+   },
+   "inner_cv_mae": 7.518871373005543,
+   "fold_mae": [
+    7.491153004235808,
+    7.55740001831894,
+    7.551839448078846,
+    7.555788680476275,
+    7.438175713917843
+   ]
+  },
+  {
+   "number": 2,
+   "params": {
+    "feature_subset": "A_no_test_result",
+    "age_term": "quadratic",
+    "point": "median"
+   },
+   "inner_cv_mae": 7.595264433526616,
+   "fold_mae": [
+    7.5938195761628196,
+    7.628735766425523,
+    7.616663939224632,
+    7.616875496566653,
+    7.520227389253447
+   ]
+  },
+  {
+   "number": 3,
+   "params": {
+    "feature_subset": "A_no_blood_type",
+    "age_term": "quadratic",
+    "point": "mean"
+   },
+   "inner_cv_mae": 7.519100932721022,
+   "fold_mae": [
+    7.491358815342261,
+    7.556004677751314,
+    7.550467103780321,
+    7.557289985497153,
+    7.440384081234063
+   ]
+  },
+  {
+   "number": 4,
+   "params": {
+    "feature_subset": "A_no_blood_type",
+    "age_term": "binned",
+    "point": "mean"
+   },
+   "inner_cv_mae": 7.5198615714711305,
+   "fold_mae": [
+    7.492627634903575,
+    7.556570421466966,
+    7.550378784743741,
+    7.557516510772828,
+    7.4422145054685425
+   ]
+  },
+  {
+   "number": 5,
+   "params": {
+    "feature_subset": "A_no_blood_type",
+    "age_term": "linear",
+    "point": "mean"
+   },
+   "inner_cv_mae": 7.5194187224991325,
+   "fold_mae": [
+    7.491834367742091,
+    7.556381087762692,
+    7.551047230324844,
+    7.557572414197067,
+    7.440258512468962
+   ]
+  },
+  {
+   "number": 6,
+   "params": {
+    "feature_subset": "A_full",
+    "age_term": "quadratic",
+    "point": "mean"
+   },
+   "inner_cv_mae": 7.519198290410574,
+   "fold_mae": [
+    7.491966420017946,
+    7.557786506368393,
+    7.55195268260332,
+    7.555918604039742,
+    7.4383672390234645
+   ]
+  },
+  {
+   "number": 7,
+   "params": {
+    "feature_subset": "A_full",
+    "age_term": "quadratic",
+    "point": "median"
+   },
+   "inner_cv_mae": 7.595894326341423,
+   "fold_mae": [
+    7.59490996779249,
+    7.630077579422731,
+    7.616963646515318,
+    7.617272487378324,
+    7.5202479505982565
+   ]
+  },
+  {
+   "number": 8,
+   "params": {
+    "feature_subset": "A_no_test_result",
+    "age_term": "binned",
+    "point": "mean"
+   },
+   "inner_cv_mae": 7.51938387324594,
+   "fold_mae": [
+    7.49218400056291,
+    7.557577530926392,
+    7.551192760785084,
+    7.555713601403919,
+    7.440251472551393
+   ]
+  },
+  {
+   "number": 9,
+   "params": {
+    "feature_subset": "A_no_blood_type",
+    "age_term": "quadratic",
+    "point": "median"
+   },
+   "inner_cv_mae": 7.594769457169535,
+   "fold_mae": [
+    7.594256168638971,
+    7.625791679906083,
+    7.614860676259002,
+    7.617581308052222,
+    7.521357452991396
+   ]
+  },
+  {
+   "number": 10,
+   "params": {
+    "feature_subset": "A_no_blood_type",
+    "age_term": "binned",
+    "point": "median"
+   },
+   "inner_cv_mae": 7.595407549184218,
+   "fold_mae": [
+    7.595444814536167,
+    7.626247315571079,
+    7.615095169698903,
+    7.617677287969421,
+    7.522573158145516
+   ]
+  },
+  {
+   "number": 11,
+   "params": {
+    "feature_subset": "A_full",
+    "age_term": "linear",
+    "point": "mean"
+   },
+   "inner_cv_mae": 7.519487475688061,
+   "fold_mae": [
+    7.492444305355999,
+    7.558112160976488,
+    7.5524673219512595,
+    7.556196192781019,
+    7.43821739737554
+   ]
+  },
+  {
+   "number": 12,
+   "params": {
+    "feature_subset": "A_no_test_result",
+    "age_term": "quadratic",
+    "point": "mean"
+   },
+   "inner_cv_mae": 7.518586634102249,
+   "fold_mae": [
+    7.490691099660648,
+    7.557065619675346,
+    7.551350940126705,
+    7.555494793361811,
+    7.438330717686738
+   ]
+  },
+  {
+   "number": 13,
+   "params": {
+    "feature_subset": "A_no_blood_type",
+    "age_term": "linear",
+    "point": "median"
+   },
+   "inner_cv_mae": 7.594871123747765,
+   "fold_mae": [
+    7.594638094323868,
+    7.6259311408261965,
+    7.615048429027016,
+    7.617627603548327,
+    7.521110351013416
+   ]
+  },
+  {
+   "number": 14,
+   "params": {
+    "feature_subset": "A_full",
+    "age_term": "binned",
+    "point": "mean"
+   },
+   "inner_cv_mae": 7.519975578692066,
+   "fold_mae": [
+    7.493345771493525,
+    7.558300094450825,
+    7.551817481207723,
+    7.556125051717597,
+    7.440289494590664
+   ]
+  },
+  {
+   "number": 15,
+   "params": {
+    "feature_subset": "A_full",
+    "age_term": "binned",
+    "point": "median"
+   },
+   "inner_cv_mae": 7.596521466274547,
+   "fold_mae": [
+    7.5960721963358955,
+    7.630515043979979,
+    7.617200409855813,
+    7.617408385440011,
+    7.521411295761032
+   ]
+  },
+  {
+   "number": 16,
+   "params": {
+    "feature_subset": "A_full",
+    "age_term": "linear",
+    "point": "median"
+   },
+   "inner_cv_mae": 7.595992982083463,
+   "fold_mae": [
+    7.595280321285612,
+    7.630172013675592,
+    7.6171861034855555,
+    7.617361321610628,
+    7.519965150359931
+   ]
+  },
+  {
+   "number": 17,
+   "params": {
+    "feature_subset": "A_no_test_result",
+    "age_term": "linear",
+    "point": "median"
+   },
+   "inner_cv_mae": 7.595353063308215,
+   "fold_mae": [
+    7.5941633502506205,
+    7.628875387482426,
+    7.616846598341069,
+    7.616939327296589,
+    7.51994065317037
+   ]
+  }
+ ]
+}

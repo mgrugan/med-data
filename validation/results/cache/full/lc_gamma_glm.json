@@ -1,0 +1,47 @@
+{
+ "model": "gamma_glm",
+ "points": [
+  {
+   "fraction": 0.1,
+   "n_train": 3518,
+   "train_mae": 7.531575770792995,
+   "train_sd": 0.04086441253292873,
+   "val_mae": 7.562369633417171,
+   "val_sd": 0.007318557499554289
+  },
+  {
+   "fraction": 0.25,
+   "n_train": 8794,
+   "train_mae": 7.539179090847351,
+   "train_sd": 0.04665665407144232,
+   "val_mae": 7.54684385270972,
+   "val_sd": 0.003303381649475455
+  },
+  {
+   "fraction": 0.5,
+   "n_train": 17588,
+   "train_mae": 7.527022456834577,
+   "train_sd": 0.026141570617445552,
+   "val_mae": 7.540308152635291,
+   "val_sd": 0.001676274362538594
+  },
+  {
+   "fraction": 0.75,
+   "n_train": 26383,
+   "train_mae": 7.510412323650672,
+   "train_sd": 0.005357533125876444,
+   "val_mae": 7.539388128155722,
+   "val_sd": 0.0009840655032568612
+  },
+  {
+   "fraction": 1.0,
+   "n_train": 35177,
+   "train_mae": 7.502098702181644,
+   "train_sd": 8.881784197001252e-16,
+   "val_mae": 7.539632220074904,
+   "val_sd": 0.0
+  }
+ ],
+ "final_gap": 0.03753351789326054,
+ "diagnosis": "converged with small train/validation gap; extra data unlikely to help (little learnable signal)"
+}

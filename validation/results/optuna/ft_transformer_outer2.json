@@ -1,0 +1,104 @@
+{
+ "model": "ft_transformer",
+ "context": "_outer2",
+ "seed": 20240831,
+ "n_folds": 3,
+ "n_trials": 4,
+ "sampler": "TPESampler",
+ "best_params": {
+  "feature_subset": "A_no_test_result",
+  "d_token": 16,
+  "n_blocks": 2,
+  "n_heads": 4,
+  "attn_dropout": 0.28731827813450395,
+  "ffn_dropout": 0.1905235582979403,
+  "residual_dropout": 0.0411764177609755,
+  "lr": 0.0006250002405119085,
+  "weight_decay": 3.6510611721264098e-06,
+  "batch_size": 512,
+  "loss": "mse"
+ },
+ "best_inner_cv_mae": 7.516392908709541,
+ "trials": [
+  {
+   "number": 0,
+   "params": {
+    "feature_subset": "A_full",
+    "d_token": 32,
+    "n_blocks": 2,
+    "attn_dropout": 0.1,
+    "ffn_dropout": 0.1,
+    "residual_dropout": 0.0,
+    "lr": 0.001,
+    "weight_decay": 1e-05,
+    "loss": "l1"
+   },
+   "inner_cv_mae": 7.520098866336863,
+   "fold_mae": [
+    7.508010333986915,
+    7.5117615581514405,
+    7.540524706872234
+   ]
+  },
+  {
+   "number": 1,
+   "params": {
+    "feature_subset": "A_no_test_result",
+    "d_token": 16,
+    "n_blocks": 2,
+    "attn_dropout": 0.28731827813450395,
+    "ffn_dropout": 0.1905235582979403,
+    "residual_dropout": 0.0411764177609755,
+    "lr": 0.0006250002405119085,
+    "weight_decay": 3.6510611721264098e-06,
+    "loss": "mse"
+   },
+   "inner_cv_mae": 7.516392908709541,
+   "fold_mae": [
+    7.50737874035784,
+    7.50836828449125,
+    7.533431701279532
+   ]
+  },
+  {
+   "number": 2,
+   "params": {
+    "feature_subset": "A_full",
+    "d_token": 16,
+    "n_blocks": 2,
+    "attn_dropout": 0.06778445288862574,
+    "ffn_dropout": 0.14104929277668918,
+    "residual_dropout": 0.11560718495059095,
+    "lr": 0.00015404933908569018,
+    "weight_decay": 8.017831531711888e-06,
+    "loss": "l1"
+   },
+   "inner_cv_mae": 7.516926182415006,
+   "fold_mae": [
+    7.507916341925082,
+    7.509492681393663,
+    7.533369523926276
+   ]
+  },
+  {
+   "number": 3,
+   "params": {
+    "feature_subset": "A_full",
+    "d_token": 32,
+    "n_blocks": 1,
+    "attn_dropout": 0.23812382764145368,
+    "ffn_dropout": 0.009440151447013136,
+    "residual_dropout": 0.199593045938681,
+    "lr": 0.0012712355806248712,
+    "weight_decay": 0.0018303653077667281,
+    "loss": "mse"
+   },
+   "inner_cv_mae": 7.518527385244944,
+   "fold_mae": [
+    7.508417639129706,
+    7.504559744793096,
+    7.542604771812032
+   ]
+  }
+ ]
+}

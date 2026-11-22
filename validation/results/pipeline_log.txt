@@ -1,0 +1,97 @@
+[00:09:38] data: 54966 rows -> dev 43972 (fit 37376, cal 6596), test 10994
+[00:09:38] nested CV: median_baseline (outer 5 x inner 5, 0 trials)
+[00:09:38] cache hit: nested_median_baseline
+[00:09:38] nested CV: condition_median (outer 5 x inner 5, 0 trials)
+[00:09:38] cache hit: nested_condition_median
+[00:09:38] nested CV: gamma_glm (outer 5 x inner 5, 18 trials)
+[00:09:38] cache hit: nested_gamma_glm
+[00:09:38] nested CV: xgboost (outer 5 x inner 5, 25 trials)
+[00:09:38] cache hit: nested_xgboost
+[00:09:38] nested CV: xgboost_aft (outer 5 x inner 5, 15 trials)
+[00:09:38] cache hit: nested_xgboost_aft
+[00:09:38] nested CV: catboost (outer 5 x inner 5, 12 trials)
+[00:09:38] cache hit: nested_catboost
+[00:09:38] nested CV: ft_transformer (outer 5 x inner 3, 4 trials)
+[00:11:59]   [nested] ft_transformer outer 0: MAE=7.488 (141s)
+[00:14:16]   [nested] ft_transformer outer 1: MAE=7.484 (137s)
+[00:16:01]   [nested] ft_transformer outer 2: MAE=7.512 (105s)
+[00:18:19]   [nested] ft_transformer outer 3: MAE=7.531 (137s)
+[00:19:42]   [nested] ft_transformer outer 4: MAE=7.559 (83s)
+[00:19:42] final tuning: gamma_glm
+[00:20:03] final tuning: xgboost
+[00:20:35] final tuning: xgboost_aft
+[00:21:45] final tuning: catboost
+[00:22:47] final tuning: ft_transformer
+[00:24:35] repeated CV: median_baseline
+[00:24:35]   [repeated] median_baseline repeat 0: MAE=7.519
+[00:24:35]   [repeated] median_baseline repeat 1: MAE=7.517
+[00:24:35]   [repeated] median_baseline repeat 2: MAE=7.515
+[00:24:35] repeated CV: condition_median
+[00:24:35]   [repeated] condition_median repeat 0: MAE=7.513
+[00:24:35]   [repeated] condition_median repeat 1: MAE=7.514
+[00:24:35]   [repeated] condition_median repeat 2: MAE=7.512
+[00:24:35] repeated CV: gamma_glm
+[00:24:36]   [repeated] gamma_glm repeat 0: MAE=7.514
+[00:24:37]   [repeated] gamma_glm repeat 1: MAE=7.514
+[00:24:38]   [repeated] gamma_glm repeat 2: MAE=7.513
+[00:24:38] repeated CV: xgboost
+[00:24:40]   [repeated] xgboost repeat 0: MAE=7.514
+[00:24:41]   [repeated] xgboost repeat 1: MAE=7.516
+[00:24:42]   [repeated] xgboost repeat 2: MAE=7.514
+[00:24:42] repeated CV: xgboost_aft
+[00:24:51]   [repeated] xgboost_aft repeat 0: MAE=7.543
+[00:25:00]   [repeated] xgboost_aft repeat 1: MAE=7.542
+[00:25:09]   [repeated] xgboost_aft repeat 2: MAE=7.539
+[00:25:09] repeated CV: catboost
+[00:25:13]   [repeated] catboost repeat 0: MAE=7.516
+[00:25:21]   [repeated] catboost repeat 1: MAE=7.514
+[00:25:27]   [repeated] catboost repeat 2: MAE=7.514
+[00:25:27] repeated CV: ft_transformer
+[00:26:19]   [repeated] ft_transformer repeat 0: MAE=7.514
+[00:27:21]   [repeated] ft_transformer repeat 1: MAE=7.512
+[00:28:15]   [repeated] ft_transformer repeat 2: MAE=7.514
+[00:28:15] permutation test: condition_median (200 shuffles)
+[00:28:18]   [perm] condition_median: observed 7.572 vs shuffled 7.512±0.042 p=0.915
+[00:28:18] permutation test: gamma_glm (200 shuffles)
+[00:29:07]   [perm] gamma_glm: observed 7.566 vs shuffled 7.511±0.042 p=0.896
+[00:29:07] permutation test: xgboost (40 shuffles)
+[00:29:18]   [perm] xgboost: observed 7.564 vs shuffled 7.509±0.045 p=0.902
+[00:29:18] permutation test: xgboost_aft (20 shuffles)
+[00:29:54]   [perm] xgboost_aft: observed 7.584 vs shuffled 7.523±0.041 p=1.000
+[00:29:54] permutation test: catboost (20 shuffles)
+[00:30:14]   [perm] catboost: observed 7.568 vs shuffled 7.490±0.034 p=1.000
+[00:30:14] permutation test: ft_transformer (5 shuffles)
+[00:31:38]   [perm] ft_transformer: observed 7.571 vs shuffled 7.482±0.037 p=1.000
+[00:31:38] learning curve: gamma_glm
+[00:31:40] learning curve: xgboost
+[00:31:43] learning curve: catboost
+[00:31:56] learning curve: ft_transformer
+[00:32:36] LOOCV demonstration (GLM, subsample)
+[00:32:52] feature set B repeated CV: gamma_glm
+[00:32:54]   [repeated] gamma_glm repeat 0: MAE=7.516
+[00:32:56]   [repeated] gamma_glm repeat 1: MAE=7.515
+[00:32:58]   [repeated] gamma_glm repeat 2: MAE=7.515
+[00:32:58] feature set B repeated CV: xgboost
+[00:33:00]   [repeated] xgboost repeat 0: MAE=7.510
+[00:33:04]   [repeated] xgboost repeat 1: MAE=7.503
+[00:33:07]   [repeated] xgboost repeat 2: MAE=7.505
+[00:33:07] feature set B repeated CV: catboost
+[00:33:17]   [repeated] catboost repeat 0: MAE=7.516
+[00:33:32]   [repeated] catboost repeat 1: MAE=7.514
+[00:33:40]   [repeated] catboost repeat 2: MAE=7.514
+[00:33:40] selection locked: selected=median_baseline display=gamma_glm
+[00:33:40] final fit: median_baseline
+[00:33:40]   TEST median_baseline: mae=7.510, rmse=8.673, medae=8.000, r2=-0.003, mape=133.085, bias=-0.495
+[00:33:40] final fit: condition_median
+[00:33:40]   TEST condition_median: mae=7.508, rmse=8.671, medae=7.000, r2=-0.003, mape=135.953, bias=-0.169
+[00:33:40] final fit: gamma_glm
+[00:33:41]   TEST gamma_glm: mae=7.508, rmse=8.659, medae=7.497, r2=0.000, mape=137.583, bias=0.007
+[00:33:41] final fit: xgboost
+[00:33:41]   TEST xgboost: mae=7.508, rmse=8.663, medae=7.507, r2=-0.001, mape=137.910, bias=0.057
+[00:33:41] final fit: xgboost_aft
+[00:33:43]   TEST xgboost_aft: mae=7.549, rmse=8.735, medae=7.493, r2=-0.018, mape=127.507, bias=-1.154
+[00:33:43] final fit: catboost
+[00:33:45]   TEST catboost: mae=7.512, rmse=8.663, medae=7.499, r2=-0.001, mape=137.854, bias=0.044
+[00:33:45] final fit: ft_transformer
+[00:33:54]   TEST ft_transformer: mae=7.511, rmse=8.661, medae=7.532, r2=-0.001, mape=136.142, bias=-0.152
+[00:34:31] quality gate: warning=True (5 checks failed)

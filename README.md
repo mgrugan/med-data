@@ -21,7 +21,46 @@ RecoveryAI does three things:
 * **Secondary.** Do advanced nonlinear machine-learning models provide statistically meaningful predictive improvement
   over simple statistical and naive baselines?
 
-<!-- RESULTS -->
+## Results (full run, committed in `validation/results/`)
+
+**Answer to both research questions: no.** In this synthetic dataset, admission-time characteristics carry no detectable
+information about length of stay. Advanced models do not improve on predicting the median for everyone. The validation
+framework is not the reason: given a known injected effect, it detects it easily (see the positive control).
+
+| Model | Nested-CV MAE (mean ± SD) | Test MAE | 95% BCa CI | Test R² | Δ MAE vs median (95% CI) |
+|---|---:|---:|---:|---:|---:|
+| Median baseline | 7.515 ± 0.029 | 7.510 | 7.43–7.58 | −0.003 | — |
+| Condition median | 7.513 ± 0.031 | 7.508 | 7.43–7.58 | −0.003 | −0.013 to 0.009 |
+| Gamma GLM | 7.515 ± 0.030 | 7.508 | 7.43–7.58 | 0.000 | −0.012 to 0.008 |
+| XGBoost | 7.513 ± 0.031 | 7.508 | 7.42–7.57 | −0.001 | −0.016 to 0.011 |
+| XGBoost AFT | 7.565 ± 0.036 | 7.549 | 7.47–7.62 | −0.018 | **+0.027 to +0.053** (worse) |
+| CatBoost | 7.512 ± 0.031 | 7.512 | 7.43–7.59 | −0.001 | −0.009 to 0.014 |
+| FT-Transformer | 7.515 ± 0.031 | 7.511 | 7.43–7.58 | −0.001 | −0.006 to 0.008 |
+
+* **Selection.** CatBoost has the lowest point estimate (7.512), but all 7 models are statistically indistinguishable
+  (corrected resampled t-test). Parsimony therefore selects the **median baseline**, decided before the test set was opened.
+* **Shuffled-target control.** Real-target models do *not* beat shuffled-target models. Empirical permutation p-values are
+  0.90 (GLM, 200 shuffles), 0.90 (XGBoost, 40), 1.00 (CatBoost, 20), 1.00 (FT-Transformer, 5).
+  > The synthetic dataset does not appear to contain strong predictive relationships for hospital length of stay.
+* **Gamma GLM.** Likelihood-ratio test vs intercept-only: χ²(23) = 26.1, p = 0.29. ΔAIC = +19.9 and ΔBIC = +216 favour the
+  null model. Every exp(β) lies within 0.99–1.02 and every 95% CI includes 1. AIC = 273,478.5, AICc = 273,478.5, BIC = 273,691.7.
+* **Survival view.** C-index 0.503 (AFT) and 0.506 (GLM), essentially chance. The integrated Brier score (0.180 / 0.181)
+  is no better than Kaplan–Meier with no features (0.177).
+* **Conformal intervals.** Coverage is honest (90% nominal → 89.9% empirical), but intervals are 27.0 days wide, identical
+  to a no-information interval (ratio 1.00).
+* **Learning curves.** Training and validation errors converge at about 7.54 with a small gap. More data would not help.
+* **Feature set B** (adds Billing Amount and other research variables) gives no gain either (CatBoost B − A: corrected
+  p = 0.92). Even the leakage-prone final bill carries no LOS signal in this synthetic data.
+* **Positive control.** On a semi-synthetic target with a known admission-type, condition and age effect, the same
+  pipeline reaches R² ≈ 0.25 and MAE 4.68 vs 5.39 for the median, with the permutation p at its floor (1/11).
+* **Quality gate.** All five checks fail, so every prediction in the app carries the methodology warning.
+
+LOS in the source data is close to uniform on 1–30 days (mean 15.5, SD 8.7), with near-identical means in every subgroup.
+That is consistent with the target having been generated independently of the other columns.
+
+![model comparison](validation/figures/model_comparison.png)
+![shuffled target](validation/figures/shuffled_target.png)
+
 
 ## Repository layout
 
@@ -85,7 +124,7 @@ pip install -r training/requirements.txt
 ```
 
 ```bash
-python -m training.run_pipeline --budget full   # ~1-2 h on 4 CPU cores; --budget quick for a smoke test
+python -m training.run_pipeline --budget full   # ~25-60 min on 4 CPU cores; --budget quick for a smoke test
 ```
 
 ```bash

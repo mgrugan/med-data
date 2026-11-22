@@ -1,0 +1,384 @@
+{
+ "model": "xgboost_aft",
+ "context": "_outer4",
+ "seed": 20241031,
+ "n_folds": 5,
+ "n_trials": 15,
+ "sampler": "TPESampler",
+ "best_params": {
+  "feature_subset": "A_no_blood_type",
+  "max_depth": 5,
+  "learning_rate": 0.029471208073535933,
+  "subsample": 0.5285905006329488,
+  "colsample_bytree": 0.6589215464188345,
+  "min_child_weight": 5.9200227785111394,
+  "gamma": 1.138855597757592e-08,
+  "reg_alpha": 4.280779560984284e-05,
+  "reg_lambda": 0.008734327045691607,
+  "aft_distribution": "extreme",
+  "aft_scale": 0.46819129308542223
+ },
+ "best_inner_cv_mae": 7.513374906036067,
+ "trials": [
+  {
+   "number": 0,
+   "params": {
+    "feature_subset": "A_full",
+    "max_depth": 4,
+    "learning_rate": 0.05,
+    "subsample": 0.8,
+    "colsample_bytree": 0.8,
+    "min_child_weight": 5.0,
+    "gamma": 0.001,
+    "reg_alpha": 0.001,
+    "reg_lambda": 1.0,
+    "aft_distribution": "normal",
+    "aft_scale": 1.0
+   },
+   "inner_cv_mae": 7.939343783723044,
+   "fold_mae": [
+    7.935753472470049,
+    8.019671101166386,
+    7.911747659367486,
+    7.901610105242887,
+    7.9279365803684065
+   ]
+  },
+  {
+   "number": 1,
+   "params": {
+    "feature_subset": "A_no_blood_type",
+    "max_depth": 7,
+    "learning_rate": 0.014154379409407704,
+    "subsample": 0.7158647101467343,
+    "colsample_bytree": 0.738115366670171,
+    "min_child_weight": 7.935357935857405,
+    "gamma": 4.596208878299263e-08,
+    "reg_alpha": 0.0007733919717170984,
+    "reg_lambda": 0.005447443392064649,
+    "aft_distribution": "extreme",
+    "aft_scale": 0.36338518727323377
+   },
+   "inner_cv_mae": 7.529232443662241,
+   "fold_mae": [
+    7.569298636438167,
+    7.502496065316952,
+    7.551933276624674,
+    7.516637829419509,
+    7.505796410511902
+   ]
+  },
+  {
+   "number": 2,
+   "params": {
+    "feature_subset": "A_no_test_result",
+    "max_depth": 5,
+    "learning_rate": 0.06218289926150749,
+    "subsample": 0.6701279060139083,
+    "colsample_bytree": 0.770556307116328,
+    "min_child_weight": 21.263690406541034,
+    "gamma": 0.9844682935087251,
+    "reg_alpha": 0.014466319509084318,
+    "reg_lambda": 0.004611598678289104,
+    "aft_distribution": "logistic",
+    "aft_scale": 0.9283000219176462
+   },
+   "inner_cv_mae": 7.802322134911075,
+   "fold_mae": [
+    7.81554124388949,
+    7.879183636168258,
+    7.7498561513091335,
+    7.775206602154159,
+    7.791823041034338
+   ]
+  },
+  {
+   "number": 3,
+   "params": {
+    "feature_subset": "A_no_test_result",
+    "max_depth": 5,
+    "learning_rate": 0.015515963715038656,
+    "subsample": 0.6932370863393269,
+    "colsample_bytree": 0.795483637817261,
+    "min_child_weight": 15.885525155513582,
+    "gamma": 7.689584428106187e-08,
+    "reg_alpha": 1.1643983686160242,
+    "reg_lambda": 0.010639488272442404,
+    "aft_distribution": "normal",
+    "aft_scale": 0.6329529513509301
+   },
+   "inner_cv_mae": 7.958485711014999,
+   "fold_mae": [
+    7.964431063521218,
+    8.02865151814919,
+    7.91975747699914,
+    7.9236810328006335,
+    7.955907463604814
+   ]
+  },
+  {
+   "number": 4,
+   "params": {
+    "feature_subset": "A_no_test_result",
+    "max_depth": 8,
+    "learning_rate": 0.04813662115886643,
+    "subsample": 0.9148022913342143,
+    "colsample_bytree": 0.8458438072134375,
+    "min_child_weight": 30.99743982654554,
+    "gamma": 1.2377918488491413e-07,
+    "reg_alpha": 0.0004474736922861268,
+    "reg_lambda": 7.938627919327842,
+    "aft_distribution": "normal",
+    "aft_scale": 0.6744165371314094
+   },
+   "inner_cv_mae": 8.00017807743979,
+   "fold_mae": [
+    7.998337281033836,
+    8.071839130262546,
+    7.953449199514354,
+    7.977744329872277,
+    7.999520446515941
+   ]
+  },
+  {
+   "number": 5,
+   "params": {
+    "feature_subset": "A_no_blood_type",
+    "max_depth": 2,
+    "learning_rate": 0.03905249722700418,
+    "subsample": 0.6248587817839865,
+    "colsample_bytree": 0.8005947642735733,
+    "min_child_weight": 2.4805446823236474,
+    "gamma": 7.48601062266939e-05,
+    "reg_alpha": 1.0592642447700054e-07,
+    "reg_lambda": 2.38838337360458,
+    "aft_distribution": "extreme",
+    "aft_scale": 0.6628605967899057
+   },
+   "inner_cv_mae": 7.697229028096994,
+   "fold_mae": [
+    7.712678464759227,
+    7.73074571944256,
+    7.655588554549267,
+    7.679114154232037,
+    7.708018247501875
+   ]
+  },
+  {
+   "number": 6,
+   "params": {
+    "feature_subset": "A_no_blood_type",
+    "max_depth": 7,
+    "learning_rate": 0.015178421753102458,
+    "subsample": 0.8699242352496643,
+    "colsample_bytree": 0.8982394835581625,
+    "min_child_weight": 5.940689477145018,
+    "gamma": 1.828917757598848e-05,
+    "reg_alpha": 3.432749020866811e-07,
+    "reg_lambda": 0.006837585978594845,
+    "aft_distribution": "extreme",
+    "aft_scale": 1.1504365633586155
+   },
+   "inner_cv_mae": 8.634102663948402,
+   "fold_mae": [
+    8.640113046043695,
+    8.702370235097947,
+    8.545830029264343,
+    8.627097580573631,
+    8.655102428762397
+   ]
+  },
+  {
+   "number": 7,
+   "params": {
+    "feature_subset": "A_no_blood_type",
+    "max_depth": 7,
+    "learning_rate": 0.019921335507066526,
+    "subsample": 0.5124150441062783,
+    "colsample_bytree": 0.8741903955248431,
+    "min_child_weight": 10.937653705793116,
+    "gamma": 1.1125233673925203e-08,
+    "reg_alpha": 0.015575555102034658,
+    "reg_lambda": 2.563158790742365,
+    "aft_distribution": "extreme",
+    "aft_scale": 0.32309037589768486
+   },
+   "inner_cv_mae": 7.573312959058521,
+   "fold_mae": [
+    7.613287437704085,
+    7.532556445484282,
+    7.612650454386834,
+    7.569572782974456,
+    7.538497674742948
+   ]
+  },
+  {
+   "number": 8,
+   "params": {
+    "feature_subset": "A_no_blood_type",
+    "max_depth": 5,
+    "learning_rate": 0.029471208073535933,
+    "subsample": 0.5285905006329488,
+    "colsample_bytree": 0.6589215464188345,
+    "min_child_weight": 5.9200227785111394,
+    "gamma": 1.138855597757592e-08,
+    "reg_alpha": 4.280779560984284e-05,
+    "reg_lambda": 0.008734327045691607,
+    "aft_distribution": "extreme",
+    "aft_scale": 0.46819129308542223
+   },
+   "inner_cv_mae": 7.513374906036067,
+   "fold_mae": [
+    7.5520521675379895,
+    7.501930804143674,
+    7.506410488384788,
+    7.497146435924995,
+    7.509334634188888
+   ]
+  },
+  {
+   "number": 9,
+   "params": {
+    "feature_subset": "A_no_blood_type",
+    "max_depth": 3,
+    "learning_rate": 0.029217839932092985,
+    "subsample": 0.5898334595615738,
+    "colsample_bytree": 0.7065574531339015,
+    "min_child_weight": 1.1089860195374097,
+    "gamma": 7.017313012249566e-05,
+    "reg_alpha": 6.84392127887637e-05,
+    "reg_lambda": 0.006633351343877938,
+    "aft_distribution": "extreme",
+    "aft_scale": 0.33307758533113474
+   },
+   "inner_cv_mae": 7.5707678792715765,
+   "fold_mae": [
+    7.622522728235274,
+    7.537782225426442,
+    7.578710880918459,
+    7.553423000072506,
+    7.561400561705202
+   ]
+  },
+  {
+   "number": 10,
+   "params": {
+    "feature_subset": "A_no_blood_type",
+    "max_depth": 4,
+    "learning_rate": 0.1137921604801356,
+    "subsample": 0.6080103185672489,
+    "colsample_bytree": 0.6664205777385505,
+    "min_child_weight": 11.207559035835013,
+    "gamma": 0.009772405677154471,
+    "reg_alpha": 0.002365519207853264,
+    "reg_lambda": 1.121915601047988,
+    "aft_distribution": "extreme",
+    "aft_scale": 0.6524415297826892
+   },
+   "inner_cv_mae": 7.690517565271266,
+   "fold_mae": [
+    7.71315207895392,
+    7.703245727076082,
+    7.659226302994583,
+    7.683354133510562,
+    7.693609583821181
+   ]
+  },
+  {
+   "number": 11,
+   "params": {
+    "feature_subset": "A_full",
+    "max_depth": 7,
+    "learning_rate": 0.011077143251463207,
+    "subsample": 0.6244105855768193,
+    "colsample_bytree": 0.6397459717591949,
+    "min_child_weight": 5.354365429219048,
+    "gamma": 2.4047776625353717e-08,
+    "reg_alpha": 0.07462150334402927,
+    "reg_lambda": 0.0020319166079130068,
+    "aft_distribution": "extreme",
+    "aft_scale": 0.4970045176869939
+   },
+   "inner_cv_mae": 7.555854187954002,
+   "fold_mae": [
+    7.599117896218737,
+    7.553185057223683,
+    7.540234783719383,
+    7.53267325607615,
+    7.5540599465320595
+   ]
+  },
+  {
+   "number": 12,
+   "params": {
+    "feature_subset": "A_no_blood_type",
+    "max_depth": 6,
+    "learning_rate": 0.011764319032775201,
+    "subsample": 0.5992319141930275,
+    "colsample_bytree": 0.83275870432668,
+    "min_child_weight": 4.7199463839013385,
+    "gamma": 5.027855321183337e-06,
+    "reg_alpha": 0.000888975386587188,
+    "reg_lambda": 0.028652714006611662,
+    "aft_distribution": "extreme",
+    "aft_scale": 0.6113183314328017
+   },
+   "inner_cv_mae": 7.664772268569008,
+   "fold_mae": [
+    7.693775746498298,
+    7.678170881133778,
+    7.629370033446045,
+    7.651949464500605,
+    7.670595217266316
+   ]
+  },
+  {
+   "number": 13,
+   "params": {
+    "feature_subset": "A_no_blood_type",
+    "max_depth": 5,
+    "learning_rate": 0.02900604355409961,
+    "subsample": 0.5912993653939249,
+    "colsample_bytree": 0.6221805235690319,
+    "min_child_weight": 2.6722212735259463,
+    "gamma": 1.2287936446894748e-07,
+    "reg_alpha": 3.0035495266037206e-05,
+    "reg_lambda": 0.011916578791129263,
+    "aft_distribution": "normal",
+    "aft_scale": 0.5309131831704549
+   },
+   "inner_cv_mae": 7.970446042893885,
+   "fold_mae": [
+    7.958730110195962,
+    8.050270101470437,
+    7.933919122499976,
+    7.956662554085604,
+    7.952648326217446
+   ]
+  },
+  {
+   "number": 14,
+   "params": {
+    "feature_subset": "A_no_blood_type",
+    "max_depth": 6,
+    "learning_rate": 0.04258651196034677,
+    "subsample": 0.6275337532279062,
+    "colsample_bytree": 0.7796917600421653,
+    "min_child_weight": 6.233491315874797,
+    "gamma": 4.234235428292005e-08,
+    "reg_alpha": 1.1636169191078333e-07,
+    "reg_lambda": 0.002007578276404405,
+    "aft_distribution": "extreme",
+    "aft_scale": 0.3943531456747642
+   },
+   "inner_cv_mae": 7.515898668408208,
+   "fold_mae": [
+    7.560285829428977,
+    7.49026925505715,
+    7.522921241734385,
+    7.504079546490776,
+    7.501937469329751
+   ]
+  }
+ ]
+}

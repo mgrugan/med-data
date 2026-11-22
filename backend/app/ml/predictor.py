@@ -234,10 +234,11 @@ def get_predictor() -> Predictor:
 def get_report() -> dict:
     if not REPORT_PATH.exists():
         return {}
-    report = json.loads(REPORT_PATH.read_text())
+    # parse_constant maps any NaN/Infinity to None so the response is valid JSON
+    report = json.loads(REPORT_PATH.read_text(), parse_constant=lambda _: None)
     pc = REPORT_PATH.parent / "positive_control.json"
     if pc.exists():
-        report["positive_control"] = json.loads(pc.read_text())
+        report["positive_control"] = json.loads(pc.read_text(), parse_constant=lambda _: None)
     return report
 
 

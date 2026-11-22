@@ -1,0 +1,93 @@
+{
+ "ranking_by_nested_mae": [
+  "catboost",
+  "condition_median",
+  "xgboost",
+  "ft_transformer",
+  "median_baseline",
+  "gamma_glm",
+  "xgboost_aft"
+ ],
+ "point_estimate_leader": "catboost",
+ "selected_model": "median_baseline",
+ "display_model": "gamma_glm",
+ "equivalent_set": [
+  "median_baseline",
+  "condition_median",
+  "gamma_glm",
+  "xgboost",
+  "xgboost_aft",
+  "catboost",
+  "ft_transformer"
+ ],
+ "comparisons_vs_leader": {
+  "median_baseline": {
+   "mean_diff": 0.0024051214223562785,
+   "t": 0.9660570739042127,
+   "p_value": 0.3504082450328834,
+   "df": 14,
+   "naive_p_value": 0.053790321945526666,
+   "equivalent_to_best": true
+  },
+  "condition_median": {
+   "mean_diff": -0.001453335656994111,
+   "t": -0.44594083324975525,
+   "p_value": 0.6624590329952958,
+   "df": 14,
+   "naive_p_value": 0.3476016581697518,
+   "equivalent_to_best": true
+  },
+  "gamma_glm": {
+   "mean_diff": -0.0006929832156118939,
+   "t": -0.34524305529909216,
+   "p_value": 0.7350438965677439,
+   "df": 14,
+   "naive_p_value": 0.4642607666861124,
+   "equivalent_to_best": true
+  },
+  "xgboost": {
+   "mean_diff": 0.00039066355860886877,
+   "t": 0.11299862900090996,
+   "p_value": 0.9116359810883232,
+   "df": 14,
+   "naive_p_value": 0.8090478748630027,
+   "equivalent_to_best": true
+  },
+  "xgboost_aft": {
+   "mean_diff": 0.027060118003535118,
+   "t": 3.7115354544449453,
+   "p_value": 0.0023236479659698053,
+   "df": 14,
+   "naive_p_value": 1.2038211207936474e-06,
+   "equivalent_to_best": true
+  },
+  "catboost": {
+   "mean_diff": 0.0,
+   "t": 0.0,
+   "p_value": 1.0,
+   "df": 14,
+   "equivalent_to_best": true
+  },
+  "ft_transformer": {
+   "mean_diff": -0.0009892253449977535,
+   "t": -0.415087769883805,
+   "p_value": 0.6843687635686956,
+   "df": 14,
+   "naive_p_value": 0.380959007893396,
+   "equivalent_to_best": true
+  }
+ },
+ "fold_stability_sd": {
+  "median_baseline": 0.03596203223851177,
+  "condition_median": 0.03548968304670849,
+  "gamma_glm": 0.03510868748387483,
+  "xgboost": 0.035763800913233626,
+  "xgboost_aft": 0.039523582890206375,
+  "catboost": 0.03444129720704283,
+  "ft_transformer": 0.03510455106790765
+ },
+ "practical_margin_days": 0.1,
+ "reason": "7.512-day nested-CV MAE makes 'catboost' the point-estimate leader, but 7 of 7 models are statistically indistinguishable from it (corrected resampled t-test, p > 0.05, or within 0.1 days). By parsimony the simplest of these, 'median_baseline', is selected.",
+ "selection_uses_test_set": false,
+ "locked_at": "2026-11-22T00:33:40.966856+00:00"
+}

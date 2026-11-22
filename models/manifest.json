@@ -1,0 +1,630 @@
+{
+ "budget": "full",
+ "created_at": "2026-11-22T00:34:31.817197+00:00",
+ "seed": 20240531,
+ "feature_set": "A",
+ "models": {
+  "median_baseline": {
+   "display_name": "Median Baseline",
+   "family": "baseline",
+   "params": {},
+   "conformal_q": {
+    "0.5": 7.0,
+    "0.8": 12.0,
+    "0.9": 13.0,
+    "0.95": 14.0
+   },
+   "test_metrics": {
+    "mae": 7.509823540112789,
+    "rmse": 8.672727877731786,
+    "medae": 8.0,
+    "r2": -0.0032646054670029123,
+    "mape": 133.0846968327706,
+    "bias": -0.4947243951246134
+   },
+   "value": 15.0
+  },
+  "condition_median": {
+   "display_name": "Condition Median",
+   "family": "baseline",
+   "params": {},
+   "conformal_q": {
+    "0.5": 7.0,
+    "0.8": 12.0,
+    "0.9": 13.0,
+    "0.95": 14.0
+   },
+   "test_metrics": {
+    "mae": 7.508186283427324,
+    "rmse": 8.671018181473167,
+    "medae": 7.0,
+    "r2": -0.002869087771508294,
+    "mape": 135.95328994615366,
+    "bias": -0.1694560669456067
+   },
+   "table": {
+    "Arthritis": 15.0,
+    "Asthma": 16.0,
+    "Cancer": 15.0,
+    "Diabetes": 15.0,
+    "Hypertension": 16.0,
+    "Obesity": 15.0
+   },
+   "global": 15.0
+  },
+  "gamma_glm": {
+   "display_name": "Gamma GLM (log link)",
+   "family": "statistical",
+   "params": {
+    "feature_subset": "A_no_test_result",
+    "age_term": "binned",
+    "point": "mean"
+   },
+   "conformal_q": {
+    "0.5": 7.472609825492269,
+    "0.8": 11.975651427226657,
+    "0.9": 13.491603183157887,
+    "0.95": 14.31152837796885
+   },
+   "test_metrics": {
+    "mae": 7.507599152200175,
+    "rmse": 8.658504980181014,
+    "medae": 7.497222069377818,
+    "r2": 2.331717048342785e-05,
+    "mape": 137.5826107743966,
+    "bias": 0.007375632343879273
+   },
+   "glm": {
+    "design": {
+     "categorical": [
+      "Gender",
+      "Blood Type",
+      "Medical Condition",
+      "Admission Type",
+      "Medication"
+     ],
+     "age_term": "binned",
+     "levels": {
+      "Gender": [
+       "Female",
+       "Male"
+      ],
+      "Blood Type": [
+       "A+",
+       "A-",
+       "AB+",
+       "AB-",
+       "B+",
+       "B-",
+       "O+",
+       "O-"
+      ],
+      "Medical Condition": [
+       "Arthritis",
+       "Asthma",
+       "Cancer",
+       "Diabetes",
+       "Hypertension",
+       "Obesity"
+      ],
+      "Admission Type": [
+       "Elective",
+       "Emergency",
+       "Urgent"
+      ],
+      "Medication": [
+       "Aspirin",
+       "Ibuprofen",
+       "Lipitor",
+       "Paracetamol",
+       "Penicillin"
+      ]
+     }
+    },
+    "coef": [
+     2.737316156887602,
+     -0.0003072302430080394,
+     0.0002443527270147858,
+     0.01517632839676972,
+     0.003459381037112564,
+     0.01789358842499249,
+     -0.0009730093948596375,
+     -0.010501443730099232,
+     0.01307301597381048,
+     0.01036215214245189,
+     0.00016272405130971293,
+     -0.004811172727411495,
+     -0.0017572189317273772,
+     -0.004379504173707376,
+     0.008322575828337586,
+     -0.009150342683791297,
+     -0.0038166168158602735,
+     -0.009237687702523374,
+     -0.002759689466268592,
+     0.0028536410149963857,
+     -0.00863923866497182,
+     0.009928471266574423,
+     0.0024424784927175053,
+     0.0069038338623992335
+    ],
+    "shape": 3.2006659475385173,
+    "median_factor": 0.898005476784089,
+    "point": "mean",
+    "params": {
+     "feature_subset": "A_no_test_result",
+     "age_term": "binned",
+     "point": "mean"
+    },
+    "column_names": [
+     "Intercept",
+     "Gender[Male]",
+     "Blood Type[A-]",
+     "Blood Type[AB+]",
+     "Blood Type[AB-]",
+     "Blood Type[B+]",
+     "Blood Type[B-]",
+     "Blood Type[O+]",
+     "Blood Type[O-]",
+     "Medical Condition[Asthma]",
+     "Medical Condition[Cancer]",
+     "Medical Condition[Diabetes]",
+     "Medical Condition[Hypertension]",
+     "Medical Condition[Obesity]",
+     "Admission Type[Emergency]",
+     "Admission Type[Urgent]",
+     "Medication[Ibuprofen]",
+     "Medication[Lipitor]",
+     "Medication[Paracetamol]",
+     "Medication[Penicillin]",
+     "Age group[30-44]",
+     "Age group[45-59]",
+     "Age group[60-74]",
+     "Age group[75+]"
+    ]
+   }
+  },
+  "xgboost": {
+   "display_name": "XGBoost",
+   "family": "tree",
+   "params": {
+    "feature_subset": "A_full",
+    "max_depth": 7,
+    "learning_rate": 0.13892912594036927,
+    "subsample": 0.8898192456105763,
+    "colsample_bytree": 0.5794247829311943,
+    "min_child_weight": 23.594698426648712,
+    "gamma": 5.558487184574667e-06,
+    "reg_alpha": 1.2680286494458508e-07,
+    "reg_lambda": 0.010951503061599106,
+    "target_transform": "none",
+    "objective": "reg:absoluteerror"
+   },
+   "conformal_q": {
+    "0.5": 7.426113128662109,
+    "0.8": 12.03145980834961,
+    "0.9": 13.462455749511719,
+    "0.95": 14.246940612792969
+   },
+   "test_metrics": {
+    "mae": 7.507898181573855,
+    "rmse": 8.662518955581255,
+    "medae": 7.507329940795898,
+    "r2": -0.0009040512857951821,
+    "mape": 137.90982668234196,
+    "bias": 0.056904498112945526
+   },
+   "file": "xgboost.json",
+   "encoder": {
+    "categorical": [
+     "Gender",
+     "Blood Type",
+     "Medical Condition",
+     "Admission Type",
+     "Medication",
+     "Test Results"
+    ],
+    "numeric": [
+     "Age"
+    ],
+    "levels": {
+     "Gender": [
+      "Female",
+      "Male"
+     ],
+     "Blood Type": [
+      "A+",
+      "A-",
+      "AB+",
+      "AB-",
+      "B+",
+      "B-",
+      "O+",
+      "O-"
+     ],
+     "Medical Condition": [
+      "Arthritis",
+      "Asthma",
+      "Cancer",
+      "Diabetes",
+      "Hypertension",
+      "Obesity"
+     ],
+     "Admission Type": [
+      "Elective",
+      "Emergency",
+      "Urgent"
+     ],
+     "Medication": [
+      "Aspirin",
+      "Ibuprofen",
+      "Lipitor",
+      "Paracetamol",
+      "Penicillin"
+     ],
+     "Test Results": [
+      "Abnormal",
+      "Inconclusive",
+      "Normal"
+     ]
+    },
+    "means": {
+     "Age": 51.48581977739726
+    },
+    "stds": {
+     "Age": 19.581339185510252
+    }
+   },
+   "best_iteration": 17,
+   "feature_names": [
+    "Gender=Female",
+    "Gender=Male",
+    "Blood Type=A+",
+    "Blood Type=A-",
+    "Blood Type=AB+",
+    "Blood Type=AB-",
+    "Blood Type=B+",
+    "Blood Type=B-",
+    "Blood Type=O+",
+    "Blood Type=O-",
+    "Medical Condition=Arthritis",
+    "Medical Condition=Asthma",
+    "Medical Condition=Cancer",
+    "Medical Condition=Diabetes",
+    "Medical Condition=Hypertension",
+    "Medical Condition=Obesity",
+    "Admission Type=Elective",
+    "Admission Type=Emergency",
+    "Admission Type=Urgent",
+    "Medication=Aspirin",
+    "Medication=Ibuprofen",
+    "Medication=Lipitor",
+    "Medication=Paracetamol",
+    "Medication=Penicillin",
+    "Test Results=Abnormal",
+    "Test Results=Inconclusive",
+    "Test Results=Normal",
+    "Age"
+   ]
+  },
+  "xgboost_aft": {
+   "display_name": "XGBoost AFT (survival)",
+   "family": "tree",
+   "params": {
+    "feature_subset": "A_full",
+    "max_depth": 2,
+    "learning_rate": 0.014726143458112613,
+    "subsample": 0.7542778648612304,
+    "colsample_bytree": 0.737341250653697,
+    "min_child_weight": 2.573482496949155,
+    "gamma": 2.001900549087819e-08,
+    "reg_alpha": 1.4026794869868453,
+    "reg_lambda": 7.094283788506174,
+    "aft_distribution": "extreme",
+    "aft_scale": 0.5154135471137501
+   },
+   "conformal_q": {
+    "0.5": 7.467521265075895,
+    "0.8": 12.186679326530474,
+    "0.9": 13.497733411762365,
+    "0.95": 14.652952534663243
+   },
+   "test_metrics": {
+    "mae": 7.549347560667877,
+    "rmse": 8.735205947609677,
+    "medae": 7.493058127280676,
+    "r2": -0.01777164794809405,
+    "mape": 127.50712834399206,
+    "bias": -1.1541118728219806
+   },
+   "file": "xgboost_aft.json",
+   "encoder": {
+    "categorical": [
+     "Gender",
+     "Blood Type",
+     "Medical Condition",
+     "Admission Type",
+     "Medication",
+     "Test Results"
+    ],
+    "numeric": [
+     "Age"
+    ],
+    "levels": {
+     "Gender": [
+      "Female",
+      "Male"
+     ],
+     "Blood Type": [
+      "A+",
+      "A-",
+      "AB+",
+      "AB-",
+      "B+",
+      "B-",
+      "O+",
+      "O-"
+     ],
+     "Medical Condition": [
+      "Arthritis",
+      "Asthma",
+      "Cancer",
+      "Diabetes",
+      "Hypertension",
+      "Obesity"
+     ],
+     "Admission Type": [
+      "Elective",
+      "Emergency",
+      "Urgent"
+     ],
+     "Medication": [
+      "Aspirin",
+      "Ibuprofen",
+      "Lipitor",
+      "Paracetamol",
+      "Penicillin"
+     ],
+     "Test Results": [
+      "Abnormal",
+      "Inconclusive",
+      "Normal"
+     ]
+    },
+    "means": {
+     "Age": 51.48581977739726
+    },
+    "stds": {
+     "Age": 19.581339185510252
+    }
+   },
+   "best_iteration": 495,
+   "feature_names": [
+    "Gender=Female",
+    "Gender=Male",
+    "Blood Type=A+",
+    "Blood Type=A-",
+    "Blood Type=AB+",
+    "Blood Type=AB-",
+    "Blood Type=B+",
+    "Blood Type=B-",
+    "Blood Type=O+",
+    "Blood Type=O-",
+    "Medical Condition=Arthritis",
+    "Medical Condition=Asthma",
+    "Medical Condition=Cancer",
+    "Medical Condition=Diabetes",
+    "Medical Condition=Hypertension",
+    "Medical Condition=Obesity",
+    "Admission Type=Elective",
+    "Admission Type=Emergency",
+    "Admission Type=Urgent",
+    "Medication=Aspirin",
+    "Medication=Ibuprofen",
+    "Medication=Lipitor",
+    "Medication=Paracetamol",
+    "Medication=Penicillin",
+    "Test Results=Abnormal",
+    "Test Results=Inconclusive",
+    "Test Results=Normal",
+    "Age"
+   ]
+  },
+  "catboost": {
+   "display_name": "CatBoost",
+   "family": "tree",
+   "params": {
+    "feature_subset": "A_full",
+    "depth": 8,
+    "learning_rate": 0.26533223581730986,
+    "iterations": 800,
+    "l2_leaf_reg": 7.367112367993082,
+    "random_strength": 0.3787514890839513,
+    "bagging_temperature": 2.7562688311938333,
+    "loss_function": "RMSE"
+   },
+   "conformal_q": {
+    "0.5": 7.474456775262611,
+    "0.8": 12.009270142426724,
+    "0.9": 13.4955536487216,
+    "0.95": 14.309655126013384
+   },
+   "test_metrics": {
+    "mae": 7.512492954695054,
+    "rmse": 8.663168426684992,
+    "medae": 7.49948308382541,
+    "r2": -0.00105414218458999,
+    "mape": 137.85432253067827,
+    "bias": 0.043695217056232985
+   },
+   "file": "catboost.cbm",
+   "feature_names": [
+    "Gender",
+    "Blood Type",
+    "Medical Condition",
+    "Admission Type",
+    "Medication",
+    "Test Results",
+    "Age"
+   ],
+   "categorical": [
+    "Gender",
+    "Blood Type",
+    "Medical Condition",
+    "Admission Type",
+    "Medication",
+    "Test Results"
+   ]
+  },
+  "ft_transformer": {
+   "display_name": "FT-Transformer",
+   "family": "neural",
+   "params": {
+    "feature_subset": "A_no_test_result",
+    "d_token": 16,
+    "n_blocks": 2,
+    "n_heads": 4,
+    "attn_dropout": 0.20687239635551935,
+    "ffn_dropout": 0.27810981451240757,
+    "residual_dropout": 0.119947580225634,
+    "lr": 0.0021564612080219345,
+    "weight_decay": 7.302466755386087e-06,
+    "batch_size": 512,
+    "loss": "mse"
+   },
+   "conformal_q": {
+    "0.5": 7.469513893127441,
+    "0.8": 12.083873748779297,
+    "0.9": 13.47218132019043,
+    "0.95": 14.326093673706055
+   },
+   "test_metrics": {
+    "mae": 7.510778364841127,
+    "rmse": 8.66083604225885,
+    "medae": 7.531979084014893,
+    "r2": -0.0005151872269748559,
+    "mape": 136.14201941904741,
+    "bias": -0.15198315753489164
+   },
+   "ft": {
+    "n_blocks": 2,
+    "n_heads": 4,
+    "n_cat": 5,
+    "n_num": 1,
+    "y_mean": 15.50318386130137,
+    "y_std": 8.662687571355534,
+    "encoder": {
+     "categorical": [
+      "Gender",
+      "Blood Type",
+      "Medical Condition",
+      "Admission Type",
+      "Medication"
+     ],
+     "numeric": [
+      "Age"
+     ],
+     "levels": {
+      "Gender": [
+       "Female",
+       "Male"
+      ],
+      "Blood Type": [
+       "A+",
+       "A-",
+       "AB+",
+       "AB-",
+       "B+",
+       "B-",
+       "O+",
+       "O-"
+      ],
+      "Medical Condition": [
+       "Arthritis",
+       "Asthma",
+       "Cancer",
+       "Diabetes",
+       "Hypertension",
+       "Obesity"
+      ],
+      "Admission Type": [
+       "Elective",
+       "Emergency",
+       "Urgent"
+      ],
+      "Medication": [
+       "Aspirin",
+       "Ibuprofen",
+       "Lipitor",
+       "Paracetamol",
+       "Penicillin"
+      ]
+     },
+     "means": {
+      "Age": 51.48581977739726
+     },
+     "stds": {
+      "Age": 19.581339185510252
+     }
+    }
+   },
+   "file": "ft_transformer.npz",
+   "history": [
+    {
+     "epoch": 1,
+     "train_loss": 1.0169158030919963,
+     "es_mae": 7.462079237462876
+    },
+    {
+     "epoch": 2,
+     "train_loss": 1.0054663225376717,
+     "es_mae": 7.447463159831594
+    },
+    {
+     "epoch": 3,
+     "train_loss": 1.0036641358726763,
+     "es_mae": 7.448092873687091
+    },
+    {
+     "epoch": 4,
+     "train_loss": 1.0034816297780844,
+     "es_mae": 7.455112027382072
+    },
+    {
+     "epoch": 5,
+     "train_loss": 1.0025996416231293,
+     "es_mae": 7.469335968574781
+    },
+    {
+     "epoch": 6,
+     "train_loss": 1.0027010723167937,
+     "es_mae": 7.450645745023806
+    },
+    {
+     "epoch": 7,
+     "train_loss": 1.0026841861036886,
+     "es_mae": 7.46145791711496
+    },
+    {
+     "epoch": 8,
+     "train_loss": 1.0023381271602723,
+     "es_mae": 7.452066711335975
+    }
+   ]
+  }
+ },
+ "selected_model": "median_baseline",
+ "display_model": "gamma_glm",
+ "quality_gate": {
+  "warning": true,
+  "headline": "Length of stay in this synthetic dataset appears to contain limited predictable signal. Predictions are displayed for methodological demonstration and should not be interpreted as clinically meaningful.",
+  "failed": [
+   "Advanced models fail to meaningfully beat the median baseline",
+   "Bootstrap intervals show no meaningful difference between models",
+   "Shuffled-target models perform similarly to real-target models",
+   "Prediction intervals are excessively wide",
+   "Calibration is poor or predictions are non-discriminative"
+  ]
+ },
+ "training_los_median": 15.0,
+ "training_los_max": 30.0
+}
