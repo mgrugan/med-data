@@ -3,7 +3,7 @@ import { Manrope, Montserrat, Sora } from "next/font/google";
 import Link from "next/link";
 import { Nav } from "@/components/nav";
 import { Background } from "@/components/fx/background";
-import { BRAND, SKIN, isGlass, sk, withPip } from "@/lib/skin";
+import { SKIN, isGlass, sk, withPip } from "@/lib/skin";
 import "./globals.css";
 
 const manrope = Manrope({ subsets: ["latin"], variable: "--font-manrope", display: "swap" });
@@ -11,7 +11,7 @@ const sora = Sora({ subsets: ["latin"], variable: "--font-sora", display: "swap"
 const montserrat = Montserrat({ subsets: ["latin"], variable: "--font-montserrat", weight: ["500", "600", "700", "800"], display: "swap" });
 
 export const metadata: Metadata = {
-  title: withPip ? "Pip · Length-of-stay estimates" : "RecoveryAI",
+  title: withPip ? "Pip · Length-of-stay estimates" : "Length-of-stay estimates",
   description: "Educational research prototype: length-of-stay estimation with rigorous validation, trained on real de-identified hospital data (UCI Diabetes 130-US, 1999–2008).",
 };
 
@@ -41,7 +41,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               </Link>
             ) : (
               <Link href="/" className="font-display text-[15px] font-semibold tracking-tight">
-                Recovery<span className="text-accent">AI</span>
+                Length of stay
               </Link>
             )}
             <Nav />

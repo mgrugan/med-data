@@ -56,7 +56,7 @@
   --color-warn-fg: var(--warn-fg);
   --color-good: var(--good);
   --font-sans: var(--font-manrope), ui-sans-serif, system-ui, sans-serif;
-  --font-display: var(--font-sora), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-montserrat), ui-sans-serif, system-ui, sans-serif;
   --font-bold: var(--font-montserrat), ui-sans-serif, system-ui, sans-serif;
 }
 
@@ -78,9 +78,10 @@ h1, h2, h3, h4 {
   letter-spacing: -0.01em;
 }
 
-/* Bold text is set in Montserrat. */
+/* Bold and big text is set in Montserrat. */
 h1, h2, h3, h4, h5, h6, strong, b, th,
-.font-semibold, .font-bold, .font-extrabold, .font-black {
+.font-semibold, .font-bold, .font-extrabold, .font-black,
+.text-lg, .text-xl, .text-2xl, .text-3xl, .text-4xl, .text-5xl, .text-6xl {
   font-family: var(--font-bold);
 }
 

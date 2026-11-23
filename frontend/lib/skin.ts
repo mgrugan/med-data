@@ -20,5 +20,5 @@ export const sk = (minimal: string, glass: string) => (isGlass ? glass : minimal
  * NEXT_PUBLIC_PIP=on|off; the glass skin turns Pip on unless NEXT_PUBLIC_PIP=off.
  */
 export const withPip = process.env.NEXT_PUBLIC_PIP === "on" || (isGlass && process.env.NEXT_PUBLIC_PIP !== "off");
-/** Site name shown in the header and page text. */
-export const BRAND = withPip ? "Pip" : "RecoveryAI";
+/** How the site refers to itself in page text (no product name unless Pip is on). */
+export const BRAND = withPip ? "Pip" : "This tool";

@@ -5,7 +5,7 @@ import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
 import { getValidation } from "@/lib/api";
 import { fmt } from "@/lib/utils";
-import { BRAND, sk } from "@/lib/skin";
+import { sk } from "@/lib/skin";
 
 type Step = { n: string; title: string; body: React.ReactNode; link?: { href: string; label: string } };
 
@@ -125,7 +125,7 @@ export default function MethodPage() {
         <p className="mt-2">
           The data are real but narrow: US hospitals, 1999–2008, adults with diabetes, stays capped at 14 days, and age known only in
           10-year bands. Many important drivers of length of stay, such as vital signs, severity scores and social circumstances, are not in the data, so
-          admission-time predictions remain uncertain. Associations are not causes. Nothing in {BRAND} is a clinical discharge decision.
+          admission-time predictions remain uncertain. Associations are not causes. Nothing here is a clinical discharge decision.
         </p>
       </div>
     </div>
