@@ -21,7 +21,8 @@ from pydantic import BaseModel, Field
 
 from .explanations import explain_patient
 from .ml.features import CATEGORY_LEVELS
-from .ml.predictor import days_between, get_predictor, get_report
+from fastapi.responses import Response
+from .ml.predictor import days_between, get_predictor, get_web_report
 from .recovery.extractor import CATEGORIES, extract
 from .recovery.schedule import build_schedule
 
@@ -121,10 +122,11 @@ def predict(body: PatientIn):
 
 @app.get("/api/validation")
 def validation():
-    r = get_report()
-    if not r:
+    body = get_web_report()
+    if not body:
         raise HTTPException(503, "validation report not generated yet; run `python -m training.run_pipeline`")
-    return r
+    # Built once and cached in memory; browsers may reuse it for an hour.
+    return Response(body, media_type="application/json", headers={"Cache-Control": "public, max-age=3600"})
 
 
 @app.post("/api/recovery/extract")

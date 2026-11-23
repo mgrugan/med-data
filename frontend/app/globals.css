@@ -166,3 +166,8 @@ h1, h2, h3, h4, h5, h6, strong, b, th,
 .pip-dots::after { content: ""; display: inline-block; width: 1.2em; text-align: left; animation: pip-dots 1.2s steps(1) infinite; }
 @keyframes pip-bar { from { transform: translateX(-110%); } to { transform: translateX(320%); } }
 .pip-bar { animation: pip-bar 1.3s cubic-bezier(.45, 0, .55, 1) infinite; }
+
+/* Grid cells may shrink below their content's natural width (charts resize to fit), and the
+   page itself never scrolls sideways. clip (not hidden) keeps sticky headers working. */
+.grid > * { min-width: 0; }
+html, body { overflow-x: clip; }

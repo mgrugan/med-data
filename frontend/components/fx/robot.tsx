@@ -199,8 +199,8 @@ function generatePbrTexturesAsync(): Promise<{ colorMap: THREE.CanvasTexture; bu
 const NECK = { baseR: 0.215, baseH: -0.05, midR: 0.28, midH: 0.02, lipBottomR: 0.295, lipBottomH: 0.045, lipTopR: 0.27, lipTopH: 0.055, innerR: 0.1, innerDropH: 0.0 };
 const BODY = { bodyBevelR: 0.235, bodyBevelY: 0.34, bodyBevelT: 0.025 };
 
-function RobotPrototype({ color = "#c4c4c4", screenColor = "#00ffc6", screenGlow = 1.2, blinkCycle = 3.0, thinking = false }: {
-  color?: string; screenColor?: string; screenGlow?: number; blinkCycle?: number; thinking?: boolean;
+function RobotPrototype({ color = "#c4c4c4", screenColor = "#00ffc6", screenGlow = 1.2, blinkCycle = 3.0, thinking = false, follow = true }: {
+  color?: string; screenColor?: string; screenGlow?: number; blinkCycle?: number; thinking?: boolean; follow?: boolean;
 }) {
   const isLovedRef = useRef(false);
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -213,18 +213,23 @@ function RobotPrototype({ color = "#c4c4c4", screenColor = "#00ffc6", screenGlow
     const dt = Math.min(delta, 0.1);
     const t = state.clock.getElapsedTime();
     // Thinking: Pip stays centred and facing forward; only the head glances gently from side to side.
-    const tx = thinking ? 0 : state.pointer.x;
-    const ty = thinking ? 0.1 : state.pointer.y;
+    // The pointer is measured against Pip's own canvas, so a touch far away (e.g. while scrolling a
+    // phone) gives values well beyond ±1; clamp so Pip never turns its face away. On touch screens Pip
+    // doesn't follow at all (every scroll is a touch) and sways gently instead.
+    const clamp = (v: number) => Math.max(-1, Math.min(1, v));
+    const idleX = Math.sin(t * 0.6) * 0.25, idleY = 0.05 + Math.sin(t * 0.9) * 0.08;
+    const tx = thinking ? 0 : follow ? clamp(state.pointer.x) : idleX;
+    const ty = thinking ? 0.1 : follow ? clamp(state.pointer.y) : idleY;
     const glance = thinking ? Math.sin(t * 2.2) * 0.35 : 0;
     const bob = thinking ? Math.sin(t * 6) * 0.015 : Math.sin(t * 1.4) * 0.01;
     bodyRef.current.position.y = -0.3 + bob;
 
-    const bodyRotY = -tx * 0.6, bodyRotX = -ty * 0.2, bodyRotZ = -tx * 0.1;
+    const bodyRotY = -tx * 0.35, bodyRotX = -ty * 0.15, bodyRotZ = -tx * 0.08;
     const L = THREE.MathUtils.lerp;
     bodyRef.current.rotation.y = L(bodyRef.current.rotation.y, bodyRotY, 6 * dt);
     bodyRef.current.rotation.x = L(bodyRef.current.rotation.x, bodyRotX, 6 * dt);
     bodyRef.current.rotation.z = L(bodyRef.current.rotation.z, bodyRotZ, 6 * dt);
-    headRef.current.rotation.y = L(headRef.current.rotation.y, tx * 1.1 + glance, 12 * dt);
+    headRef.current.rotation.y = L(headRef.current.rotation.y, tx * 0.8 + glance, 12 * dt);
     headRef.current.rotation.x = L(headRef.current.rotation.x, -ty * 0.3, 12 * dt);
   });
 
@@ -331,7 +336,7 @@ export default function Robot({ thinking = false, className, onReady }: { thinki
         <directionalLight position={[2.5, 4, 5]} intensity={1.1} />
         <directionalLight position={[-4, 1, -3]} intensity={0.6} color="#7ff5dc" />
         <FitGroup>
-          <RobotPrototype thinking={thinking} />
+          <RobotPrototype thinking={thinking} follow={!light} />
         </FitGroup>
         <ReadySignal onReady={onReady} />
       </Canvas>}

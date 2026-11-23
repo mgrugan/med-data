@@ -1,7 +1,9 @@
 "use client";
+import * as React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
+import { prefetchValidation } from "@/lib/api";
 
 const LINKS = [
   { href: "/", label: "Estimate" },
@@ -12,6 +14,8 @@ const LINKS = [
 
 export function Nav() {
   const path = usePathname();
+  // Fetch the validation report in the background so that page opens instantly.
+  React.useEffect(() => { prefetchValidation(); }, []);
   return (
     <nav className="-mx-2 flex w-full gap-1 overflow-x-auto p-1.5 text-sm sm:mx-0 sm:-mr-2 sm:w-auto">
       {LINKS.map((l) => (

@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import * as React from "react";
 import { Check, X } from "lucide-react";
-import { api } from "@/lib/api";
+import { getValidation } from "@/lib/api";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Alert } from "@/components/ui/alert";
 import { SimpleSelect } from "@/components/ui/select";
@@ -53,7 +53,7 @@ export default function ValidationPage() {
   const [r, setR] = React.useState<any>(null);
   const [err, setErr] = React.useState<string | null>(null);
   const [m, setM] = React.useState("catboost");
-  React.useEffect(() => { api<any>("/validation").then(setR).catch((e) => setErr(e.message)); }, []);
+  React.useEffect(() => { getValidation<any>().then(setR).catch((e) => setErr(e.message)); }, []);
 
   if (err) return <Alert title="Validation report unavailable">{err}</Alert>;
   if (!r) return <div className="h-96 animate-pulse rounded-2xl bg-soft" />;
@@ -154,7 +154,7 @@ export default function ValidationPage() {
       </Section>
 
       <div className="grid gap-8 lg:grid-cols-2">
-        <Section id="scatter" title="Predicted vs actual" desc="A random sample of 1,200 test patients. Dashed line = perfect prediction.">
+        <Section id="scatter" title="Predicted vs actual" desc="A random sample of 600 test patients. Dashed line = perfect prediction.">
           <ModelPicker value={m} onChange={setM} keys={keys} />
           <ScatterPlot x={T.scatter[m].predicted} y={T.scatter[m].observed} xLabel="Predicted LOS (days)" yLabel="Observed LOS (days)" />
         </Section>

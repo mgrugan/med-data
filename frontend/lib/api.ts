@@ -14,6 +14,22 @@ export async function api<T>(path: string, init?: RequestInit): Promise<T> {
   return res.json();
 }
 
+/** The validation report is large and never changes while the app runs: fetch it once, share the
+ *  promise between pages, and start it early (prefetchValidation) so the page opens instantly. */
+let validationPromise: Promise<unknown> | null = null;
+export function getValidation<T = unknown>(): Promise<T> {
+  if (!validationPromise) {
+    validationPromise = api<T>("/validation").catch((e) => { validationPromise = null; throw e; });
+  }
+  return validationPromise as Promise<T>;
+}
+export function prefetchValidation() {
+  const start = () => { getValidation().catch(() => {}); };
+  const w = window as Window & { requestIdleCallback?: (cb: () => void, o?: { timeout: number }) => number };
+  if (w.requestIdleCallback) w.requestIdleCallback(start, { timeout: 4000 });
+  else setTimeout(start, 1500);
+}
+
 export type Gate = { warning: boolean; headline: string; failed: string[] };
 
 export type Options = {

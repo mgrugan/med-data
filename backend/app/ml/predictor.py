@@ -238,6 +238,46 @@ def get_predictor() -> Predictor:
     return Predictor()
 
 
+def _round_all(x, nd: int = 4):
+    """Round floats recursively (smaller payload; the full-precision report stays on disk)."""
+    if isinstance(x, float):
+        return round(x, nd)
+    if isinstance(x, dict):
+        return {k: _round_all(v, nd) for k, v in x.items()}
+    if isinstance(x, list):
+        return [_round_all(v, nd) for v in x]
+    return x
+
+
+def _thin(points: list, n: int) -> list:
+    """Evenly spaced subsample that keeps the order (deterministic)."""
+    if len(points) <= n:
+        return points
+    step = len(points) / n
+    return [points[int(i * step)] for i in range(n)]
+
+
+@lru_cache(maxsize=1)
+def get_web_report() -> bytes:
+    """The validation report as served to the web page: only what the page displays, rounded,
+    with dot plots thinned. Built once per process and kept in memory."""
+    r = get_report()
+    if not r:
+        return b""
+    r = dict(r)
+    # Drop only the parts the page never reads (per-fold logs, the set B SHAP sample).
+    r["nested_cv"] = {k: {kk: vv for kk, vv in v.items() if kk not in ("folds", "studies")} for k, v in r["nested_cv"].items()}
+    r["feature_set_b"] = {k: {kk: vv for kk, vv in v.items() if kk != "shap"} for k, v in r.get("feature_set_b", {}).items()}
+    ex = dict(r.get("explainability", {}))
+    ex["shap"] = {k: {**s, "distribution": {f: _thin(pts, 160) for f, pts in s.get("distribution", {}).items()}}
+                  for k, s in ex.get("shap", {}).items()}
+    r["explainability"] = ex
+    T = dict(r["test"])
+    T["scatter"] = {k: {kk: _thin(vv, 600) if isinstance(vv, list) else vv for kk, vv in s.items()} for k, s in T.get("scatter", {}).items()}
+    r["test"] = T
+    return json.dumps(_round_all(r), separators=(",", ":")).encode()
+
+
 @lru_cache(maxsize=1)
 def get_report() -> dict:
     if not REPORT_PATH.exists():

@@ -3,14 +3,14 @@
 import * as React from "react";
 import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
-import { api } from "@/lib/api";
+import { getValidation } from "@/lib/api";
 import { fmt } from "@/lib/utils";
 
 type Step = { n: string; title: string; body: React.ReactNode; link?: { href: string; label: string } };
 
 export default function MethodPage() {
   const [r, setR] = React.useState<any>(null);
-  React.useEffect(() => { api<any>("/validation").then(setR).catch(() => {}); }, []);
+  React.useEffect(() => { getValidation<any>().then(setR).catch(() => {}); }, []);
   const d = r?.data, b = r?.budget, sel = r?.selection;
 
   const steps: Step[] = [
