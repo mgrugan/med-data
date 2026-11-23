@@ -12,7 +12,7 @@ import { SimpleSelect } from "@/components/ui/select";
 import { Alert } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
-import { sk } from "@/lib/skin";
+import { BRAND, sk } from "@/lib/skin";
 
 const CATS = ["medications", "activity", "restrictions", "wound_care", "nutrition", "appointments", "monitoring"] as const;
 const CAT_LABEL: Record<string, string> = {
@@ -93,7 +93,7 @@ export default function RecoveryPage() {
         <p className="text-sm text-subtle">Recovery plan</p>
         <h1 className="mt-2 text-3xl font-semibold sm:text-4xl">From discharge orders to a daily schedule</h1>
         <p className="mt-3 text-muted">
-          Provide the instructions your doctor gave you. Pip only organises what is written. It never adds
+          Provide the instructions your doctor gave you. {BRAND} only organises what is written. It never adds
           medications, doses, durations or activities, and anything missing stays <em>Not specified</em>.
         </p>
       </section>
