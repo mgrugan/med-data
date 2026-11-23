@@ -1,7 +1,27 @@
 @import "tailwindcss";
 
 :root {
-  /* One dark "glass over chrome" theme: cards are translucent so the arcs show through. */
+  /* Skin "minimal" (default): the original white, minimalist palette. */
+  color-scheme: light;
+  --bg: #fcfcfb;
+  --card: #ffffff;
+  --fg: #0b0b0b;
+  --muted: #52514e;
+  --subtle: #8a8984;
+  --line: #e7e6e2;
+  --soft: #f3f3f0;
+  --accent: #2a78d6;
+  --accent-soft: #e3eefb;
+  --accent-2: #eb6834;
+  --warn-bg: #fdf6e7;
+  --warn-line: #ecd29a;
+  --warn-fg: #6b4a00;
+  --good: #0f7a3d;
+  --glow: conic-gradient(from var(--glass-angle), #00ffc6, #6aa7ff, #c77dff, #ff5ea8, #ffc46b, #00ffc6);
+}
+
+:root[data-skin="glass"] {
+  /* Skin "glass": dark liquid glass over the chrome arcs; cards are translucent so the arcs show through. */
   color-scheme: dark;
   --bg: #040405;
   --card: rgba(16, 16, 19, 0.62);
@@ -44,6 +64,7 @@ html {
   background: var(--bg);
   color: var(--fg);
 }
+/* transparent so the glass skin's fixed background shows; the minimal skin paints html instead */
 body { background: transparent; color: var(--fg); }
 
 body {

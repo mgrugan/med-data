@@ -4,6 +4,7 @@
  * a second hue only when two series must be told apart (always legend + direct label).
  * Every chart has a hover tooltip; text uses text tokens, never series colours.
  */
+import { sk } from "@/lib/skin";
 import * as React from "react";
 import { fmt } from "@/lib/utils";
 
@@ -41,7 +42,7 @@ function Tooltip({ tip }: { tip: Tip }) {
   if (!tip) return null;
   return (
     <div
-      className="pointer-events-none absolute z-10 rounded-lg border border-line bg-[#111114]/95 px-3 py-2 text-xs shadow-md"
+      className={`pointer-events-none absolute z-10 rounded-lg border border-line px-3 py-2 text-xs shadow-md ${sk("bg-card", "bg-[#111114]/95")}`}
       style={{ left: tip.x + 12, top: tip.y - 8, maxWidth: 260 }}
     >
       {tip.lines.map((l, i) => (

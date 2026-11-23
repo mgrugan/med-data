@@ -1,8 +1,9 @@
 import * as React from "react";
 import { cn } from "@/lib/utils";
+import { sk } from "@/lib/skin";
 
 export function Card({ className, ...p }: React.HTMLAttributes<HTMLDivElement>) {
-  return <div className={cn("panel rounded-2xl border border-line", className)} {...p} />;
+  return <div className={cn(sk("bg-card", "panel"), "rounded-2xl border border-line", className)} {...p} />;
 }
 export function CardHeader({ className, ...p }: React.HTMLAttributes<HTMLDivElement>) {
   return <div className={cn("px-6 pt-6 pb-2", className)} {...p} />;

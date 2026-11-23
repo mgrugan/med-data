@@ -13,6 +13,7 @@ import { Alert } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { ROBOT_NAME } from "@/components/fx/robot-name";
 import { PipSplash } from "@/components/fx/pip-splash";
+import { sk } from "@/lib/skin";
 import { HBars, RangeBar } from "@/components/charts";
 import { cn, fmt, pct } from "@/lib/utils";
 
@@ -272,7 +273,7 @@ export default function EstimatePage() {
         </CardContent>
       </Card>
 
-      <Link href="/recovery" className="panel group flex items-center justify-between rounded-2xl border border-line p-6 transition-colors hover:bg-soft">
+      <Link href="/recovery" className={`${sk("bg-card", "panel")} group flex items-center justify-between rounded-2xl border border-line p-6 transition-colors hover:bg-soft`}>
         <div>
           <p className="font-display font-semibold">Recovery plan</p>
           <p className="mt-1 text-sm text-muted">Turn your doctor&apos;s discharge instructions into a daily schedule.</p>
@@ -305,7 +306,7 @@ export default function EstimatePage() {
 
       <div className="grid gap-8 lg:grid-cols-[360px_1fr]">
         {/* ---------------- inputs */}
-        <aside className="panel min-w-0 space-y-7 rounded-2xl border border-line p-5 sm:p-6">
+        <aside className={sk("min-w-0 space-y-7", "panel min-w-0 space-y-7 rounded-2xl border border-line p-5 sm:p-6")}>
           <Field label="Age" value={`${ageBand(f.age)} years`}>
             <Slider min={5} max={95} step={10} value={[f.age]} onValueChange={([v]) => set("age", v)} aria-label="Age band" />
           </Field>
@@ -361,7 +362,7 @@ export default function EstimatePage() {
         {/* not sticky while loading: sticky creates a stacking context that would trap Pip under the overlay */}
         <div className={cn("relative order-first h-[340px] lg:order-none lg:h-auto lg:min-h-[380px] lg:top-24 lg:h-[calc(100dvh-8rem)] lg:max-h-[720px] lg:self-start", phase === "form" && "lg:sticky")}>
           <div className="pointer-events-none absolute inset-x-0 top-2 z-10 mx-auto w-fit max-w-[90%]">
-            <div className={cn("panel rounded-2xl border border-line px-4 py-3 text-center text-sm transition-opacity", phase !== "form" && "opacity-0")}>
+            <div className={cn(sk("bg-card shadow-sm", "panel"), "rounded-2xl border border-line px-4 py-3 text-center text-sm transition-opacity", phase !== "form" && "opacity-0")}>
               <p className="font-bold">Hi, I&apos;m {ROBOT_NAME}!</p>
               <p className="mt-0.5 text-muted">Set the details, then press Calculate and I&apos;ll work it out.</p>
             </div>
@@ -378,7 +379,7 @@ export default function EstimatePage() {
       {phase === "loading" && (
         <div role="status" aria-live="polite"
           className={cn("fixed inset-0 z-[60] transition-opacity duration-500", full && !leaving ? "opacity-100" : "opacity-0")}>
-          <div className="absolute inset-x-0 top-0 h-[max(100%,100lvh)] bg-black/85 backdrop-blur-xl" />
+          <div className={`absolute inset-x-0 top-0 h-[max(100%,100lvh)] ${sk("bg-bg/90 backdrop-blur-md", "bg-black/85 backdrop-blur-xl")}`} />
           <div className="absolute left-1/2 top-1/2 h-[min(78vh,78vw)] w-[min(78vh,78vw)] -translate-x-1/2 -translate-y-1/2">
             <div className="spin-ring absolute inset-0" />
             <div className="spin-ring spin-ring-slow absolute inset-[6%]" />
@@ -386,7 +387,7 @@ export default function EstimatePage() {
           <div className="absolute inset-x-0 bottom-[7vh] z-[62] mx-auto w-[min(420px,86vw)] text-center">
             <p className="font-bold text-lg">{ROBOT_NAME} is calculating…</p>
             <p className="mt-1 h-5 text-sm text-muted">{steps[step]}</p>
-            <div className="mt-4 h-1.5 overflow-hidden rounded-full bg-white/10">
+            <div className={`mt-4 h-1.5 overflow-hidden rounded-full ${sk("bg-soft", "bg-white/10")}`}>
               <div className="h-full rounded-full bg-gradient-to-r from-[#00ffc6] via-[#6aa7ff] to-[#ff5ea8]"
                 style={{ width: full ? "100%" : "0%", transition: `width ${LOADING_MS}ms linear` }} />
             </div>

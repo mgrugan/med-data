@@ -12,6 +12,7 @@ import { SimpleSelect } from "@/components/ui/select";
 import { Alert } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
+import { sk } from "@/lib/skin";
 
 const CATS = ["medications", "activity", "restrictions", "wound_care", "nutrition", "appointments", "monitoring"] as const;
 const CAT_LABEL: Record<string, string> = {
@@ -116,7 +117,7 @@ export default function RecoveryPage() {
             </TabsContent>
             <TabsContent value="upload" className="space-y-4">
               <button onClick={() => fileRef.current?.click()}
-                className="glass glass-soft flex w-full flex-col items-center justify-center gap-2 rounded-2xl py-12 text-sm text-muted">
+                className={sk("flex w-full flex-col items-center justify-center gap-2 rounded-2xl border border-dashed border-line py-12 text-sm text-muted hover:bg-soft", "glass glass-soft flex w-full flex-col items-center justify-center gap-2 rounded-2xl py-12 text-sm text-muted")}>
                 <Upload className="h-5 w-5" /> Choose a .txt, .pdf or .docx file
               </button>
               <input ref={fileRef} type="file" accept=".txt,.md,.pdf,.docx" className="hidden"
@@ -210,7 +211,7 @@ export default function RecoveryPage() {
               <div className="flex gap-1.5 overflow-x-auto p-1.5">
                 {sched.days.map((d, i) => (
                   <button key={d.date} onClick={() => setDayIdx(i)}
-                    className={cn("shrink-0 rounded-xl px-3 py-2 text-center text-xs", i === dayIdx ? "glass glass-soft text-fg" : "border border-line text-muted hover:bg-soft")}>
+                    className={cn("shrink-0 rounded-xl px-3 py-2 text-center text-xs", i === dayIdx ? sk("border border-fg bg-fg text-bg", "glass glass-soft text-fg") : "border border-line text-muted hover:bg-soft")}>
                     <div className="font-medium">Day {d.day}</div>
                     <div className="num opacity-80">{new Date(d.date + "T00:00").toLocaleDateString(undefined, { month: "short", day: "numeric" })}</div>
                   </button>

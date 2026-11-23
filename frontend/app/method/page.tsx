@@ -5,6 +5,7 @@ import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
 import { getValidation } from "@/lib/api";
 import { fmt } from "@/lib/utils";
+import { sk } from "@/lib/skin";
 
 type Step = { n: string; title: string; body: React.ReactNode; link?: { href: string; label: string } };
 
@@ -119,7 +120,7 @@ export default function MethodPage() {
           </li>
         ))}
       </ol>
-      <div className="mt-16 panel rounded-2xl border border-line p-6 text-sm leading-relaxed text-muted">
+      <div className={`mt-16 ${sk("bg-soft", "panel")} rounded-2xl border border-line p-6 text-sm leading-relaxed text-muted`}>
         <p className="font-display font-semibold text-fg">Limitations</p>
         <p className="mt-2">
           The data are real but narrow: US hospitals, 1999–2008, adults with diabetes, stays capped at 14 days, and age known only in

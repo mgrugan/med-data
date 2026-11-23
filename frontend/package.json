@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start -p ${PORT:-3000}",
     "lint": "tsc --noEmit",
-    "export": "STATIC_EXPORT=1 next build && rm -rf ../backend/app/static && cp -r out ../backend/app/static"
+    "export": "STATIC_EXPORT=1 next build && rm -rf ../backend/app/static && cp -r out ../backend/app/static",
+    "export:glass": "NEXT_PUBLIC_SKIN=glass npm run export"
   },
   "dependencies": {
     "@radix-ui/react-label": "2.1.7",

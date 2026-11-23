@@ -3,6 +3,7 @@ import { Manrope, Montserrat, Sora } from "next/font/google";
 import Link from "next/link";
 import { Nav } from "@/components/nav";
 import { Background } from "@/components/fx/background";
+import { SKIN, isGlass, sk } from "@/lib/skin";
 import "./globals.css";
 
 const manrope = Manrope({ subsets: ["latin"], variable: "--font-manrope", display: "swap" });
@@ -17,7 +18,7 @@ export const metadata: Metadata = {
 /** Pip's face: two glowing eyes on a glass screen. */
 function PipMark() {
   return (
-    <span className="glass glass-soft flex h-7 w-9 items-center justify-center rounded-[10px]">
+    <span className={sk("flex h-7 w-9 items-center justify-center rounded-[10px] bg-fg", "glass glass-soft flex h-7 w-9 items-center justify-center rounded-[10px]")}>
       <span className="flex h-[60%] w-[72%] items-center justify-center gap-1 rounded-md bg-[#0a0a0a]">
         <span className="h-2.5 w-1 rounded-[2px] bg-[#00ffc6] shadow-[0_0_8px_#00ffc6]" />
         <span className="h-2.5 w-1 rounded-[2px] bg-[#00ffc6] shadow-[0_0_8px_#00ffc6]" />
@@ -28,10 +29,10 @@ function PipMark() {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${manrope.variable} ${sora.variable} ${montserrat.variable}`}>
+    <html lang="en" data-skin={SKIN} className={`${manrope.variable} ${sora.variable} ${montserrat.variable}`}>
       <body className="min-h-screen">
-        <Background />
-        <header className="sticky top-0 z-40 border-b border-line bg-black/40 backdrop-blur-xl">
+        {isGlass && <Background />}
+        <header className={`sticky top-0 z-40 border-b border-line ${sk("bg-bg/85 backdrop-blur", "bg-black/40 backdrop-blur-xl")}`}>
           <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-x-4 gap-y-1 px-4 py-3 sm:h-16 sm:flex-nowrap sm:py-0 sm:px-6">
             <Link href="/" className="flex items-center gap-2.5">
               <PipMark />
@@ -41,7 +42,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           </div>
         </header>
         <main className="mx-auto max-w-6xl px-4 pb-24 pt-8 sm:px-6 sm:pt-12">{children}</main>
-        <footer className="border-t border-line bg-black/40 backdrop-blur-xl">
+        <footer className={`border-t border-line ${sk("", "bg-black/40 backdrop-blur-xl")}`}>
           <p className="mx-auto max-w-6xl px-4 py-6 text-xs leading-relaxed text-subtle sm:px-6">
             Educational research prototype trained on de-identified records of US inpatients with diabetes (UCI Diabetes
             130-US Hospitals, 1999–2008). Not medical advice, and never a clinical discharge decision.
